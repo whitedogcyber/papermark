@@ -1,1 +1,5 @@
-export const OAUTH_SCOPES = []; export const scopes = []; default export [];
+export const OAUTH_SCOPES = {};
+export const scopes = [];
+
+const defaultScopes: string[] = [];
+export default defaultScopes;
