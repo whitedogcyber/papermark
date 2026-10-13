@@ -33,3 +33,4 @@ export function validateContent(html: string, length: number = MAX_MESSAGE_LENGT
 
   return sanitized;
 }
+export const MAX_MESSAGE_LENGTH = 1000;
