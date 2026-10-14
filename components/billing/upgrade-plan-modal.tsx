@@ -573,11 +573,6 @@ export function UpgradePlanModal({
                           period
                         ].amount ?? 0
                       }
-                      amountUsd={
-                        PLANS.find((p) => p.name === displayPlanName)?.price[
-                          period
-                        ].amountUsd
-                      }
                       period={period}
                       currency={currency}
                     />
