@@ -449,7 +449,6 @@ export function UpgradePlanModal({
 
                 const planFeatures = getPlanFeatures(effectivePlan, {
                   period,
-                  currency,
                   highlightFeatures: highlightForSelector,
                 });
 
