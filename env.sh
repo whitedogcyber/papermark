@@ -1,0 +1,12 @@
+export BASE_URL="http://localhost:3000"
+export NEXT_PUBLIC_BASE_URL=$BASE_URL
+export NEXTAUTH_URL=$BASE_URL
+export NEXT_PUBLIC_APP_BASE_HOST=$BASE_URL
+export NEXT_PUBLIC_WEBHOOK_BASE_HOST=$BASE_URL
+export NEXT_PUBLIC_MARKETING_URL=$BASE_URL
+export DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+export OPENAI_API_KEY=sk-test12345
+export HANKO_API_KEY=123dummy
+export NEXT_PUBLIC_HANKO_TENANT_ID=dummy
+export SLACK_CLIENT_ID=dummy
+export SLACK_CLIENT_SECRET=dummy

@@ -1291,7 +1291,7 @@ export default function DocumentHeader({
         <>
           {redactionJobsOpen ? (
             <RedactionJobsDialog
-              open={redactionJobsOpen}
+              //open={redactionJobsOpen}
               onOpenChange={setRedactionJobsOpen}
               documentId={prismaDocument.id}
               documentName={prismaDocument.name}
@@ -1300,7 +1300,7 @@ export default function DocumentHeader({
           ) : null}
           {redactionConfigOpen ? (
             <RedactionConfigDialog
-              open={redactionConfigOpen}
+              //open={redactionConfigOpen}
               onOpenChange={setRedactionConfigOpen}
               documentId={prismaDocument.id}
               documentName={prismaDocument.name}
