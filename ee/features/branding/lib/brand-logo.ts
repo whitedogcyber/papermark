@@ -9,4 +9,9 @@ export const getBrandLogo = () => null;
 export const brandLogo = null;
 export const useBrandLogo = () => ({ logoUrl: null, hasLogo: false });
 
+export type ResolvedBrandLogo = {
+    kind: string,
+    src?: string
+};
+
 export default BrandLogoFallback;

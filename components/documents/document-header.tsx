@@ -74,20 +74,7 @@ import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 // Redaction dialogs are only opened on demand from the 3-dot menu. Dynamic
 // imports keep their (lucide + radix + feature code) off the document-page
 // initial bundle.
-const RedactionJobsDialog = dynamic(
-  () =>
-    import("@/ee/features/redaction/components/redaction-jobs-dialog").then(
-      (mod) => ({ default: mod.RedactionJobsDialog }),
-    ),
-  { ssr: false },
-);
-const RedactionConfigDialog = dynamic(
-  () =>
-    import("@/ee/features/redaction/components/redaction-config-dialog").then(
-      (mod) => ({ default: mod.RedactionConfigDialog }),
-    ),
-  { ssr: false },
-);
+
 import AdvancedSheet from "../shared/icons/advanced-sheet";
 import PortraitLandscape from "../shared/icons/portrait-landscape";
 import LoadingSpinner from "../ui/loading-spinner";
@@ -1287,27 +1274,7 @@ export default function DocumentHeader({
         vectorStoreFileId={primaryVersion.vectorStoreFileId}
       />
 
-      {isRedactionEnabled && primaryVersion.type === "pdf" ? (
-        <>
-          {redactionJobsOpen ? (
-            <RedactionJobsDialog
-              //open={redactionJobsOpen}
-              onOpenChange={setRedactionJobsOpen}
-              documentId={prismaDocument.id}
-              documentName={prismaDocument.name}
-              onStartNew={() => setRedactionConfigOpen(true)}
-            />
-          ) : null}
-          {redactionConfigOpen ? (
-            <RedactionConfigDialog
-              //open={redactionConfigOpen}
-              onOpenChange={setRedactionConfigOpen}
-              documentId={prismaDocument.id}
-              documentName={prismaDocument.name}
-            />
-          ) : null}
-        </>
-      ) : null}
+      
     </header>
   );
 }

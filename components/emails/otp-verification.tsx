@@ -44,10 +44,8 @@ export default function OtpEmailVerification({
         );
       case "none":
         return null;
-      default: {
-        const _exhaustive: never = logo;
-        return _exhaustive;
-      }
+      default:
+        throw Error()
     }
   })();
 
