@@ -63,6 +63,7 @@ RUN node -e "const f='next.config.mjs';let s=require('fs').readFileSync(f,'utf8'
 # Set dummy values for build - real values come from environment at runtime
 ARG BASE_HOST="localhost"
 ARG BASE_URL="http://localhost:3000"
+ARG HANKO_TENANT_ID="dummy"
 ENV NEXT_PUBLIC_BASE_URL=$BASE_URL
 ENV NEXTAUTH_URL=$BASE_URL
 ENV NEXT_PUBLIC_APP_BASE_HOST=$BASE_HOST
@@ -71,7 +72,7 @@ ENV NEXT_PUBLIC_MARKETING_URL=$BASE_URL
 ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 ENV OPENAI_API_KEY=sk-test12345
 ENV HANKO_API_KEY=123dummy
-ENV NEXT_PUBLIC_HANKO_TENANT_ID=dummy
+ENV NEXT_PUBLIC_HANKO_TENANT_ID=$HANKO_TENANT_ID
 ENV SLACK_CLIENT_ID=dummy
 ENV SLACK_CLIENT_SECRET=dummy
 
