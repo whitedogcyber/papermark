@@ -1,13 +1,13 @@
 import { JSXElementConstructor, ReactElement } from "react";
 
 import { render, toPlainText } from "@react-email/render";
-import { Resend } from "resend";
+import { SESv2, SendEmailCommandInput } from "@aws-sdk/client-sesv2";
+//import { Resend } from "resend";
 
 import { log, nanoid } from "@/lib/utils";
+import { getStorageConfig } from "@/ee/features/storage/config";
 
-export const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
+export const resend = null;
 
 export const sendEmail = async ({
   to,
@@ -36,15 +36,20 @@ export const sendEmail = async ({
   scheduledAt?: string;
   unsubscribeUrl?: string;
 }) => {
-  if (!resend) {
-    // Throw an error if resend is not initialized
-    throw new Error("Resend not initialized");
-  }
+  const storageConfig = getStorageConfig();
 
+  const sesClient = new SESv2({
+    region: storageConfig.region,
+    credentials: {
+      accessKeyId: storageConfig.accessKeyId,
+      secretAccessKey: storageConfig.secretAccessKey
+    }
+  });
+  
   const html = await render(react);
   const plainText = toPlainText(html);
 
-  const fromAddress =
+  const old =
     from ??
     (marketing
       ? "Marc from Papermark <marc@ship.papermark.io>"
@@ -57,33 +62,69 @@ export const sendEmail = async ({
             : "Marc from Papermark <marc@papermark.io>");
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: fromAddress,
-      to: test ? "delivered@resend.dev" : to,
-      cc: cc,
-      replyTo: marketing ? "marc@papermark.io" : replyTo,
-      subject,
-      react,
-      scheduledAt,
-      text: plainText,
-      headers: {
-        "X-Entity-Ref-ID": nanoid(),
-        ...(unsubscribeUrl ? { "List-Unsubscribe": unsubscribeUrl } : {}),
-      },
-    });
-
-    // Check if the email sending operation returned an error and throw it
-    if (error) {
-      log({
-        message: `Resend returned error when sending email: ${error.name} \n\n ${error.message}`,
-        type: "error",
-        mention: true,
-      });
-      throw error;
+    if (scheduledAt) {
+      console.warn("Sending Now. Scheduled Emails not supported");
     }
 
-    // If there's no error, return the data
-    return data;
+    const response = await sesClient.sendEmail({
+      FromEmailAddress: "WhiteDog Share <noreply-share@whitedog.cloud>",
+      Destination: {
+        ToAddresses: [
+          to
+        ],
+        CcAddresses: typeof cc === 'string' ? [ cc ] : cc,
+      },
+      Content: {
+        Simple: {
+          Subject: {
+            Charset: 'UTF-8',
+            Data: subject
+          },
+          Body: {
+            Html: {
+              Charset: 'UTF-8',
+              Data: html
+            },
+            Text: {
+              Charset: 'UTF-8',
+              Data: plainText
+            }
+          }
+        }
+      }
+    });
+
+    return {
+      id: response.MessageId
+    }
+
+    // const { data, error } = await resend.emails.send({
+    //   from: fromAddress,
+    //   to: test ? "delivered@resend.dev" : to,
+    //   cc: cc,
+    //   replyTo: marketing ? "marc@papermark.io" : replyTo,
+    //   subject,
+    //   react,
+    //   scheduledAt,
+    //   text: plainText,
+    //   headers: {
+    //     "X-Entity-Ref-ID": nanoid(),
+    //     ...(unsubscribeUrl ? { "List-Unsubscribe": unsubscribeUrl } : {}),
+    //   },
+    // });
+
+    // // Check if the email sending operation returned an error and throw it
+    // if (error) {
+    //   log({
+    //     message: `Resend returned error when sending email: ${error.name} \n\n ${error.message}`,
+    //     type: "error",
+    //     mention: true,
+    //   });
+    //   throw error;
+    // }
+
+    // // If there's no error, return the data
+    // return data;
   } catch (exception) {
     // Log and rethrow any caught exceptions for upstream handling
     log({
