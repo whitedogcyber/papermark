@@ -61,9 +61,9 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   }
 
   // For custom domains, we need to handle them differently
-  if (isCustomDomain(host || "")) {
-    return DomainMiddleware(req);
-  }
+  // if (isCustomDomain(host || "")) {
+  //   return DomainMiddleware(req);
+  // }
 
   // Handle standard papermark.io paths
   if (
