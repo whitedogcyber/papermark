@@ -519,6 +519,30 @@ export const uploadImage = async (
   file: File,
   uploadType: "profile" | "assets" = "assets",
 ) => {
+  // Self-hosted on S3: store the image in our bucket instead of Vercel Blob.
+  if (process.env.NEXT_PUBLIC_UPLOAD_TRANSPORT === "s3") {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    const res = await fetch(`/api/file/image-upload-s3?type=${uploadType}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+        data: btoa(binary),
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Image upload failed (${res.status})`);
+    }
+    const { url } = (await res.json()) as { url: string };
+    return url;
+  }
+
   const newBlob = await upload(file.name, file, {
     access: "public",
     handleUploadUrl: `/api/file/image-upload?type=${uploadType}`,

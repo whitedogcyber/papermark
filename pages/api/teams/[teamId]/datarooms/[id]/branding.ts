@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { del } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 
 import { errorhandler } from "@/lib/errorHandler";
+import { deleteImageAsset } from "@/lib/files/image-assets";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
@@ -126,11 +126,11 @@ export default async function handle(
 
     if (brand && brand.logo) {
       // delete the logo from vercel blob
-      await del(brand.logo);
+      await deleteImageAsset(brand.logo);
     }
     if (brand && brand.banner) {
       // delete the logo from vercel blob
-      await del(brand.banner);
+      await deleteImageAsset(brand.banner);
     }
 
     // delete the branding from database

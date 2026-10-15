@@ -195,6 +195,16 @@ function prepareRemotePatterns() {
     });
   }
 
+  // Self-hosted: images served by this app (/api/file/assets/...)
+  for (const u of [process.env.NEXT_PUBLIC_BASE_URL, process.env.NEXTAUTH_URL]) {
+    try {
+      if (u) {
+        const { protocol, hostname } = new URL(u);
+        patterns.push({ protocol: protocol.replace(":", ""), hostname });
+      }
+    } catch {}
+  }
+
   // US region patterns
   if (process.env.NEXT_PRIVATE_UPLOAD_DISTRIBUTION_HOST_US) {
     patterns.push({

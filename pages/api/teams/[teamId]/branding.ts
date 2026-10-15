@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { del } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 
 import { errorhandler } from "@/lib/errorHandler";
+import { deleteImageAsset } from "@/lib/files/image-assets";
 import prisma from "@/lib/prisma";
 import { redis } from "@/lib/redis";
 import { CustomUser } from "@/lib/types";
@@ -138,11 +138,11 @@ export default async function handle(
     if (brand) {
       // delete the logo from vercel blob
       if (brand.logo) {
-        await del(brand.logo);
+        await deleteImageAsset(brand.logo);
       }
       // delete the banner from vercel blob
       if (brand.banner) {
-        await del(brand.banner);
+        await deleteImageAsset(brand.banner);
       }
     }
 
