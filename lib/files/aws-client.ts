@@ -6,6 +6,8 @@ import {
 import { LambdaClient } from "@aws-sdk/client-lambda";
 import { S3Client } from "@aws-sdk/client-s3";
 
+import { createLocalZipClient, useLocalZip } from "@/lib/files/local-zip";
+
 export const getS3Client = (storageRegion?: string) => {
   const NEXT_PUBLIC_UPLOAD_TRANSPORT = process.env.NEXT_PUBLIC_UPLOAD_TRANSPORT;
 
@@ -53,6 +55,10 @@ export const getLambdaClient = (storageRegion?: string) => {
 
   const config = getStorageConfig(storageRegion);
 
+  if (useLocalZip(config)) {
+    return createLocalZipClient(config) as unknown as LambdaClient;
+  }
+
   return new LambdaClient({
     region: config.region,
     credentials: {
@@ -70,6 +76,10 @@ export const getLambdaClientForTeam = async (teamId: string) => {
   }
 
   const config = await getTeamStorageConfigById(teamId);
+
+  if (useLocalZip(config)) {
+    return createLocalZipClient(config) as unknown as LambdaClient;
+  }
 
   return new LambdaClient({
     region: config.region,
