@@ -20,7 +20,9 @@ export default async function handle(
     const publicAccessToken = await generateTriggerPublicAccessToken(
       `version:${documentVersionId}`,
     );
-    return res.status(200).json({ publicAccessToken });
+    // Tell the browser which Trigger.dev API issued the token (self-hosted).
+    const baseURL = process.env.TRIGGER_API_URL || undefined;
+    return res.status(200).json({ publicAccessToken, baseURL });
   } catch (error) {
     console.error("Error generating token:", error);
     return res.status(500).json({ error: "Failed to generate token" });

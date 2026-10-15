@@ -17,12 +17,16 @@ interface IDocumentProgressStatus {
 export function useDocumentProgressStatus(
   documentVersionId: string,
   publicAccessToken: string | undefined,
+  baseURL?: string,
 ) {
   const { runs, error } = useRealtimeRunsWithTag(
     `version:${documentVersionId}`,
     {
       enabled: !!publicAccessToken,
       accessToken: publicAccessToken,
+      // Self-hosted Trigger.dev: use the same API the token was issued by,
+      // otherwise the hook defaults to https://api.trigger.dev and gets a 401.
+      ...(baseURL ? { baseURL } : {}),
     },
   );
 
