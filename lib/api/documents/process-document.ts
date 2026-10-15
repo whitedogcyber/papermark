@@ -13,7 +13,7 @@ import {
 import { processVideo } from "@/lib/trigger/optimize-video-files";
 import { convertPdfToImageRoute } from "@/lib/trigger/pdf-to-image-route";
 import { getExtension } from "@/lib/utils";
-import { conversionQueue } from "@/lib/utils/trigger-utils";
+import { conversionQueueName } from "@/lib/utils/trigger-utils";
 import { sendDocumentCreatedWebhook } from "@/lib/webhook/triggers/document-created";
 import { sendLinkCreatedWebhook } from "@/lib/webhook/triggers/link-created";
 
@@ -157,7 +157,7 @@ export const processDocument = async ({
           `document_${document.id}`,
           `version:${document.versions[0].id}`,
         ],
-        queue: conversionQueue(teamPlan),
+        queue: conversionQueueName(teamPlan),
         concurrencyKey: teamId,
       },
     );
@@ -175,7 +175,7 @@ export const processDocument = async ({
           `document_${document.id}`,
           `version:${document.versions[0].id}`,
         ],
-        queue: conversionQueue(teamPlan),
+        queue: conversionQueueName(teamPlan),
         concurrencyKey: teamId,
       },
     );
@@ -195,7 +195,7 @@ export const processDocument = async ({
           `document_${document.id}`,
           `version:${document.versions[0].id}`,
         ],
-        queue: conversionQueue(teamPlan),
+        queue: conversionQueueName(teamPlan),
         concurrencyKey: teamId,
       },
     );
@@ -221,7 +221,7 @@ export const processDocument = async ({
           `document_${document.id}`,
           `version:${document.versions[0].id}`,
         ],
-        queue: conversionQueue(teamPlan),
+        queue: conversionQueueName(teamPlan),
         concurrencyKey: teamId,
       },
     );
@@ -242,7 +242,7 @@ export const processDocument = async ({
           `document_${document.id}`,
           `version:${document.versions[0].id}`,
         ],
-        queue: conversionQueue(teamPlan),
+        queue: conversionQueueName(teamPlan),
         concurrencyKey: teamId,
       },
     );

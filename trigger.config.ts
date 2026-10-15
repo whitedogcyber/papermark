@@ -1,6 +1,6 @@
 import { ffmpeg } from "@trigger.dev/build/extensions/core";
 import { prismaExtension } from "@trigger.dev/build/extensions/prisma";
-import { defineConfig, timeout } from "@trigger.dev/sdk/v3";
+import { defineConfig, timeout } from "@trigger.dev/sdk";
 
 export default defineConfig({
   project: "proj_uytxulrjajpkcjuqutul",
@@ -19,7 +19,8 @@ export default defineConfig({
   build: {
     extensions: [
       prismaExtension({
-        schema: "prisma/schema/schema.prisma",
+        mode: "legacy",
+        schema: "./prisma/schema",
       }),
       ffmpeg(),
     ],

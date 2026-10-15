@@ -1,9 +1,12 @@
 "use client";
 
-import { type RunStatus } from "@trigger.dev/core/v3";
 import { useRealtimeRunsWithTag } from "@trigger.dev/react-hooks";
 
 import { parseStatus } from "@/lib/utils/generate-trigger-status";
+
+type RunStatus = ReturnType<
+  typeof useRealtimeRunsWithTag
+>["runs"][number]["status"];
 
 interface IDocumentProgressStatus {
   state: RunStatus;

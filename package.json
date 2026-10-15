@@ -82,7 +82,7 @@
     "@vercel/blob": "^2.0.0",
     "@vercel/edge-config": "^1.4.3",
     "@vercel/functions": "^3.3.4",
-    "ai": "^5.0.0",
+    "ai": "2.2.37",
     "autoprefixer": "^10.4.22",
     "base-x": "^5.0.1",
     "bcryptjs": "^3.0.3",
@@ -178,6 +178,9 @@
   "overrides": {
     "react-notion-x": {
       "react-pdf": "8.0.2"
+    },
+    "@trigger.dev/sdk": {
+      "ai": "$ai"
     }
   }
 }
