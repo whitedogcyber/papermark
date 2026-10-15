@@ -20,7 +20,9 @@ export default defineConfig({
     extensions: [
       prismaExtension({
         mode: "legacy",
-        schema: "./prisma/schema",
+        // Point at the file inside prisma/schema/ so the extension copies the
+        // whole folder and Prisma 6.5 (prismaSchemaFolder) finds every model.
+        schema: "prisma/schema/schema.prisma",
       }),
       ffmpeg(),
     ],
