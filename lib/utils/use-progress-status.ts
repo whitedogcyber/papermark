@@ -27,6 +27,16 @@ export function useDocumentProgressStatus(
       // Self-hosted Trigger.dev: use the same API the token was issued by,
       // otherwise the hook defaults to https://api.trigger.dev and gets a 401.
       ...(baseURL ? { baseURL } : {}),
+      // Tokens expire after 15 minutes. On a 401 the SDK calls this to get a
+      // fresh token instead of failing, so long-open pages keep working.
+      refreshAccessToken: async () => {
+        const res = await fetch(
+          `/api/progress-token?documentVersionId=${encodeURIComponent(documentVersionId)}`,
+        );
+        if (!res.ok) throw new Error("Failed to refresh progress token");
+        const data = (await res.json()) as { publicAccessToken: string };
+        return data.publicAccessToken;
+      },
     },
   );
 
