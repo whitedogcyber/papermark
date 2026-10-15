@@ -3,7 +3,7 @@ import { prismaExtension } from "@trigger.dev/build/extensions/prisma";
 import { defineConfig, timeout } from "@trigger.dev/sdk/v3";
 
 export default defineConfig({
-  project: "proj_plmsfqvqunboixacjjus",
+  project: "proj_uytxulrjajpkcjuqutul",
   dirs: ["./lib/trigger"],
   maxDuration: timeout.None, // no max duration
   retries: {
@@ -25,3 +25,4 @@ export default defineConfig({
     ],
   },
 });
+// npx trigger.dev@latest init -p proj_uytxulrjajpkcjuqutul -a https://trigger.wdsvc.io
