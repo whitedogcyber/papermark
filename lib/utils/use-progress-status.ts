@@ -2,7 +2,7 @@
 
 import { useRealtimeRunsWithTag } from "@trigger.dev/react-hooks";
 
-import { parseStatus } from "@/lib/utils/generate-trigger-status";
+import { parseStatus } from "@/lib/utils/trigger-status";
 
 type RunStatus = ReturnType<
   typeof useRealtimeRunsWithTag

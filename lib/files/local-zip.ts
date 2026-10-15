@@ -56,7 +56,7 @@ interface ZipPayload {
   expirationHours?: number;
 }
 
-export function useLocalZip(config: Pick<StorageConfig, "lambdaFunctionName">) {
+export function shouldUseLocalZip(config: Pick<StorageConfig, "lambdaFunctionName">) {
   return (
     process.env.PAPERMARK_LOCAL_ZIP === "true" || !config.lambdaFunctionName
   );
