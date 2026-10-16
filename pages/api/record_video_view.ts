@@ -7,7 +7,7 @@ import { newId } from "@/lib/id-helper";
 import { recordVideoView } from "@/lib/tinybird";
 import { Geo } from "@/lib/types";
 import { capitalize, getDomainWithoutWWW, log } from "@/lib/utils";
-import { LOCALHOST_GEO_DATA, getGeoData } from "@/lib/utils/geo";
+import { getGeoData, getSelfHostedGeo } from "@/lib/utils/geo";
 import { getIpAddress } from "@/lib/utils/ip";
 import { userAgentFromString } from "@/lib/utils/user-agent";
 
@@ -58,7 +58,9 @@ export default async function handler(
   }
 
   const geo: Geo =
-    process.env.VERCEL === "1" ? getGeoData(req.headers) : LOCALHOST_GEO_DATA;
+    process.env.VERCEL === "1"
+      ? getGeoData(req.headers)
+      : getSelfHostedGeo(req.headers);
   const isEuCountry = geo.country && EU_COUNTRY_CODES.includes(geo.country);
 
   // Get user agent data

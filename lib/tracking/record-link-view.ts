@@ -9,7 +9,8 @@ import sendNotification from "../api/notification-helper";
 import { sendLinkViewWebhook } from "../api/views/send-webhook-event";
 import { EU_COUNTRY_CODES } from "../constants";
 import { capitalize, getDomainWithoutWWW } from "../utils";
-import { LOCALHOST_GEO_DATA, LOCALHOST_IP } from "../utils/geo";
+import { getCloudFrontIp, getSelfHostedGeo } from "../utils/geo";
+import { getIpAddress } from "../utils/ip";
 
 export async function recordLinkView({
   req,
@@ -38,7 +39,11 @@ export async function recordLinkView({
     return null;
   }
 
-  const ip = process.env.VERCEL === "1" ? ipAddress(req) : LOCALHOST_IP;
+  const ip =
+    process.env.VERCEL === "1"
+      ? ipAddress(req)
+      : (getCloudFrontIp(req.headers) ??
+        getIpAddress(Object.fromEntries(req.headers.entries())));
 
   // get continent, region & geolocation data
   // interesting, geolocation().region is Vercel's edge region – NOT the actual region
@@ -49,10 +54,12 @@ export async function recordLinkView({
           continent: req.headers.get("x-vercel-ip-continent"),
           region: geolocation(req).countryRegion,
         }
-      : LOCALHOST_GEO_DATA;
+      : getSelfHostedGeo(req.headers);
 
   const geo =
-    process.env.VERCEL === "1" ? geolocation(req) : LOCALHOST_GEO_DATA;
+    process.env.VERCEL === "1"
+      ? geolocation(req)
+      : getSelfHostedGeo(req.headers);
 
   const isEuCountry = geo.country && EU_COUNTRY_CODES.includes(geo.country);
 
@@ -94,7 +101,7 @@ export async function recordLinkView({
   };
 
   const locationData = {
-    continent,
+    continent: continent ?? null,
     country: geo.country || "Unknown",
     region: region || "Unknown",
     city: geo.city || "Unknown",

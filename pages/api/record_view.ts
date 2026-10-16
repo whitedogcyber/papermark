@@ -6,7 +6,7 @@ import { newId } from "@/lib/id-helper";
 import { publishPageView } from "@/lib/tinybird";
 import { Geo } from "@/lib/types";
 import { capitalize, getDomainWithoutWWW, log } from "@/lib/utils";
-import { LOCALHOST_GEO_DATA, getGeoData } from "@/lib/utils/geo";
+import { getGeoData, getSelfHostedGeo } from "@/lib/utils/geo";
 import { userAgentFromString } from "@/lib/utils/user-agent";
 
 const bodyValidation = z.object({
@@ -51,7 +51,9 @@ export default async function handle(
   }
 
   const geo: Geo =
-    process.env.VERCEL === "1" ? getGeoData(req.headers) : LOCALHOST_GEO_DATA;
+    process.env.VERCEL === "1"
+      ? getGeoData(req.headers)
+      : getSelfHostedGeo(req.headers);
 
   const referer = req.headers.referer;
   const ua = userAgentFromString(req.headers["user-agent"]);

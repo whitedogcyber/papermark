@@ -178,14 +178,24 @@ export default async function handle(
   }
 
   const includeLocation =
+    !!locationData.country &&
+    locationData.country !== "Unknown" &&
     !view.team?.plan?.includes("free") &&
     !view.team?.plan?.includes("starter") &&
     !view.team?.plan?.includes("pro");
 
-  const locationString =
+  const known = (v?: string | null) => (v && v !== "Unknown" ? v : undefined);
+  const locationString = (
     locationData.country === "US"
-      ? `${locationData.city}, ${locationData.region}, ${locationData.country}`
-      : `${locationData.city}, ${locationData.country}`;
+      ? [
+          known(locationData.city),
+          known(locationData.region),
+          locationData.country,
+        ]
+      : [known(locationData.city), locationData.country]
+  )
+    .filter(Boolean)
+    .join(", ");
 
   // POST /api/jobs/send-notification
   try {
