@@ -4,7 +4,7 @@ import { reportDeniedAccessAttempt } from "@/ee/features/access-notifications";
 import { getTeamStorageConfigById } from "@/ee/features/storage/config";
 // Import authOptions directly from the source
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { ipAddress, waitUntil } from "@vercel/functions";
+import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -25,6 +25,7 @@ import { isEmailMatched } from "@/lib/utils/email-domain";
 import { generateOTP } from "@/lib/utils/generate-otp";
 import { LOCALHOST_IP } from "@/lib/utils/geo";
 import { checkGlobalBlockList } from "@/lib/utils/global-block-list";
+import { getClientIp } from "@/lib/utils/ip";
 import { validateEmail } from "@/lib/utils/validate-email";
 
 export async function POST(request: NextRequest) {
@@ -279,7 +280,7 @@ export async function POST(request: NextRequest) {
       // 1) email verification is required and
       // 2) code is not provided or token not provided
       if (link.emailAuthenticated && !code && !token) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
 
         const { success } = await ratelimit(10, "1 m").limit(
           `send-otp:${ipAddressValue}`,
@@ -319,7 +320,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && code) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-otp:${ipAddressValue}`,
         );
@@ -388,7 +389,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && token) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-email:${ipAddressValue}`,
         );
@@ -695,7 +696,7 @@ export async function POST(request: NextRequest) {
             "{{ipAddress}}",
           )
             ? process.env.VERCEL === "1"
-              ? ipAddress(request)
+              ? getClientIp(request)
               : LOCALHOST_IP
             : undefined,
         verificationToken: hashedVerificationToken ?? undefined,

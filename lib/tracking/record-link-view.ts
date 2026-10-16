@@ -1,6 +1,6 @@
 import { NextRequest, userAgent } from "next/server";
 
-import { geolocation, ipAddress } from "@vercel/functions";
+import { geolocation } from "@vercel/functions";
 
 import { recordLinkViewTB } from "@/lib/tinybird";
 import { isBot } from "@/lib/utils/user-agent";
@@ -9,8 +9,8 @@ import sendNotification from "../api/notification-helper";
 import { sendLinkViewWebhook } from "../api/views/send-webhook-event";
 import { EU_COUNTRY_CODES } from "../constants";
 import { capitalize, getDomainWithoutWWW } from "../utils";
-import { getCloudFrontIp, getSelfHostedGeo } from "../utils/geo";
-import { getIpAddress } from "../utils/ip";
+import { getSelfHostedGeo } from "../utils/geo";
+import { getClientIp } from "../utils/ip";
 
 export async function recordLinkView({
   req,
@@ -39,11 +39,7 @@ export async function recordLinkView({
     return null;
   }
 
-  const ip =
-    process.env.VERCEL === "1"
-      ? ipAddress(req)
-      : (getCloudFrontIp(req.headers) ??
-        getIpAddress(Object.fromEntries(req.headers.entries())));
+  const ip = getClientIp(req);
 
   // get continent, region & geolocation data
   // interesting, geolocation().region is Vercel's edge region – NOT the actual region

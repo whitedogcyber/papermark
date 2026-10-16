@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ipAddress, waitUntil } from "@vercel/functions";
+
+import { VerifyEmailRequestSchema } from "@/ee/features/workflows/lib/types";
+import { waitUntil } from "@vercel/functions";
 import { z } from "zod";
+
+import { sendOtpVerificationEmail } from "@/lib/emails/send-email-otp-verification";
 import prisma from "@/lib/prisma";
 import { ratelimit } from "@/lib/redis";
-import { sendOtpVerificationEmail } from "@/lib/emails/send-email-otp-verification";
 import { generateOTP } from "@/lib/utils/generate-otp";
+import { getClientIp } from "@/lib/utils/ip";
 import { validateEmail } from "@/lib/utils/validate-email";
-import { VerifyEmailRequestSchema } from "@/ee/features/workflows/lib/types";
 
 // POST /app/(ee)/api/workflow-entry/[entryLinkId]/verify - Send OTP
 export async function POST(
@@ -77,7 +80,7 @@ export async function POST(
     }
 
     // Rate limiting
-    const ipAddressValue = ipAddress(req);
+    const ipAddressValue = getClientIp(req);
     const { success } = await ratelimit(10, "1 m").limit(
       `workflow-otp:${ipAddressValue}`,
     );
@@ -109,9 +112,7 @@ export async function POST(
     });
 
     // Send OTP email
-    waitUntil(
-      sendOtpVerificationEmail(email, otpCode, false, workflow.teamId),
-    );
+    waitUntil(sendOtpVerificationEmail(email, otpCode, false, workflow.teamId));
 
     return NextResponse.json({
       success: true,
@@ -125,4 +126,3 @@ export async function POST(
     );
   }
 }
-

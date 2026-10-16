@@ -4,7 +4,7 @@ import { reportDeniedAccessAttempt } from "@/ee/features/access-notifications";
 import { getTeamStorageConfigById } from "@/ee/features/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ItemType, LinkAudienceType } from "@prisma/client";
-import { ipAddress, waitUntil } from "@vercel/functions";
+import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
@@ -31,6 +31,7 @@ import { extractEmailDomain, isEmailMatched } from "@/lib/utils/email-domain";
 import { generateOTP } from "@/lib/utils/generate-otp";
 import { LOCALHOST_IP } from "@/lib/utils/geo";
 import { checkGlobalBlockList } from "@/lib/utils/global-block-list";
+import { getClientIp } from "@/lib/utils/ip";
 import { validateEmail } from "@/lib/utils/validate-email";
 
 export async function POST(request: NextRequest) {
@@ -390,7 +391,7 @@ export async function POST(request: NextRequest) {
       // 1) email verification is required and
       // 2) code is not provided or token not provided
       if (link.emailAuthenticated && !code && !token && !dataroomVerified) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
 
         const { success } = await ratelimit(10, "1 m").limit(
           `send-otp:${ipAddressValue}`,
@@ -431,7 +432,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && code && !dataroomVerified) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-otp:${ipAddressValue}`,
         );
@@ -500,7 +501,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (link.emailAuthenticated && token && !dataroomVerified) {
-        const ipAddressValue = ipAddress(request);
+        const ipAddressValue = getClientIp(request);
         const { success } = await ratelimit(10, "1 m").limit(
           `verify-email:${ipAddressValue}`,
         );
@@ -714,7 +715,7 @@ export async function POST(request: NextRequest) {
             dataroomId,
             linkId,
             newDataroomView?.id!,
-            ipAddress(request) ?? LOCALHOST_IP,
+            getClientIp(request) ?? LOCALHOST_IP,
             isEmailVerified,
             viewer?.id,
           );
@@ -1003,7 +1004,7 @@ export async function POST(request: NextRequest) {
           WatermarkConfigSchema.parse(link.watermarkConfig).text.includes(
             "{{ipAddress}}",
           )
-            ? (ipAddress(request) ?? LOCALHOST_IP)
+            ? (getClientIp(request) ?? LOCALHOST_IP)
             : undefined,
         useAdvancedExcelViewer:
           documentVersion &&
@@ -1025,7 +1026,7 @@ export async function POST(request: NextRequest) {
           dataroomId,
           linkId,
           dataroomView?.id!,
-          ipAddress(request) ?? LOCALHOST_IP,
+          getClientIp(request) ?? LOCALHOST_IP,
           isEmailVerified,
           viewer?.id,
         );

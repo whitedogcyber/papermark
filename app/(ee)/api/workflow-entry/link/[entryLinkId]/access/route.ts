@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { WorkflowEngine } from "@/ee/features/workflows/lib/engine";
 import { AccessRequestSchema } from "@/ee/features/workflows/lib/types";
-import { ipAddress } from "@vercel/functions";
 import { z } from "zod";
 
 import { createDataroomSession } from "@/lib/auth/dataroom-auth";
@@ -11,6 +10,7 @@ import { createLinkSession } from "@/lib/auth/link-session";
 import prisma from "@/lib/prisma";
 import { ratelimit } from "@/lib/redis";
 import { LOCALHOST_IP } from "@/lib/utils/geo";
+import { getClientIp } from "@/lib/utils/ip";
 
 // POST /app/(ee)/api/workflow-entry/[entryLinkId]/access - Verify OTP and execute workflow
 export async function POST(
@@ -42,7 +42,7 @@ export async function POST(
     const { email, code } = validation.data;
 
     // Rate limiting
-    const ipAddressValue = ipAddress(req) ?? LOCALHOST_IP;
+    const ipAddressValue = getClientIp(req) ?? LOCALHOST_IP;
     const { success } = await ratelimit(10, "1 m").limit(
       `workflow-verify:${ipAddressValue}`,
     );

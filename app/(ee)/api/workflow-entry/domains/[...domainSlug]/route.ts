@@ -6,7 +6,7 @@ import {
   AccessRequestSchema,
   VerifyEmailRequestSchema,
 } from "@/ee/features/workflows/lib/types";
-import { ipAddress, waitUntil } from "@vercel/functions";
+import { waitUntil } from "@vercel/functions";
 import { z } from "zod";
 
 import { createDataroomSession } from "@/lib/auth/dataroom-auth";
@@ -16,6 +16,7 @@ import prisma from "@/lib/prisma";
 import { ratelimit } from "@/lib/redis";
 import { generateOTP } from "@/lib/utils/generate-otp";
 import { LOCALHOST_IP } from "@/lib/utils/geo";
+import { getClientIp } from "@/lib/utils/ip";
 
 // POST /app/(ee)/api/workflow-entry/domains/[domain]/[slug]/[action]
 // where action is "verify" or "access"
@@ -126,7 +127,7 @@ async function handleVerify(req: NextRequest, link: any) {
   const { email } = validation.data;
 
   // Rate limiting
-  const ipAddressValue = ipAddress(req);
+  const ipAddressValue = getClientIp(req);
   const { success } = await ratelimit(10, "1 m").limit(
     `workflow-otp:${ipAddressValue}`,
   );
@@ -184,7 +185,7 @@ async function handleAccess(req: NextRequest, link: any) {
   const { email, code } = validation.data;
 
   // Rate limiting
-  const ipAddressValue = ipAddress(req) ?? LOCALHOST_IP;
+  const ipAddressValue = getClientIp(req) ?? LOCALHOST_IP;
   const { success } = await ratelimit(10, "1 m").limit(
     `workflow-verify:${ipAddressValue}`,
   );

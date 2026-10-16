@@ -2,7 +2,6 @@ import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { ipAddress } from "@vercel/functions";
 import { parse } from "cookie";
 import crypto from "crypto";
 import { z } from "zod";
@@ -10,7 +9,7 @@ import { z } from "zod";
 import { redis } from "@/lib/redis";
 
 import { LOCALHOST_IP } from "../utils/geo";
-import { getIpAddress } from "../utils/ip";
+import { getClientIp, getIpAddress } from "../utils/ip";
 
 const COOKIE_EXPIRATION_TIME = 23 * 60 * 60 * 1000; // 23 hours
 
@@ -87,7 +86,7 @@ async function verifyDataroomSession(
       return null;
     }
 
-    const ipAddressValue = ipAddress(request) ?? LOCALHOST_IP;
+    const ipAddressValue = getClientIp(request) ?? LOCALHOST_IP;
 
     if (ipAddressValue !== sessionData.ipAddress) {
       await redis.del(`dataroom_session:${sessionToken}`);
