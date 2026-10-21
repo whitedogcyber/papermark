@@ -12,6 +12,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 import { Footer } from "./shared/footer";
 
 const DataRoomsInformationEmail = () => {
@@ -25,14 +27,14 @@ const DataRoomsInformationEmail = () => {
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
               Virtual Data Rooms
             </Text>
             <Text className="text-sm">Unlimited branded data rooms!</Text>
             <Text className="text-sm">
-              With Papermark Data Rooms plan you can:
+              {`With ${EMAIL_BRAND} Data Rooms plan you can:`}
             </Text>
             <ul className="list-inside list-disc text-sm">
               <li>Share data rooms with one link</li>
@@ -45,7 +47,7 @@ const DataRoomsInformationEmail = () => {
               <li>Use advanced link settings</li>
             </ul>
             <Text className="text-sm">
-              All about Papermark{" "}
+              {`All about ${EMAIL_BRAND}`}{" "}
               <a
                 href="https://www.papermark.com/data-room"
                 className="text-blue-500 underline"

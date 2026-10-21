@@ -1,6 +1,7 @@
 import { sendEmail } from "@/lib/resend";
 import { CreateUserEmailProps } from "@/lib/types";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
 import UpgradePlanEmail from "@/components/emails/upgrade-plan";
 
 const PLAN_TYPE_MAP = {
@@ -22,7 +23,7 @@ export const sendUpgradePlanEmail = async (
   try {
     await sendEmail({
       to: email as string,
-      subject: `Thank you for upgrading to Papermark ${planTypeText}!`,
+      subject: `Thank you for upgrading to ${EMAIL_BRAND} ${planTypeText}!`,
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
     });

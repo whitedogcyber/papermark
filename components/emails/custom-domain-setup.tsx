@@ -14,6 +14,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 import { Footer } from "./shared/footer";
 
 export default function CustomDomainSetup({
@@ -45,12 +47,12 @@ export default function CustomDomainSetup({
   return (
     <Html>
       <Head />
-      <Preview>Your Papermark custom domain set up</Preview>
+      <Preview>{`Your ${EMAIL_BRAND} custom domain set up`}</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="mx-0 my-7 p-0 text-center text-xl font-semibold text-black">
               {title}
@@ -84,7 +86,7 @@ export default function CustomDomainSetup({
             <ol className="list-inside list-decimal text-sm">
               <li>Choose your subdomain (e.g. docs.yourcompany.com)</li>
               <li>Add a CNAME record pointing to papermark.com</li>
-              <li>Configure the domain in your Papermark settings</li>
+              <li>{`Configure the domain in your ${EMAIL_BRAND} settings`}</li>
               <li>Start sharing with your branded domain!</li>
             </ol>
 

@@ -12,6 +12,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 import { Footer } from "./shared/footer";
 
 export default function ViewedDataroom({
@@ -35,7 +37,7 @@ export default function ViewedDataroom({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="mx-0 my-7 p-0 text-center text-xl font-semibold text-black">
               New Dataroom Visitor
@@ -56,8 +58,7 @@ export default function ViewedDataroom({
               from the link <span className="font-semibold">{linkName}</span>.
             </Text>
             <Text className="text-sm leading-6 text-black">
-              You can get the detailed engagement analytics like time-spent per
-              document page and total duration for this dataroom on Papermark.
+              {`You can get the detailed engagement analytics like time-spent per document page and total duration for this dataroom on ${EMAIL_BRAND}.`}
             </Text>
             <Section className="my-8 text-center">
               <Button

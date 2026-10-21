@@ -1,5 +1,6 @@
 import { sendEmail } from "@/lib/resend";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
 import SixMonthMilestoneEmail from "@/components/emails/upgrade-six-month-checkin";
 
 import { CreateUserEmailProps } from "../types";
@@ -22,7 +23,7 @@ export const sendSixMonthMilestoneEmail = async (
   try {
     await sendEmail({
       to: email as string,
-      subject: "6 months with Papermark",
+      subject: `6 months with ${EMAIL_BRAND}`,
       from: "Marc Seitz <marc@papermark.com>",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",

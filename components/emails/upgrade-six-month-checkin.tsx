@@ -9,6 +9,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 interface SixMonthMilestoneEmailProps {
   name: string | null | undefined;
   planName?: string;
@@ -21,14 +23,13 @@ const SixMonthMilestoneEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>6 months with Papermark</Preview>
+      <Preview>{`6 months with ${EMAIL_BRAND}`}</Preview>
       <Tailwind>
         <Body className="font-sans text-sm">
           <Text>Hi {name},</Text>
-          <Text>What&apos;s been your biggest win using Papermark?</Text>
+          <Text>{`What's been your biggest win using ${EMAIL_BRAND}?`}</Text>
           <Text>
-            Marc here. It&apos;s been 6 months since you using advanced
-            Papermark features! Excited to hear your story and feedback for us.
+            {`Marc here. It's been 6 months since you using advanced ${EMAIL_BRAND} features! Excited to hear your story and feedback for us.`}
           </Text>
 
           <Text>Marc</Text>

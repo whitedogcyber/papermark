@@ -1,6 +1,6 @@
-import TeamInvitation from "@/components/emails/team-invitation";
-
 import { sendEmail } from "@/lib/resend";
+
+import TeamInvitation from "@/components/emails/team-invitation";
 
 export const sendTeammateInviteEmail = async ({
   senderName,

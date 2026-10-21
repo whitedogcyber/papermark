@@ -9,6 +9,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 interface UpgradePersonalEmailProps {
   name: string | null | undefined;
   planName?: string;
@@ -26,8 +28,8 @@ const UpgradePersonalEmail = ({
         <Body className="font-sans text-sm">
           <Text>Hi{name && ` ${name}`},</Text>
           <Text>
-            I&apos;m Iuliia, co-founder of Papermark. Thanks for upgrading!
-            I&apos;m thrilled to have you on our {planName} plan.
+            {`I'm Iuliia, co-founder of ${EMAIL_BRAND}. Thanks for upgrading! I'm thrilled to have you on our `}
+            {planName} plan.
           </Text>
           <Text>
             You now have access to advanced features. Any questions so far??

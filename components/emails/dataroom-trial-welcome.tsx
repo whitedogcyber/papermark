@@ -2,6 +2,8 @@ import React from "react";
 
 import { Body, Head, Html, Tailwind, Text } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 interface WelcomeEmailProps {
   name: string | null | undefined;
 }
@@ -14,8 +16,7 @@ const DataroomTrialWelcomeEmail = ({ name }: WelcomeEmailProps) => {
         <Body className="font-sans text-sm">
           <Text>Hi{name && ` ${name}`},</Text>
           <Text>
-            I am Marc, founder of Papermark. Thanks for creating a trial. Do you
-            need any help with Data Rooms setup?
+            {`I am Marc, founder of ${EMAIL_BRAND}. Thanks for creating a trial. Do you need any help with Data Rooms setup?`}
           </Text>
           <Text>Marc</Text>
         </Body>

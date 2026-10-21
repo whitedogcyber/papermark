@@ -1,6 +1,6 @@
-import DataroomNotification from "@/components/emails/dataroom-notification";
-
 import { sendEmail } from "@/lib/resend";
+
+import DataroomNotification from "@/components/emails/dataroom-notification";
 
 export const sendDataroomNotification = async ({
   dataroomName,

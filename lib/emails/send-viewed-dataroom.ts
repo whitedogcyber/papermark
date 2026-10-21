@@ -1,6 +1,6 @@
-import ViewedDataroomEmail from "@/components/emails/viewed-dataroom";
-
 import { sendEmail } from "@/lib/resend";
+
+import ViewedDataroomEmail from "@/components/emails/viewed-dataroom";
 
 export const sendViewedDataroomEmail = async ({
   ownerEmail,

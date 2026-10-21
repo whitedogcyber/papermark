@@ -11,6 +11,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 import { Footer } from "./shared/footer";
 
 export default function ExportReady({
@@ -30,13 +32,10 @@ export default function ExportReady({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="text-sm leading-6 text-black">
-              The export you requested is ready to download for your Papermark
-              account. Make sure you&apos;re signed into this account, and click
-              below to download. The file will be available for the next three
-              days.
+              {`The export you requested is ready to download for your ${EMAIL_BRAND} account. Make sure you're signed into this account, and click below to download. The file will be available for the next three days.`}
             </Text>
             <Section className="my-8 text-center">
               <Button
@@ -58,7 +57,7 @@ export default function ExportReady({
             <Text className="text-sm leading-6 text-black">
               Best,
               <br />
-              The Papermark Team
+              {`The ${EMAIL_BRAND} Team`}
             </Text>
             <Footer
               footerText={

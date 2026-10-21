@@ -13,6 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 interface SlackIntegrationEmailProps {
   name: string | null | undefined;
 }
@@ -28,7 +30,7 @@ const SlackIntegrationEmail = ({ name }: SlackIntegrationEmailProps) => {
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
               Connect Slack in 2 clicks
@@ -57,7 +59,7 @@ const SlackIntegrationEmail = ({ name }: SlackIntegrationEmailProps) => {
               If you have any questions or need help setting it up, just respond
               to this email. I&apos;m always happy to help!
             </Text>
-            <Text className="text-sm text-gray-400">Marc from Papermark</Text>
+            <Text className="text-sm text-gray-400">{`Marc from ${EMAIL_BRAND}`}</Text>
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">

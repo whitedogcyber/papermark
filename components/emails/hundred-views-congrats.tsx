@@ -7,6 +7,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 interface HundredViewsCongratsEmailProps {
   name: string | null | undefined;
 }
@@ -21,8 +23,7 @@ const HundredViewsCongratsEmail = ({
         <Body className="font-sans text-sm">
           <Text>Hi{name && ` ${name}`},</Text>
           <Text>
-            I&apos;m Marc, founder of Papermark. Congrats on 100 views on your
-            documents.
+            {`I'm Marc, founder of ${EMAIL_BRAND}. Congrats on 100 views on your documents.`}
           </Text>
           <Text>Would you help others discover us too?</Text>
           <Text>

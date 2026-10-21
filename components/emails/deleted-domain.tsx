@@ -13,6 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
+
 import { Footer } from "./shared/footer";
 
 export default function DomainDeleted({
@@ -28,19 +30,17 @@ export default function DomainDeleted({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">{`${EMAIL_BRAND}`}</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
               Domain Deleted
             </Text>
             <Text className="text-sm leading-6 text-black">
-              Your domain <code className="text-purple-600">{domain}</code> for
-              your Papermark account has been invalid for 30 days. As a result,
-              it has been deleted from Papermark.
+              Your domain <code className="text-purple-600">{domain}</code>
+              {` for your ${EMAIL_BRAND} account has been invalid for 30 days. As a result, it has been deleted from ${EMAIL_BRAND}.`}
             </Text>
             <Text className="text-sm leading-6 text-black">
-              If you would like to restore the domain, you can easily create it
-              again on Papermark with the link below.
+              {`If you would like to restore the domain, you can easily create it again on ${EMAIL_BRAND} with the link below.`}
             </Text>
             <Section className="my-8 text-center">
               <Button
@@ -52,8 +52,7 @@ export default function DomainDeleted({
               </Button>
             </Section>
             <Text className="text-sm leading-6 text-black">
-              If you did not want to keep using this domain on Papermark anyway,
-              you can simply ignore this email.
+              {`If you did not want to keep using this domain on ${EMAIL_BRAND} anyway, you can simply ignore this email.`}
             </Text>
             <Footer />
           </Container>

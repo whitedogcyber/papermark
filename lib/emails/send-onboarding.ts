@@ -5,6 +5,7 @@ import Onboarding1Email from "@/components/emails/onboarding-1";
 import Onboarding2Email from "@/components/emails/onboarding-2";
 import Onboarding3Email from "@/components/emails/onboarding-3";
 import Onboarding4Email from "@/components/emails/onboarding-4";
+import { EMAIL_BRAND } from "@/components/emails/shared/brand";
 
 import { CreateUserEmailProps } from "../types";
 
@@ -27,7 +28,7 @@ export const sendOnboardingEmail = async (
   switch (emailType) {
     case "onboarding1":
       emailTemplate = Onboarding1Email();
-      subject = "Day 1 with Papermark - Turn your documents into links";
+      subject = `Day 1 with ${EMAIL_BRAND} - Turn your documents into links`;
       break;
     case "onboarding2":
       emailTemplate = Onboarding2Email();
@@ -47,7 +48,7 @@ export const sendOnboardingEmail = async (
       break;
     default:
       emailTemplate = Onboarding1Email();
-      subject = "Day 1 with Papermark - Turn your documents into links";
+      subject = `Day 1 with ${EMAIL_BRAND} - Turn your documents into links`;
       break;
   }
 

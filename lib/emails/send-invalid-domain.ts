@@ -1,6 +1,6 @@
-import InvalidDomainEmail from "@/components/emails/invalid-domain";
-
 import { sendEmail } from "@/lib/resend";
+
+import InvalidDomainEmail from "@/components/emails/invalid-domain";
 
 export const sendInvalidDomainEmail = async (
   email: string,
