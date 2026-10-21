@@ -12,6 +12,7 @@ import { ExtendedRecordMap } from "notion-types";
 import { parsePageId } from "notion-utils";
 import z from "zod";
 
+import { BRAND_TITLE_SUFFIX } from "@/lib/branding";
 import { getFeatureFlags } from "@/lib/featureFlags";
 import notion from "@/lib/notion";
 import {
@@ -369,7 +370,7 @@ export default function ViewPage({
         <CustomMetaTag
           favicon={meta.metaFavicon}
           enableBranding={false}
-          title="Access Workflow | Powered by Papermark"
+          title={`Access Workflow | ${BRAND_TITLE_SUFFIX}`}
           description={null}
           imageUrl={null}
           url={meta.metaUrl ?? ""}
@@ -395,7 +396,8 @@ export default function ViewPage({
             favicon={meta.metaFavicon}
             enableBranding={meta.enableCustomMetatag ?? false}
             title={
-              meta.metaTitle ?? `${link?.document?.name} | Powered by Papermark`
+              meta.metaTitle ??
+              `${link?.document?.name} | ${BRAND_TITLE_SUFFIX}`
             }
             description={meta.metaDescription ?? null}
             imageUrl={meta.metaImage ?? null}
@@ -438,7 +440,7 @@ export default function ViewPage({
           favicon={meta.metaFavicon}
           enableBranding={meta.enableCustomMetatag ?? false}
           title={
-            meta.metaTitle ?? `${link?.document?.name} | Powered by Papermark`
+            meta.metaTitle ?? `${link?.document?.name} | ${BRAND_TITLE_SUFFIX}`
           }
           description={meta.metaDescription ?? null}
           imageUrl={meta.metaImage ?? null}
@@ -475,7 +477,8 @@ export default function ViewPage({
             favicon={meta.metaFavicon}
             enableBranding={meta.enableCustomMetatag ?? false}
             title={
-              meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Papermark`
+              meta.metaTitle ??
+              `${link?.dataroom?.name} | ${BRAND_TITLE_SUFFIX}`
             }
             description={meta.metaDescription ?? null}
             imageUrl={meta.metaImage ?? null}
@@ -519,7 +522,7 @@ export default function ViewPage({
           favicon={meta.metaFavicon}
           enableBranding={meta.enableCustomMetatag ?? false}
           title={
-            meta.metaTitle ?? `${link?.dataroom?.name} | Powered by Papermark`
+            meta.metaTitle ?? `${link?.dataroom?.name} | ${BRAND_TITLE_SUFFIX}`
           }
           description={meta.metaDescription ?? null}
           imageUrl={meta.metaImage ?? null}
