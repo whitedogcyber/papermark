@@ -72,7 +72,9 @@ export default async function handler(
     const featureFlags = await getFeatureFlags({ teamId });
     const hasDataroomsPlusPlan =
       dataroom.team.plan === "datarooms-plus" ||
-      dataroom.team.plan === "datarooms-plus+old";
+      dataroom.team.plan === "datarooms-plus+old" ||
+      dataroom.team.plan.startsWith("datarooms-premium") ||
+      dataroom.team.plan.startsWith("datarooms-unlimited");
 
     if (!featureFlags.dataroomIndex && !hasDataroomsPlusPlan) {
       return res.status(403).json({
