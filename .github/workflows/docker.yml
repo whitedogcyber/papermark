@@ -210,3 +210,28 @@ jobs:
             --notes-file notes.md \
             --generate-notes \
             --verify-tag
+
+  deploy:
+    if: github.ref_type == 'tag'
+    needs: [prepare, merge, release]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Restart deployment via Lambda
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-2
+          LAMBDA_URL: ${{ vars.RESTART_LAMBDA_URL }}
+          NAMESPACE: papermark
+          DEPLOYMENT: papermark
+        run: |
+          payload=$(jq -n --arg ns "$NAMESPACE" --arg d "$DEPLOYMENT" \
+            '{namespace: $ns, deployment: $d}')
+
+          curl --fail-with-body --silent --show-error \
+            --aws-sigv4 "aws:amz:${AWS_REGION}:lambda" \
+            --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" \
+            -H "content-type: application/json" \
+            -d "$payload" \
+            "$LAMBDA_URL"
+
