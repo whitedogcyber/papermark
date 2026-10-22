@@ -244,31 +244,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <p className="hidden w-full justify-center text-2xl font-bold tracking-tighter text-black group-data-[collapsible=icon]:inline-flex dark:text-white">
           <Link href="/dashboard">{BRAND_NAME.charAt(0)}</Link>
         </p>
-        <p className="ml-2 flex items-center text-2xl font-bold tracking-tighter text-black group-data-[collapsible=icon]:hidden dark:text-white">
-          <Link href="/dashboard" className="whitespace-nowrap">
+        {/* Brand name, with the plan badges on their own line underneath */}
+        <div className="ml-2 flex flex-col items-start gap-2 group-data-[collapsible=icon]:hidden">
+          <Link
+            href="/dashboard"
+            className="whitespace-nowrap text-2xl font-bold tracking-tighter text-black dark:text-white"
+          >
             {BRAND_NAME}
           </Link>
-          {userPlan && !isFree && !isDataroomsPlus && !isDataroomsPremium ? (
-            <span className="ml-4 rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-              {userPlan.charAt(0).toUpperCase() + userPlan.slice(1)}
-            </span>
+          {(userPlan && !isFree) || isTrial ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {userPlan &&
+              !isFree &&
+              !isDataroomsPlus &&
+              !isDataroomsPremium ? (
+                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
+                  {userPlan.charAt(0).toUpperCase() + userPlan.slice(1)}
+                </span>
+              ) : null}
+              {isDataroomsPlus ? (
+                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
+                  Datarooms+
+                </span>
+              ) : null}
+              {isDataroomsPremium ? (
+                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
+                  Premium
+                </span>
+              ) : null}
+              {isTrial ? (
+                <span className="rounded-sm bg-foreground px-2 py-0.5 text-xs tracking-normal text-background ring-1 ring-gray-800">
+                  Trial
+                </span>
+              ) : null}
+            </div>
           ) : null}
-          {isDataroomsPlus ? (
-            <span className="ml-4 rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-              Datarooms+
-            </span>
-          ) : null}
-          {isDataroomsPremium ? (
-            <span className="ml-4 rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-              Premium
-            </span>
-          ) : null}
-          {isTrial ? (
-            <span className="ml-2 rounded-sm bg-foreground px-2 py-0.5 text-xs tracking-normal text-background ring-1 ring-gray-800">
-              Trial
-            </span>
-          ) : null}
-        </p>
+        </div>
         {isLoading ? (
           <div className="flex items-center gap-2 text-sm">
             <Loader className="h-5 w-5 animate-spin" /> Loading teams...
