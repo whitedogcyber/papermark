@@ -19,15 +19,14 @@
  *                                      for signing download links, when the
  *                                      app reaches S3 on an internal address
  */
-import { randomUUID } from "node:crypto";
-import { once } from "node:events";
-import { PassThrough, type Readable } from "node:stream";
-import zlib from "node:zlib";
-
 import type { StorageConfig } from "@/ee/features/storage/config";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { randomUUID } from "node:crypto";
+import { once } from "node:events";
+import { PassThrough, type Readable } from "node:stream";
+import zlib from "node:zlib";
 
 const MAX_PRESIGN_SECONDS = 7 * 24 * 60 * 60;
 const ZIP32_LIMIT = 0xffffffff;
@@ -56,13 +55,19 @@ interface ZipPayload {
   expirationHours?: number;
 }
 
-export function shouldUseLocalZip(config: Pick<StorageConfig, "lambdaFunctionName">) {
+export function shouldUseLocalZip(
+  config: Pick<StorageConfig, "lambdaFunctionName">,
+) {
   return (
     process.env.PAPERMARK_LOCAL_ZIP === "true" || !config.lambdaFunctionName
   );
 }
 
-function s3ClientFor(config: StorageConfig, endpoint?: string, region?: string) {
+function s3ClientFor(
+  config: StorageConfig,
+  endpoint?: string,
+  region?: string,
+) {
   const ep = endpoint || config.endpoint || undefined;
   return new S3Client({
     endpoint: ep,
@@ -118,9 +123,17 @@ async function buildZip(config: StorageConfig, p: ZipPayload): Promise<string> {
   const wanted = new Set(p.fileKeys);
   const entries: { key: string; name: string }[] = [];
   const used = new Set<string>();
+  // Every folder becomes a directory entry, so empty folders are kept.
+  const directories = new Set<string>();
 
   for (const [path, folder] of Object.entries(p.folderStructure)) {
     const dir = displayPath(path, p.folderStructure);
+    if (dir) {
+      const parts = dir.split("/");
+      for (let i = 1; i <= parts.length; i++) {
+        directories.add(parts.slice(0, i).join("/"));
+      }
+    }
     for (const file of folder.files ?? []) {
       if (!file.key || !wanted.has(file.key)) continue;
       if (p.watermarkConfig?.enabled && file.needsWatermark) {
@@ -129,11 +142,16 @@ async function buildZip(config: StorageConfig, p: ZipPayload): Promise<string> {
         );
       }
       const fileName = withExtension(clean(file.name) || "file", file.key);
-      entries.push({ key: file.key, name: unique(dir ? `${dir}/${fileName}` : fileName, used) });
+      entries.push({
+        key: file.key,
+        name: unique(dir ? `${dir}/${fileName}` : fileName, used),
+      });
     }
   }
 
-  if (entries.length === 0) throw new Error("Local zip: no files to archive");
+  if (entries.length === 0 && directories.size === 0) {
+    throw new Error("There are no files or folders to download.");
+  }
 
   const s3 = s3ClientFor(config);
   const bucket =
@@ -166,6 +184,9 @@ async function buildZip(config: StorageConfig, p: ZipPayload): Promise<string> {
 
   try {
     const zip = new ZipWriter(out);
+    for (const dir of [...directories].sort()) {
+      await zip.addDirectory(dir);
+    }
     for (const entry of entries) {
       const obj = await s3.send(
         new GetObjectCommand({ Bucket: p.sourceBucket, Key: entry.key }),
@@ -256,9 +277,11 @@ const CRC_TABLE = (() => {
   return t;
 })();
 
-const nativeCrc32 = (zlib as unknown as {
-  crc32?: (data: Uint8Array, value?: number) => number;
-}).crc32;
+const nativeCrc32 = (
+  zlib as unknown as {
+    crc32?: (data: Uint8Array, value?: number) => number;
+  }
+).crc32;
 
 function crc32(data: Uint8Array, prev: number): number {
   if (nativeCrc32) return nativeCrc32(data, prev);
@@ -271,7 +294,9 @@ function crc32(data: Uint8Array, prev: number): number {
 
 function dosDateTime(d = new Date()) {
   const time =
-    (d.getHours() << 11) | (d.getMinutes() << 5) | Math.floor(d.getSeconds() / 2);
+    (d.getHours() << 11) |
+    (d.getMinutes() << 5) |
+    Math.floor(d.getSeconds() / 2);
   const date =
     ((Math.max(d.getFullYear(), 1980) - 1980) << 9) |
     ((d.getMonth() + 1) << 5) |
@@ -300,6 +325,38 @@ export class ZipWriter {
       );
     }
     if (!this.out.write(buf)) await once(this.out as never, "drain");
+  }
+
+  /** Add an (empty) directory entry, e.g. "Folder/Sub". */
+  async addDirectory(name: string) {
+    const nameBuf = Buffer.from(name.replace(/\/+$/, "") + "/", "utf8");
+    const headerOffset = this.offset;
+    const flags = 0x0800; // UTF-8 names
+
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034b50, 0);
+    local.writeUInt16LE(20, 4);
+    local.writeUInt16LE(flags, 6);
+    local.writeUInt16LE(0, 8);
+    local.writeUInt16LE(this.stamp.time, 10);
+    local.writeUInt16LE(this.stamp.date, 12);
+    local.writeUInt16LE(nameBuf.length, 26);
+    await this.write(local);
+    await this.write(nameBuf);
+
+    const cd = Buffer.alloc(46);
+    cd.writeUInt32LE(0x02014b50, 0);
+    cd.writeUInt16LE(0x031e, 4);
+    cd.writeUInt16LE(20, 6);
+    cd.writeUInt16LE(flags, 8);
+    cd.writeUInt16LE(0, 10);
+    cd.writeUInt16LE(this.stamp.time, 12);
+    cd.writeUInt16LE(this.stamp.date, 14);
+    cd.writeUInt16LE(nameBuf.length, 28);
+    cd.writeUInt32LE(((0o40755 << 16) | 0x10) >>> 0, 38); // drwxr-xr-x + DOS dir
+    cd.writeUInt32LE(headerOffset, 42);
+    this.central.push(cd, nameBuf);
+    this.count++;
   }
 
   async addFile(name: string, body: AsyncIterable<Uint8Array>) {
