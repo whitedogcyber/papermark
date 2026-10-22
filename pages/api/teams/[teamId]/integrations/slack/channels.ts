@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 
 import { getSlackClient } from "@/lib/integrations/slack/client";
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { getSlackEnv } from "@/lib/integrations/slack/env";
 import { SlackCredential } from "@/lib/integrations/slack/types";
 import prisma from "@/lib/prisma";
@@ -14,6 +15,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (!SLACK_ENABLED) {
+    return res.status(404).json({ error: "Slack integration is disabled" });
+  }
+
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return res.status(401).json({ error: "Unauthorized" });

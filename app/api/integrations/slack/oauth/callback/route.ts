@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import z from "zod";
 
 import { installIntegration } from "@/lib/integrations/install";
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { getSlackEnv } from "@/lib/integrations/slack/env";
 import { SlackCredential } from "@/lib/integrations/slack/types";
 import { encryptSlackToken } from "@/lib/integrations/slack/utils";
@@ -23,6 +24,9 @@ const oAuthCallbackSchema = z.object({
 });
 
 export const GET = async (req: Request) => {
+  if (!SLACK_ENABLED) {
+    return new Response("Not found", { status: 404 });
+  }
   const env = getSlackEnv();
 
   let team: Pick<Team, "id" | "plan"> | null = null;

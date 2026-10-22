@@ -22,6 +22,7 @@ import {
 
 import { BRAND_NAME } from "@/lib/branding";
 import { useFeatureFlags } from "@/lib/hooks/use-feature-flags";
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { usePlan } from "@/lib/swr/use-billing";
 import useDatarooms from "@/lib/swr/use-datarooms";
 import useLimits from "@/lib/swr/use-limits";
@@ -72,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Check Slack integration status
   const { integration: slackIntegration } = useSlackIntegration({
-    enabled: !!currentTeam?.id,
+    enabled: SLACK_ENABLED && !!currentTeam?.id,
   });
 
   // Check feature flags
@@ -202,11 +203,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: "/settings/webhooks",
             current: router.pathname.includes("settings/webhooks"),
           },
-          {
-            title: "Slack",
-            url: "/settings/slack",
-            current: router.pathname.includes("settings/slack"),
-          },
+          ...(SLACK_ENABLED
+            ? [
+                {
+                  title: "Slack",
+                  url: "/settings/slack",
+                  current: router.pathname.includes("settings/slack"),
+                },
+              ]
+            : []),
           {
             title: "Billing",
             url: "/settings/billing",
@@ -286,7 +291,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {/*
                * Show Slack banner to all users if they haven't dismissed it and don't have Slack connected
                */}
-              {!slackIntegration && showSlackBanner ? (
+              {SLACK_ENABLED && !slackIntegration && showSlackBanner ? (
                 <SlackBanner setShowSlackBanner={setShowSlackBanner} />
               ) : null}
               {/*

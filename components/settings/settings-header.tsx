@@ -1,6 +1,7 @@
 import { useTeam } from "@/context/team-context";
 import useSWR from "swr";
 
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { fetcher } from "@/lib/utils";
 
 import { NavMenu } from "../navigation-menu";
@@ -67,11 +68,15 @@ export function SettingsHeader() {
             href: `/settings/webhooks`,
             segment: "webhooks",
           },
-          {
-            label: "Slack",
-            href: `/settings/slack`,
-            segment: "slack",
-          },
+          ...(SLACK_ENABLED
+            ? [
+                {
+                  label: "Slack",
+                  href: `/settings/slack`,
+                  segment: "slack",
+                },
+              ]
+            : []),
           {
             label: "Tokens",
             href: `/settings/tokens`,

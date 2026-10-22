@@ -3,10 +3,12 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
+import NotFound from "@/pages/404";
 import { CircleHelpIcon, Hash, Settings, XCircleIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAnalytics } from "@/lib/analytics";
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import {
   SlackChannelConfig,
   SlackIntegration,
@@ -34,7 +36,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { BadgeTooltip } from "@/components/ui/tooltip";
 
-export default function SlackSettings() {
+function SlackSettingsPage() {
   const router = useRouter();
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
@@ -544,4 +546,9 @@ export default function SlackSettings() {
       </main>
     </AppLayout>
   );
+}
+
+export default function SlackSettings() {
+  if (!SLACK_ENABLED) return <NotFound />;
+  return <SlackSettingsPage />;
 }

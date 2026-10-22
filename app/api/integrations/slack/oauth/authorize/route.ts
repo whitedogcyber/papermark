@@ -4,6 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 
+import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { getSlackInstallationUrl } from "@/lib/integrations/slack/install";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
@@ -14,6 +15,9 @@ const oAuthAuthorizeSchema = z.object({
 });
 
 export async function GET(req: Request) {
+  if (!SLACK_ENABLED) {
+    return new Response("Not found", { status: 404 });
+  }
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
