@@ -29,6 +29,8 @@ fi
 # Swap the build placeholders for this environment's URL and host.
 URL_PLACEHOLDER="https://wd-runtime-base-url.invalid"
 HOST_PLACEHOLDER="wd-runtime-base-host.invalid"
+# Bare form of the URL placeholder (e.g. next.config image hostnames).
+URL_HOST_PLACEHOLDER="wd-runtime-base-url.invalid"
 APP_URL="${NEXT_PUBLIC_BASE_URL:-$NEXTAUTH_URL}"
 APP_URL="${APP_URL%/}"
 if [ -z "$APP_URL" ]; then
@@ -37,15 +39,17 @@ if [ -z "$APP_URL" ]; then
 fi
 APP_HOST="${NEXT_PUBLIC_APP_BASE_HOST:-${APP_URL#*://}}"
 APP_HOST="${APP_HOST%%/*}"
+URL_HOST="${APP_URL#*://}"; URL_HOST="${URL_HOST%%/*}"; URL_HOST="${URL_HOST%%:*}"
 escape() { printf '%s' "$1" | sed -e 's/[|&\\]/\\&/g'; }
-files=$(grep -rlF -e "$URL_PLACEHOLDER" -e "$HOST_PLACEHOLDER" /app/server.js /app/.next 2>/dev/null || true)
+files=$(grep -rlF -e "$URL_HOST_PLACEHOLDER" -e "$HOST_PLACEHOLDER" /app/server.js /app/.next 2>/dev/null || true)
 if [ -n "$files" ]; then
     echo "Setting app URL to $APP_URL ($APP_HOST)"
     printf '%s\n' "$files" | xargs sed -i \
         -e "s|$URL_PLACEHOLDER|$(escape "$APP_URL")|g" \
-        -e "s|$HOST_PLACEHOLDER|$(escape "$APP_HOST")|g"
+        -e "s|$HOST_PLACEHOLDER|$(escape "$APP_HOST")|g" \
+        -e "s|$URL_HOST_PLACEHOLDER|$(escape "$URL_HOST")|g"
 fi
-if grep -rqlF -e "$URL_PLACEHOLDER" -e "$HOST_PLACEHOLDER" /app/server.js /app/.next 2>/dev/null; then
+if grep -rqlF -e "$URL_HOST_PLACEHOLDER" -e "$HOST_PLACEHOLDER" /app/server.js /app/.next 2>/dev/null; then
     echo "ERROR: could not replace the URL placeholders (read-only filesystem?)"
     exit 1
 fi
