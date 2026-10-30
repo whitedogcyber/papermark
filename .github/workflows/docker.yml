@@ -212,7 +212,8 @@ jobs:
             --verify-tag
 
   deploy:
-    needs: [prepare, merge, release]
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
+    needs: [prepare, merge]
     runs-on: ubuntu-24.04
     environment: ${{ github.ref_type == 'tag' && 'Prod' || github.ref == 'refs/heads/main' && 'Stage' || 'Dev' }}
     steps:
