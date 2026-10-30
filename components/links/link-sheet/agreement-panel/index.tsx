@@ -22,6 +22,7 @@ import DocumentUpload from "@/components/document-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -32,7 +33,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import LinkItem from "../link-item";
 
@@ -52,7 +52,13 @@ export default function AgreementSheet({
   isOnlyView = false,
   onClose,
 }: {
-  defaultData?: { name: string; link: string; requireName: boolean; contentType?: string; textContent?: string } | null;
+  defaultData?: {
+    name: string;
+    link: string;
+    requireName: boolean;
+    contentType?: string;
+    textContent?: string;
+  } | null;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isOnlyView?: boolean;
@@ -60,12 +66,12 @@ export default function AgreementSheet({
 }) {
   const teamInfo = useTeam();
   const teamId = teamInfo?.currentTeam?.id;
-  const [data, setData] = useState({ 
-    name: "", 
-    link: "", 
+  const [data, setData] = useState({
+    name: "",
+    link: "",
     textContent: "",
     contentType: "LINK",
-    requireName: true 
+    requireName: true,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
@@ -88,12 +94,12 @@ export default function AgreementSheet({
 
   const handleClose = (open: boolean) => {
     setIsOpen(open);
-    setData({ 
-      name: "", 
-      link: "", 
+    setData({
+      name: "",
+      link: "",
       textContent: "",
       contentType: "LINK",
-      requireName: true 
+      requireName: true,
     });
     setCurrentFile(null);
     setIsLoading(false);
@@ -157,7 +163,7 @@ export default function AgreementSheet({
         const linkId = document.links[0].id;
         setData((prevData) => ({
           ...prevData,
-          link: "https://www.papermark.com/view/" + linkId,
+          link: `${process.env.NEXT_PUBLIC_MARKETING_URL}/view/` + linkId,
         }));
       }
     } catch (error) {
@@ -250,12 +256,12 @@ export default function AgreementSheet({
     } finally {
       setIsLoading(false);
       setIsOpen(false);
-      setData({ 
-        name: "", 
-        link: "", 
+      setData({
+        name: "",
+        link: "",
         textContent: "",
         contentType: "LINK",
-        requireName: true 
+        requireName: true,
       });
     }
   };
@@ -320,15 +326,19 @@ export default function AgreementSheet({
                 {/* Content Type Selection */}
                 <div className="w-full space-y-2">
                   <Label>Agreement Content Type</Label>
-                  <RadioGroup 
-                    value={data.contentType} 
-                    onValueChange={(value) => setData({...data, contentType: value})}
+                  <RadioGroup
+                    value={data.contentType}
+                    onValueChange={(value) =>
+                      setData({ ...data, contentType: value })
+                    }
                     disabled={isOnlyView}
                     className="flex flex-col space-y-2"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="LINK" id="link-type" />
-                      <Label htmlFor="link-type">Link to agreement document</Label>
+                      <Label htmlFor="link-type">
+                        Link to agreement document
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="TEXT" id="text-type" />
@@ -353,7 +363,7 @@ export default function AgreementSheet({
                       required={data.contentType === "LINK"}
                       autoComplete="off"
                       data-1p-ignore
-                      placeholder="https://www.papermark.com/nda"
+                      placeholder="https://example.com/nda"
                       value={data.link || ""}
                       onChange={(e) => {
                         const newValue = e.target.value;
@@ -411,9 +421,12 @@ export default function AgreementSheet({
                     />
                     <div className="flex justify-between text-xs">
                       <p className="text-muted-foreground">
-                        This text will be displayed to users as a compliance agreement before they can access the content.
+                        This text will be displayed to users as a compliance
+                        agreement before they can access the content.
                       </p>
-                      <p className={`${data.textContent.length > 1400 ? 'text-orange-500' : 'text-muted-foreground'} ${data.textContent.length >= 1500 ? 'text-red-500 font-semibold' : ''}`}>
+                      <p
+                        className={`${data.textContent.length > 1400 ? "text-orange-500" : "text-muted-foreground"} ${data.textContent.length >= 1500 ? "font-semibold text-red-500" : ""}`}
+                      >
                         {data.textContent.length}/1500
                       </p>
                     </div>
@@ -434,7 +447,9 @@ export default function AgreementSheet({
                     type="submit"
                     loading={isLoading}
                     disabled={
-                      (data.contentType === "LINK" && !isUrlValid && data.link.trim() !== "") ||
+                      (data.contentType === "LINK" &&
+                        !isUrlValid &&
+                        data.link.trim() !== "") ||
                       (data.contentType === "TEXT" && !data.textContent.trim())
                     }
                   >

@@ -21,24 +21,26 @@ export const runtime = "nodejs";
 
 const data = {
   description: "Confirm email change",
-  title: "Confirm email change | Papermark",
+  title: "Confirm email change | WhiteDog Share",
   url: "/auth/confirm-email-change",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.papermark.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
   title: data.title,
   description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Papermark",
+    siteName: "WhiteDog Share",
     images: [
       {
-        url: "/_static/meta-image.png",
-        width: 800,
-        height: 600,
+        url: "/_static/brand/og-image.png",
+        width: 1200,
+        height: 630,
       },
     ],
     locale: "en_US",
@@ -48,8 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: data.title,
     description: data.description,
-    creator: "@papermarkio",
-    images: ["/_static/meta-image.png"],
+    images: ["/_static/brand/og-image.png"],
   },
 };
 

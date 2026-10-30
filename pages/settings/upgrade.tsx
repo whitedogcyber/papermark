@@ -127,7 +127,6 @@ const PlanTypeSelector = ({
   );
 };
 
-
 export default function UpgradePage() {
   const router = useRouter();
   const [period, setPeriod] = useState<"yearly" | "monthly">("yearly");
@@ -142,7 +141,9 @@ export default function UpgradePage() {
     if (router.query.view === "business-datarooms") return "business-datarooms";
     return "datarooms";
   };
-  const [planType, setPlanType] = useState<"documents" | "datarooms" | "business-datarooms">(getInitialView());
+  const [planType, setPlanType] = useState<
+    "documents" | "datarooms" | "business-datarooms"
+  >(getInitialView());
 
   // Update planType when query param changes
   useEffect(() => {
@@ -183,172 +184,16 @@ export default function UpgradePage() {
 
       {/* Plan Type Selector */}
       <div className="mb-8 flex justify-center">
-        <PlanTypeSelector 
-          value={planType} 
-          onChange={(value) => setPlanType(value)} 
+        <PlanTypeSelector
+          value={planType}
+          onChange={(value) => setPlanType(value)}
         />
       </div>
 
       {/* Document Sharing Plans (3 in a row) */}
       {planType === "documents" && (
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-2 md:grid-cols-3">
           {documentSharingPlans.map((planOption) => {
-          const planFeatures = getPlanFeatures(planOption, { period });
-
-          return (
-            <div
-              key={planOption}
-              className={`relative flex flex-col rounded-lg border ${
-                planOption === PlanEnum.Business
-                  ? "border-[#fb7a00]"
-                  : planOption === PlanEnum.DataRoomsPremium
-                    ? "border-gray-900 dark:border-gray-200"
-                    : planOption === PlanEnum.DataRoomsPlus
-                      ? "border-gray-800 dark:border-gray-300"
-                      : "border-gray-400"
-              } bg-white p-6 shadow-sm dark:bg-gray-900`}
-            >
-              <div className="mb-4 border-b border-gray-200 pb-2">
-                <h3 className="text-balance text-xl font-medium text-foreground text-gray-900 dark:text-white">
-                  {planOption}
-                </h3>
-                {(planOption === PlanEnum.Business ||
-                  planOption === PlanEnum.DataRoomsPlus) && (
-                  <span
-                    className={`absolute -top-3 right-4 rounded px-2 py-1 text-xs text-white ${
-                      planOption === PlanEnum.DataRoomsPlus
-                        ? "bg-gray-800 dark:bg-gray-200 dark:text-black"
-                        : "bg-[#fb7a00]"
-                    }`}
-                  >
-                    {planOption === PlanEnum.DataRoomsPlus
-                      ? "Best offer"
-                      : "Most popular"}
-                  </span>
-                )}
-              </div>
-
-              <div className="mb-2 text-balance text-4xl font-medium tabular-nums text-foreground">
-                €
-                {PLANS.find((p) => p.name === planOption)!.price[period].amount}
-                <span className="text-base font-normal dark:text-white/75">
-                  /month
-                </span>
-              </div>
-              <p className="mt-4 text-sm text-gray-600 dark:text-white">
-                {planFeatures.featureIntro}
-              </p>
-
-              <ul
-                role="list"
-                className="mb-4 mt-4 space-y-3 text-sm leading-6 text-gray-600"
-              >
-                {planFeatures.features.map((feature, i) => (
-                  <li key={i}>
-                    <FeatureItem feature={feature} period={period} />
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-auto">
-                <Button
-                  variant={
-                    planOption === PlanEnum.Business ? "default" : "default"
-                  }
-                  className={`w-full py-2 text-sm ${
-                    planOption === PlanEnum.Business
-                      ? "bg-[#fb7a00]/90 text-white hover:bg-[#fb7a00]"
-                      : planOption === PlanEnum.DataRoomsPremium
-                        ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-                        : "bg-gray-800 text-white hover:bg-gray-900 dark:hover:bg-gray-700/80"
-                  }`}
-                  loading={selectedPlan === planOption}
-                  disabled={selectedPlan !== null}
-                  onClick={() => {
-                    setSelectedPlan(planOption);
-                    if (isCustomer && teamPlan !== "free") {
-                      fetch(
-                        `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
-                        {
-                          method: "POST",
-                        },
-                      )
-                        .then(async (res) => {
-                          if (res.status === 429) {
-                            toast.error(
-                              "Rate limit exceeded. Please try again later.",
-                            );
-                            setSelectedPlan(null);
-                            return;
-                          }
-
-                          const url = await res.json();
-                          router.push(url);
-                        })
-                        .catch((err) => {
-                          alert(err);
-                          setSelectedPlan(null);
-                        });
-                    } else {
-                      fetch(
-                        `/api/teams/${
-                          teamInfo?.currentTeam?.id
-                        }/billing/upgrade?priceId=${
-                          PLANS.find((p) => p.name === planOption)!.price[
-                            period
-                          ].priceIds[
-                            process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
-                              ? "production"
-                              : "test"
-                          ][isOldAccount ? "old" : "new"]
-                        }`,
-                        {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                        },
-                      )
-                        .then(async (res) => {
-                          if (res.status === 429) {
-                            toast.error(
-                              "Rate limit exceeded. Please try again later.",
-                            );
-                            setSelectedPlan(null);
-                            return;
-                          }
-
-                          const data = await res.json();
-                          const { id: sessionId } = data;
-                          const stripe = await getStripe(isOldAccount);
-                          stripe?.redirectToCheckout({ sessionId });
-                        })
-                        .catch((err) => {
-                          alert(err);
-                          setSelectedPlan(null);
-                        });
-                    }
-                  }}
-                >
-                  {selectedPlan === planOption
-                    ? "Redirecting to Stripe..."
-                    : `Upgrade to ${planOption} ${capitalize(period)}`}
-                </Button>
-              </div>
-            </div>
-          );
-          })}
-        </div>
-      )}
-
-      {/* Business + Data Rooms Plans (4 in a row) */}
-      {planType === "business-datarooms" && (
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
-          {[
-            PlanEnum.Business,
-            PlanEnum.DataRooms,
-            PlanEnum.DataRoomsPlus,
-            PlanEnum.DataRoomsPremium,
-          ].map((planOption) => {
             const planFeatures = getPlanFeatures(planOption, { period });
 
             return (
@@ -386,8 +231,10 @@ export default function UpgradePage() {
 
                 <div className="mb-2 text-balance text-4xl font-medium tabular-nums text-foreground">
                   €
-                  {PLANS.find((p) => p.name === planOption)!.price[period]
-                    .amount}
+                  {
+                    PLANS.find((p) => p.name === planOption)!.price[period]
+                      .amount
+                  }
                   <span className="text-base font-normal dark:text-white/75">
                     /month
                   </span>
@@ -454,7 +301,167 @@ export default function UpgradePage() {
                               period
                             ].priceIds[
                               process.env.NEXT_PUBLIC_VERCEL_ENV ===
-                                "production"
+                              "production"
+                                ? "production"
+                                : "test"
+                            ][isOldAccount ? "old" : "new"]
+                          }`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                          },
+                        )
+                          .then(async (res) => {
+                            if (res.status === 429) {
+                              toast.error(
+                                "Rate limit exceeded. Please try again later.",
+                              );
+                              setSelectedPlan(null);
+                              return;
+                            }
+
+                            const data = await res.json();
+                            const { id: sessionId } = data;
+                            const stripe = await getStripe(isOldAccount);
+                            stripe?.redirectToCheckout({ sessionId });
+                          })
+                          .catch((err) => {
+                            alert(err);
+                            setSelectedPlan(null);
+                          });
+                      }
+                    }}
+                  >
+                    {selectedPlan === planOption
+                      ? "Redirecting to Stripe..."
+                      : `Upgrade to ${planOption} ${capitalize(period)}`}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Business + Data Rooms Plans (4 in a row) */}
+      {planType === "business-datarooms" && (
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
+          {[
+            PlanEnum.Business,
+            PlanEnum.DataRooms,
+            PlanEnum.DataRoomsPlus,
+            PlanEnum.DataRoomsPremium,
+          ].map((planOption) => {
+            const planFeatures = getPlanFeatures(planOption, { period });
+
+            return (
+              <div
+                key={planOption}
+                className={`relative flex flex-col rounded-lg border ${
+                  planOption === PlanEnum.Business
+                    ? "border-[#fb7a00]"
+                    : planOption === PlanEnum.DataRoomsPremium
+                      ? "border-gray-900 dark:border-gray-200"
+                      : planOption === PlanEnum.DataRoomsPlus
+                        ? "border-gray-800 dark:border-gray-300"
+                        : "border-gray-400"
+                } bg-white p-6 shadow-sm dark:bg-gray-900`}
+              >
+                <div className="mb-4 border-b border-gray-200 pb-2">
+                  <h3 className="text-balance text-xl font-medium text-foreground text-gray-900 dark:text-white">
+                    {planOption}
+                  </h3>
+                  {(planOption === PlanEnum.Business ||
+                    planOption === PlanEnum.DataRoomsPlus) && (
+                    <span
+                      className={`absolute -top-3 right-4 rounded px-2 py-1 text-xs text-white ${
+                        planOption === PlanEnum.DataRoomsPlus
+                          ? "bg-gray-800 dark:bg-gray-200 dark:text-black"
+                          : "bg-[#fb7a00]"
+                      }`}
+                    >
+                      {planOption === PlanEnum.DataRoomsPlus
+                        ? "Best offer"
+                        : "Most popular"}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mb-2 text-balance text-4xl font-medium tabular-nums text-foreground">
+                  €
+                  {
+                    PLANS.find((p) => p.name === planOption)!.price[period]
+                      .amount
+                  }
+                  <span className="text-base font-normal dark:text-white/75">
+                    /month
+                  </span>
+                </div>
+                <p className="mt-4 text-sm text-gray-600 dark:text-white">
+                  {planFeatures.featureIntro}
+                </p>
+
+                <ul
+                  role="list"
+                  className="mb-4 mt-4 space-y-3 text-sm leading-6 text-gray-600"
+                >
+                  {planFeatures.features.map((feature, i) => (
+                    <li key={i}>
+                      <FeatureItem feature={feature} period={period} />
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto">
+                  <Button
+                    variant={
+                      planOption === PlanEnum.Business ? "default" : "default"
+                    }
+                    className={`w-full py-2 text-sm ${
+                      planOption === PlanEnum.Business
+                        ? "bg-[#fb7a00]/90 text-white hover:bg-[#fb7a00]"
+                        : planOption === PlanEnum.DataRoomsPremium
+                          ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                          : "bg-gray-800 text-white hover:bg-gray-900 dark:hover:bg-gray-700/80"
+                    }`}
+                    loading={selectedPlan === planOption}
+                    disabled={selectedPlan !== null}
+                    onClick={() => {
+                      setSelectedPlan(planOption);
+                      if (isCustomer && teamPlan !== "free") {
+                        fetch(
+                          `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
+                          {
+                            method: "POST",
+                          },
+                        )
+                          .then(async (res) => {
+                            if (res.status === 429) {
+                              toast.error(
+                                "Rate limit exceeded. Please try again later.",
+                              );
+                              setSelectedPlan(null);
+                              return;
+                            }
+
+                            const url = await res.json();
+                            router.push(url);
+                          })
+                          .catch((err) => {
+                            alert(err);
+                            setSelectedPlan(null);
+                          });
+                      } else {
+                        fetch(
+                          `/api/teams/${
+                            teamInfo?.currentTeam?.id
+                          }/billing/upgrade?priceId=${
+                            PLANS.find((p) => p.name === planOption)!.price[
+                              period
+                            ].priceIds[
+                              process.env.NEXT_PUBLIC_VERCEL_ENV ===
+                              "production"
                                 ? "production"
                                 : "test"
                             ][isOldAccount ? "old" : "new"]
@@ -508,150 +515,152 @@ export default function UpgradePage() {
           ].map((planOption) => {
             const planFeatures = getPlanFeatures(planOption, { period });
 
-              return (
-                <div
-                  key={planOption}
-                  className={`relative flex flex-col rounded-lg border ${
-                    planOption === PlanEnum.Business
-                      ? "border-[#fb7a00]"
-                      : planOption === PlanEnum.DataRoomsPremium
-                        ? "border-gray-900 dark:border-gray-200"
-                        : planOption === PlanEnum.DataRoomsPlus
-                          ? "border-gray-800 dark:border-gray-300"
-                          : "border-gray-400"
-                  } bg-white p-6 shadow-sm dark:bg-gray-900`}
-                >
-                  <div className="mb-4 border-b border-gray-200 pb-2">
-                    <h3 className="text-balance text-xl font-medium text-foreground text-gray-900 dark:text-white">
-                      {planOption}
-                    </h3>
-                    {(planOption === PlanEnum.Business ||
-                      planOption === PlanEnum.DataRoomsPlus) && (
-                      <span
-                        className={`absolute -top-3 right-4 rounded px-2 py-1 text-xs text-white ${
-                          planOption === PlanEnum.DataRoomsPlus
-                            ? "bg-gray-800 dark:bg-gray-200 dark:text-black"
-                            : "bg-[#fb7a00]"
-                        }`}
-                      >
-                        {planOption === PlanEnum.DataRoomsPlus
-                          ? "Best offer"
-                          : "Most popular"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-2 text-balance text-4xl font-medium tabular-nums text-foreground">
-                    €
-                    {PLANS.find((p) => p.name === planOption)!.price[period]
-                      .amount}
-                    <span className="text-base font-normal dark:text-white/75">
-                      /month
-                    </span>
-                  </div>
-                  <p className="mt-4 text-sm text-gray-600 dark:text-white">
-                    {planFeatures.featureIntro}
-                  </p>
-
-                  <ul
-                    role="list"
-                    className="mb-4 mt-4 space-y-3 text-sm leading-6 text-gray-600"
-                  >
-                    {planFeatures.features.map((feature, i) => (
-                      <li key={i}>
-                        <FeatureItem feature={feature} period={period} />
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto">
-                    <Button
-                      variant={
-                        planOption === PlanEnum.Business ? "default" : "default"
-                      }
-                      className={`w-full py-2 text-sm ${
-                        planOption === PlanEnum.Business
-                          ? "bg-[#fb7a00]/90 text-white hover:bg-[#fb7a00]"
-                          : planOption === PlanEnum.DataRoomsPremium
-                            ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-                            : "bg-gray-800 text-white hover:bg-gray-900 dark:hover:bg-gray-700/80"
+            return (
+              <div
+                key={planOption}
+                className={`relative flex flex-col rounded-lg border ${
+                  planOption === PlanEnum.Business
+                    ? "border-[#fb7a00]"
+                    : planOption === PlanEnum.DataRoomsPremium
+                      ? "border-gray-900 dark:border-gray-200"
+                      : planOption === PlanEnum.DataRoomsPlus
+                        ? "border-gray-800 dark:border-gray-300"
+                        : "border-gray-400"
+                } bg-white p-6 shadow-sm dark:bg-gray-900`}
+              >
+                <div className="mb-4 border-b border-gray-200 pb-2">
+                  <h3 className="text-balance text-xl font-medium text-foreground text-gray-900 dark:text-white">
+                    {planOption}
+                  </h3>
+                  {(planOption === PlanEnum.Business ||
+                    planOption === PlanEnum.DataRoomsPlus) && (
+                    <span
+                      className={`absolute -top-3 right-4 rounded px-2 py-1 text-xs text-white ${
+                        planOption === PlanEnum.DataRoomsPlus
+                          ? "bg-gray-800 dark:bg-gray-200 dark:text-black"
+                          : "bg-[#fb7a00]"
                       }`}
-                      loading={selectedPlan === planOption}
-                      disabled={selectedPlan !== null}
-                      onClick={() => {
-                        setSelectedPlan(planOption);
-                        if (isCustomer && teamPlan !== "free") {
-                          fetch(
-                            `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
-                            {
-                              method: "POST",
-                            },
-                          )
-                            .then(async (res) => {
-                              if (res.status === 429) {
-                                toast.error(
-                                  "Rate limit exceeded. Please try again later.",
-                                );
-                                setSelectedPlan(null);
-                                return;
-                              }
-
-                              const url = await res.json();
-                              router.push(url);
-                            })
-                            .catch((err) => {
-                              alert(err);
-                              setSelectedPlan(null);
-                            });
-                        } else {
-                          fetch(
-                            `/api/teams/${
-                              teamInfo?.currentTeam?.id
-                            }/billing/upgrade?priceId=${
-                              PLANS.find((p) => p.name === planOption)!.price[
-                                period
-                              ].priceIds[
-                                process.env.NEXT_PUBLIC_VERCEL_ENV ===
-                                  "production"
-                                  ? "production"
-                                  : "test"
-                              ][isOldAccount ? "old" : "new"]
-                            }`,
-                            {
-                              method: "POST",
-                              headers: {
-                                "Content-Type": "application/json",
-                              },
-                            },
-                          )
-                            .then(async (res) => {
-                              if (res.status === 429) {
-                                toast.error(
-                                  "Rate limit exceeded. Please try again later.",
-                                );
-                                setSelectedPlan(null);
-                                return;
-                              }
-
-                              const data = await res.json();
-                              const { id: sessionId } = data;
-                              const stripe = await getStripe(isOldAccount);
-                              stripe?.redirectToCheckout({ sessionId });
-                            })
-                            .catch((err) => {
-                              alert(err);
-                              setSelectedPlan(null);
-                            });
-                        }
-                      }}
                     >
-                      {selectedPlan === planOption
-                        ? "Redirecting to Stripe..."
-                        : `Upgrade to ${planOption} ${capitalize(period)}`}
-                    </Button>
-                  </div>
+                      {planOption === PlanEnum.DataRoomsPlus
+                        ? "Best offer"
+                        : "Most popular"}
+                    </span>
+                  )}
                 </div>
-              );
-            })}
+
+                <div className="mb-2 text-balance text-4xl font-medium tabular-nums text-foreground">
+                  €
+                  {
+                    PLANS.find((p) => p.name === planOption)!.price[period]
+                      .amount
+                  }
+                  <span className="text-base font-normal dark:text-white/75">
+                    /month
+                  </span>
+                </div>
+                <p className="mt-4 text-sm text-gray-600 dark:text-white">
+                  {planFeatures.featureIntro}
+                </p>
+
+                <ul
+                  role="list"
+                  className="mb-4 mt-4 space-y-3 text-sm leading-6 text-gray-600"
+                >
+                  {planFeatures.features.map((feature, i) => (
+                    <li key={i}>
+                      <FeatureItem feature={feature} period={period} />
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto">
+                  <Button
+                    variant={
+                      planOption === PlanEnum.Business ? "default" : "default"
+                    }
+                    className={`w-full py-2 text-sm ${
+                      planOption === PlanEnum.Business
+                        ? "bg-[#fb7a00]/90 text-white hover:bg-[#fb7a00]"
+                        : planOption === PlanEnum.DataRoomsPremium
+                          ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                          : "bg-gray-800 text-white hover:bg-gray-900 dark:hover:bg-gray-700/80"
+                    }`}
+                    loading={selectedPlan === planOption}
+                    disabled={selectedPlan !== null}
+                    onClick={() => {
+                      setSelectedPlan(planOption);
+                      if (isCustomer && teamPlan !== "free") {
+                        fetch(
+                          `/api/teams/${teamInfo?.currentTeam?.id}/billing/manage`,
+                          {
+                            method: "POST",
+                          },
+                        )
+                          .then(async (res) => {
+                            if (res.status === 429) {
+                              toast.error(
+                                "Rate limit exceeded. Please try again later.",
+                              );
+                              setSelectedPlan(null);
+                              return;
+                            }
+
+                            const url = await res.json();
+                            router.push(url);
+                          })
+                          .catch((err) => {
+                            alert(err);
+                            setSelectedPlan(null);
+                          });
+                      } else {
+                        fetch(
+                          `/api/teams/${
+                            teamInfo?.currentTeam?.id
+                          }/billing/upgrade?priceId=${
+                            PLANS.find((p) => p.name === planOption)!.price[
+                              period
+                            ].priceIds[
+                              process.env.NEXT_PUBLIC_VERCEL_ENV ===
+                              "production"
+                                ? "production"
+                                : "test"
+                            ][isOldAccount ? "old" : "new"]
+                          }`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                          },
+                        )
+                          .then(async (res) => {
+                            if (res.status === 429) {
+                              toast.error(
+                                "Rate limit exceeded. Please try again later.",
+                              );
+                              setSelectedPlan(null);
+                              return;
+                            }
+
+                            const data = await res.json();
+                            const { id: sessionId } = data;
+                            const stripe = await getStripe(isOldAccount);
+                            stripe?.redirectToCheckout({ sessionId });
+                          })
+                          .catch((err) => {
+                            alert(err);
+                            setSelectedPlan(null);
+                          });
+                      }
+                    }}
+                  >
+                    {selectedPlan === planOption
+                      ? "Redirecting to Stripe..."
+                      : `Upgrade to ${planOption} ${capitalize(period)}`}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -662,13 +671,6 @@ export default function UpgradePage() {
         >
           All plans include unlimited viewers and page by page document
           analytics.
-        </a>
-        <a
-          href="https://cal.com/marcseitz/papermark"
-          target="_blank"
-          className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-        >
-          Looking for Papermark Enterprise?
         </a>
       </div>
     </div>

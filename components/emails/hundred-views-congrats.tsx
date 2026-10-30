@@ -28,7 +28,7 @@ const HundredViewsCongratsEmail = ({
           <Text>Would you help others discover us too?</Text>
           <Text>
             <Link
-              href="https://www.g2.com/products/papermark/reviews"
+              href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
               target="_blank"
               className="text-blue-500 underline"
             >

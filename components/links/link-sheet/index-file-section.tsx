@@ -37,7 +37,6 @@ export default function IndexFileSection({
       <LinkItem
         title="Enable index file generation"
         enabled={enabled}
-        link="https://www.papermark.com/help/article/link-settings"
         action={handleEnableIndexFile}
         isAllowed={isAllowed}
         requiredPlan="data rooms plus"

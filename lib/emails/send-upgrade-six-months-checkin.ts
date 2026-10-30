@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import { EMAIL_BRAND } from "@/components/emails/shared/brand";
@@ -8,6 +9,7 @@ import { CreateUserEmailProps } from "../types";
 export const sendSixMonthMilestoneEmail = async (
   params: CreateUserEmailProps & { planName?: string },
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
   const { planName = "Pro" } = params;
 
@@ -24,7 +26,6 @@ export const sendSixMonthMilestoneEmail = async (
     await sendEmail({
       to: email as string,
       subject: `6 months with ${EMAIL_BRAND}`,
-      from: "Marc Seitz <marc@papermark.com>",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
       scheduledAt: sixAndHalfMonthsFromNow,

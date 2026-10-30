@@ -49,7 +49,7 @@ const DataRoomsInformationEmail = () => {
             <Text className="text-sm">
               {`All about ${EMAIL_BRAND}`}{" "}
               <a
-                href="https://www.papermark.com/data-room"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                 className="text-blue-500 underline"
               >
                 Data Rooms
@@ -59,7 +59,7 @@ const DataRoomsInformationEmail = () => {
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/datarooms?utm_source=dataroom-info&utm_medium=email&utm_campaign=20240723&utm_content=upload_documents`}
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/datarooms?utm_source=dataroom-info&utm_medium=email&utm_campaign=20240723&utm_content=upload_documents`}
                 style={{ padding: "12px 20px" }}
               >
                 Create new data room
@@ -68,7 +68,7 @@ const DataRoomsInformationEmail = () => {
             <Text className="text-sm">
               If you require a fully customizable experience,{" "}
               <a
-                href="https://cal.com/marcseitz/papermark"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                 className="text-blue-500 underline"
               >
                 book a call

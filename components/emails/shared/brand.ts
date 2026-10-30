@@ -1,22 +1,17 @@
 /**
  * Branding used in all outgoing emails (templates and subject lines).
+ * Defaults are WhiteDog's; override at runtime if needed:
  *
- *   EMAIL_BRAND_NAME       replaces "Papermark"            e.g. "WhiteDog Share"
- *   EMAIL_COMPANY_NAME     replaces "Papermark, Inc."      e.g. "WhiteDog, Inc."
- *   EMAIL_COMPANY_ADDRESS  footer address (blank to hide)
- *
- * With nothing set, emails are unchanged from upstream.
+ *   EMAIL_BRAND_NAME       e.g. "WhiteDog Share"
+ *   EMAIL_COMPANY_NAME     e.g. "WhiteDog Cyber"
+ *   EMAIL_COMPANY_ADDRESS  footer address (set to "" to hide)
  */
-const brandOverride = process.env.EMAIL_BRAND_NAME?.trim();
+export const EMAIL_BRAND =
+  process.env.EMAIL_BRAND_NAME?.trim() || "WhiteDog Share";
 
-export const EMAIL_BRAND = brandOverride || "Papermark";
+const companyName = process.env.EMAIL_COMPANY_NAME?.trim() || "WhiteDog Cyber";
 
-const companyName =
-  process.env.EMAIL_COMPANY_NAME?.trim() ||
-  (brandOverride ? brandOverride : "Papermark, Inc.");
-
-// Used as "© 2026 {EMAIL_COMPANY} All rights reserved." so it must end
-// with a period ("Papermark, Inc." already does; "WhiteDog Cyber" does not).
+// Used as "© 2026 {EMAIL_COMPANY} All rights reserved." so it ends with a period.
 export const EMAIL_COMPANY = companyName.endsWith(".")
   ? companyName
   : `${companyName}.`;
@@ -24,9 +19,6 @@ export const EMAIL_COMPANY = companyName.endsWith(".")
 export const EMAIL_COMPANY_ADDRESS =
   process.env.EMAIL_COMPANY_ADDRESS !== undefined
     ? process.env.EMAIL_COMPANY_ADDRESS.trim()
-    : brandOverride
-      ? ""
-      : "1111B S Governors Ave #28117, Dover, DE 19904";
+    : "590 Laurelwood Road, Santa Clara, CA, 95054";
 
-// When an address is configured explicitly, show it in every footer.
-export const EMAIL_SHOW_ADDRESS = !!process.env.EMAIL_COMPANY_ADDRESS?.trim();
+export const EMAIL_SHOW_ADDRESS = !!EMAIL_COMPANY_ADDRESS;

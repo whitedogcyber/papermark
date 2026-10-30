@@ -253,7 +253,7 @@ export default function PapermarkYearInReviewEmail({
                 Share your stats
               </Link>
               <Link
-                href="https://app.papermark.com/documents"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/documents`}
                 className="mt-4 block items-center text-center text-sm font-bold text-gray-900 no-underline"
               >
                 Go to your dashboard
@@ -265,11 +265,11 @@ export default function PapermarkYearInReviewEmail({
               <Text className="text-xs">
                 © {new Date().getFullYear()}{" "}
                 <a
-                  href="https://www.papermark.com"
+                  href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                   className="text-gray-400 no-underline"
                   target="_blank"
                 >
-                  papermark.com
+                  {process.env.NEXT_PUBLIC_APP_BASE_HOST}
                 </a>
               </Text>
               <Text className="text-xs">

@@ -7,6 +7,7 @@ import { PlanEnum } from "@/ee/stripe/constants";
 import { Domain, LinkType } from "@prisma/client";
 import { mutate } from "swr";
 
+import { BRAND_HOST } from "@/lib/branding";
 import { BLOCKED_PATHNAMES } from "@/lib/constants";
 import { BasePlan, usePlan } from "@/lib/swr/use-billing";
 import useLimits from "@/lib/swr/use-limits";
@@ -173,7 +174,7 @@ export default function DomainSection({
           </SelectTrigger>
           <SelectContent className="flex w-full rounded-md border border-input bg-white text-foreground placeholder-muted-foreground focus:border-muted-foreground focus:outline-none focus:ring-inset focus:ring-muted-foreground dark:border-gray-500 dark:bg-gray-800 focus:dark:bg-transparent sm:text-sm">
             <SelectItem value="papermark.com" className="hover:bg-muted">
-              papermark.com
+              {BRAND_HOST}
             </SelectItem>
             {linkType === "DOCUMENT_LINK" && (
               <>

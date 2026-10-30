@@ -18,7 +18,9 @@ const data = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BRAND_URL || "https://www.papermark.com"),
+  metadataBase: new URL(
+    BRAND_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
   title: data.title,
   description: data.description,
   openGraph: {
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
     siteName: BRAND_NAME,
     images: [
       {
-        url: BRAND_IMAGE_URL || "/_static/meta-image.png",
+        url: BRAND_IMAGE_URL || "/_static/brand/og-image.png",
         width: IS_CUSTOM_BRAND ? 1200 : 800,
         height: IS_CUSTOM_BRAND ? 630 : 600,
       },
@@ -40,8 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: data.title,
     description: data.description,
-    ...(IS_CUSTOM_BRAND ? {} : { creator: "@papermarkio" }),
-    images: [BRAND_IMAGE_URL || "/_static/meta-image.png"],
+    images: [BRAND_IMAGE_URL || "/_static/brand/og-image.png"],
   },
 };
 

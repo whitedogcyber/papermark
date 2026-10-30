@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { FormEvent, useEffect, useState } from "react";
@@ -589,15 +588,8 @@ export function AddDocumentModal({
                         After you upload the document, create a shareable link.{" "}
                         {isFree && !isTrial ? (
                           <>
-                            Upload larger files and more{" "}
-                            <Link
-                              href="https://www.papermark.com/help/article/document-types"
-                              target="_blank"
-                              className="underline underline-offset-4 transition-all hover:text-muted-foreground/80 hover:dark:text-muted-foreground/80"
-                            >
-                              file types
-                            </Link>{" "}
-                            with a higher plan.
+                            Upload larger files and more file types with a
+                            higher plan.
                           </>
                         ) : null}
                       </span>

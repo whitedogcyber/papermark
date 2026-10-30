@@ -5,6 +5,11 @@ import { useState } from "react";
 import { PlanEnum } from "@/ee/stripe/constants";
 import { CircleHelpIcon, InfoIcon, UsersIcon } from "lucide-react";
 
+import { usePlan } from "@/lib/swr/use-billing";
+import { useDataroom } from "@/lib/swr/use-dataroom";
+import useDataroomGroups from "@/lib/swr/use-dataroom-groups";
+import { cn } from "@/lib/utils";
+
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
@@ -15,11 +20,6 @@ import AppLayout from "@/components/layouts/app";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BadgeTooltip } from "@/components/ui/tooltip";
-
-import { usePlan } from "@/lib/swr/use-billing";
-import { useDataroom } from "@/lib/swr/use-dataroom";
-import useDataroomGroups from "@/lib/swr/use-dataroom-groups";
-import { cn } from "@/lib/utils";
 
 export default function DataroomGroupPage() {
   const { isDatarooms, isDataroomsPlus, isTrial } = usePlan();
@@ -84,7 +84,6 @@ export default function DataroomGroupPage() {
                       linkText="Learn more"
                       content="Manage Access with Granular Permissions for Data Room Groups"
                       key="groups"
-                      link="https://www.papermark.com/help/article/granular-permissions"
                     >
                       <CircleHelpIcon className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground" />
                     </BadgeTooltip>

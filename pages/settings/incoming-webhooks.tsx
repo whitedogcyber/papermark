@@ -8,6 +8,8 @@ import { CircleHelpIcon, CopyIcon, Loader } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 
+import { copyToClipboard, fetcher } from "@/lib/utils";
+
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@/components/ui/button";
@@ -22,8 +24,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { BadgeTooltip } from "@/components/ui/tooltip";
-
-import { copyToClipboard, fetcher } from "@/lib/utils";
 
 interface Webhook {
   id: string;
@@ -126,7 +126,7 @@ export default function WebhookSettings() {
             </CardTitle>
             <CardDescription>
               Create incoming webhooks to receive data from external services
-              and automatically create new documents in Papermark.
+              and automatically create new documents in WhiteDog Share.
             </CardDescription>
           </CardHeader>
           <Separator className="mb-6" />

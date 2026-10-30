@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 
 import { motion } from "motion/react";
 
+import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
+
 import Eye from "@/components/shared/icons/eye";
 import EyeOff from "@/components/shared/icons/eye-off";
 import { Input } from "@/components/ui/input";
-
-import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 
 import { DEFAULT_LINK_TYPE } from ".";
 import LinkItem from "./link-item";
@@ -41,7 +41,6 @@ export default function PasswordSection({
         enabled={enabled}
         action={handleEnablePassword}
         tooltipContent="Users must enter a password to access the content."
-        link="https://www.papermark.com/password-protection"
       />
 
       {enabled && (

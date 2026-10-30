@@ -85,7 +85,7 @@ export default function CustomDomainSetup({
             </Text>
             <ol className="list-inside list-decimal text-sm">
               <li>Choose your subdomain (e.g. docs.yourcompany.com)</li>
-              <li>Add a CNAME record pointing to papermark.com</li>
+              <li>{`Add a CNAME record pointing to ${process.env.NEXT_PUBLIC_APP_BASE_HOST}`}</li>
               <li>{`Configure the domain in your ${EMAIL_BRAND} settings`}</li>
               <li>Start sharing with your branded domain!</li>
             </ol>
@@ -94,7 +94,7 @@ export default function CustomDomainSetup({
               {hasAccess ? (
                 <Button
                   className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                  href={`https://app.papermark.com/settings/domains`}
+                  href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/domains`}
                   style={{ padding: "12px 20px" }}
                 >
                   Set up your custom domain
@@ -102,7 +102,7 @@ export default function CustomDomainSetup({
               ) : (
                 <Button
                   className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                  href={`https://app.papermark.com/settings/upgrade`}
+                  href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/upgrade`}
                   style={{ padding: "12px 20px" }}
                 >
                   Upgrade to use custom domains
@@ -112,21 +112,12 @@ export default function CustomDomainSetup({
 
             <Text className="text-sm leading-6 text-black">
               {hasAccess ? (
-                <>
-                  Need help? Check out our{" "}
-                  <Link
-                    href="https://docs.papermark.com/custom-domains"
-                    className="font-medium text-blue-600 no-underline"
-                  >
-                    custom domain documentation
-                  </Link>{" "}
-                  or reply to this email - we&apos;re here to help!
-                </>
+                <>Need help? Reply to this email.</>
               ) : (
                 <>
                   Want to learn more about our plans?{" "}
                   <Link
-                    href="https://app.papermark.com/settings/upgrade"
+                    href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/upgrade`}
                     className="font-medium text-blue-600 no-underline"
                   >
                     View pricing

@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import { EMAIL_BRAND } from "@/components/emails/shared/brand";
@@ -15,6 +16,7 @@ const PLAN_TYPE_MAP = {
 export const sendUpgradePersonalEmail = async (
   params: CreateUserEmailProps & { planSlug?: string },
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
   const { planSlug = "pro" } = params;
 
@@ -29,7 +31,6 @@ export const sendUpgradePersonalEmail = async (
   try {
     await sendEmail({
       to: email as string,
-      from: "Iuliia Shnai <iuliia@papermark.com>",
       subject: `Your ${EMAIL_BRAND} account is ready`,
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",

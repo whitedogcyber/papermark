@@ -1,11 +1,12 @@
 import { JSXElementConstructor, ReactElement } from "react";
 
-import { render, toPlainText } from "@react-email/render";
+import { getStorageConfig } from "@/ee/features/storage/config";
 import { SESv2, SendEmailCommandInput } from "@aws-sdk/client-sesv2";
+import { render, toPlainText } from "@react-email/render";
+
 //import { Resend } from "resend";
 
 import { log, nanoid } from "@/lib/utils";
-import { getStorageConfig } from "@/ee/features/storage/config";
 
 export const resend = null;
 
@@ -42,24 +43,18 @@ export const sendEmail = async ({
     region: storageConfig.region,
     credentials: {
       accessKeyId: storageConfig.accessKeyId,
-      secretAccessKey: storageConfig.secretAccessKey
-    }
+      secretAccessKey: storageConfig.secretAccessKey,
+    },
   });
-  
+
   const html = await render(react);
   const plainText = toPlainText(html);
 
-  const old =
-    from ??
-    (marketing
-      ? "Marc from Papermark <marc@ship.papermark.io>"
-      : system
-        ? "Papermark <system@papermark.io>"
-        : verify
-          ? "Papermark <system@verify.papermark.io>"
-          : !!scheduledAt
-            ? "Marc Seitz <marc@papermark.io>"
-            : "Marc from Papermark <marc@papermark.io>");
+  // Every email goes out from one verified SES sender; per-email "from"
+  // values from upstream are ignored.
+  const fromAddress =
+    process.env.EMAIL_FROM?.trim() ||
+    "WhiteDog Share <noreply-share@whitedog.cloud>";
 
   try {
     if (scheduledAt) {
@@ -67,42 +62,40 @@ export const sendEmail = async ({
     }
 
     const response = await sesClient.sendEmail({
-      FromEmailAddress: "WhiteDog Share <noreply-share@whitedog.cloud>",
+      FromEmailAddress: fromAddress,
       Destination: {
-        ToAddresses: [
-          to
-        ],
-        CcAddresses: typeof cc === 'string' ? [ cc ] : cc,
+        ToAddresses: [to],
+        CcAddresses: typeof cc === "string" ? [cc] : cc,
       },
       Content: {
         Simple: {
           Subject: {
-            Charset: 'UTF-8',
-            Data: subject
+            Charset: "UTF-8",
+            Data: subject,
           },
           Body: {
             Html: {
-              Charset: 'UTF-8',
-              Data: html
+              Charset: "UTF-8",
+              Data: html,
             },
             Text: {
-              Charset: 'UTF-8',
-              Data: plainText
-            }
-          }
-        }
-      }
+              Charset: "UTF-8",
+              Data: plainText,
+            },
+          },
+        },
+      },
     });
 
     return {
-      id: response.MessageId
-    }
+      id: response.MessageId,
+    };
 
     // const { data, error } = await resend.emails.send({
     //   from: fromAddress,
     //   to: test ? "delivered@resend.dev" : to,
     //   cc: cc,
-    //   replyTo: marketing ? "marc@papermark.io" : replyTo,
+    //   replyTo,
     //   subject,
     //   react,
     //   scheduledAt,

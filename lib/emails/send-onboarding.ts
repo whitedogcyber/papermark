@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import Onboarding5Email from "@/components/emails/data-rooms-information";
@@ -20,6 +21,7 @@ export const sendOnboardingEmail = async (
   params: CreateUserEmailProps,
   emailType: EmailType,
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { email } = params.user;
 
   let emailTemplate;
@@ -56,7 +58,6 @@ export const sendOnboardingEmail = async (
     await sendEmail({
       to: email as string,
       subject,
-      replyTo: "Papermark <support@papermark.com>",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
     });

@@ -3,10 +3,10 @@ import { useEffect, useRef } from "react";
 import { AssistantStatus, type Message } from "ai/react";
 import Textarea from "react-textarea-autosize";
 
-import { Button } from "@/components/ui/button";
-
 import { cn } from "@/lib/utils";
 import { useEnterSubmit } from "@/lib/utils/use-enter-submit";
+
+import { Button } from "@/components/ui/button";
 
 import ArrowUp from "../shared/icons/arrow-up";
 
@@ -49,7 +49,7 @@ export function ChatInput({
                 disabled={status !== "awaiting_message"}
                 className="min-h-[60px] w-full resize-none border-none bg-transparent px-4 py-[1.3rem] focus:ring-0 sm:text-sm"
                 value={input}
-                placeholder="Message Papermark Assistant..."
+                placeholder="Message WhiteDog Share Assistant..."
                 onChange={handleInputChange}
                 spellCheck={false}
               />

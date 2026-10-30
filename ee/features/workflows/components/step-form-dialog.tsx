@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { BRAND_HOST } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
@@ -327,7 +328,7 @@ export function StepFormDialog({
                     )}
                     {!link.domainSlug && link.slug && (
                       <span className="font-mono text-xs text-muted-foreground">
-                        papermark.io/{link.slug}
+                        {BRAND_HOST}/{link.slug}
                       </span>
                     )}
                     <span className="font-mono text-xs text-muted-foreground">

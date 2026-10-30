@@ -91,7 +91,6 @@ export default function CustomFieldsSection({
       <LinkItem
         title="Custom Form Fields"
         tooltipContent="Add custom fields to collect additional information from viewers"
-        link="https://www.papermark.com/help/article/custom-fields"
         enabled={enabled}
         action={handleCustomFieldsToggle}
         isAllowed={isAllowed}

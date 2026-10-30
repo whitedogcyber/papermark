@@ -16,8 +16,7 @@ export const STAGGER_CHILD_VARIANTS = {
 
 export const PAPERMARK_HEADERS = {
   headers: {
-    "x-powered-by":
-      "Papermark - Secure Data Room Infrastructure for the modern web",
+    "x-powered-by": "WhiteDog Share",
   },
 };
 

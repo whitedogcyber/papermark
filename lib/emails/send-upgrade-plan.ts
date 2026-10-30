@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 import { CreateUserEmailProps } from "@/lib/types";
 
@@ -14,6 +15,7 @@ const PLAN_TYPE_MAP = {
 export const sendUpgradePlanEmail = async (
   params: CreateUserEmailProps & { planType: string },
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
   const { planType } = params;
   const emailTemplate = UpgradePlanEmail({ name, planType });

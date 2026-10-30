@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Brand, CustomField, DataroomBrand } from "@prisma/client";
 import { ArrowUpRightIcon } from "lucide-react";
 
+import { BRAND_NAME, BRAND_PRIVACY_URL } from "@/lib/branding";
 import { determineTextColor } from "@/lib/utils/determine-text-color";
 
 import { Button } from "@/components/ui/button";
@@ -210,28 +211,22 @@ export default function AccessForm({
         <div className="flex flex-col items-center gap-0.5">
           <p className="text-center text-sm tracking-tight text-gray-500">
             This document is securely shared with you using{" "}
-            <a
-              href="https://www.papermark.com/home"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium hover:text-gray-600"
-            >
-              Papermark
-            </a>
-            .
+            <span className="font-medium">{BRAND_NAME}</span>.
           </p>
-          <p className="text-center text-sm tracking-tight text-gray-500">
-            See how we protect your data in our{" "}
-            <a
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/privacy`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-0.5 hover:text-gray-600"
-            >
-              <span>Privacy Policy</span>
-              <ArrowUpRightIcon className="h-3 w-3" />
-            </a>
-          </p>
+          {BRAND_PRIVACY_URL ? (
+            <p className="text-center text-sm tracking-tight text-gray-500">
+              See how we protect your data in our{" "}
+              <a
+                href={BRAND_PRIVACY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 hover:text-gray-600"
+              >
+                <span>Privacy Policy</span>
+                <ArrowUpRightIcon className="h-3 w-3" />
+              </a>
+            </p>
+          ) : null}
         </div>
       ) : null}
     </div>

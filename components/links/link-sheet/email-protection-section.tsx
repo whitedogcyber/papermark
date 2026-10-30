@@ -35,7 +35,6 @@ export default function EmailProtectionSection({
     <div className="pb-5">
       <LinkItem
         title="Require email to view"
-        link="https://www.papermark.com/help/article/require-email-to-view-document"
         enabled={enabled}
         action={handleEnableProtection}
         tooltipContent="Users must provide an email to access this content"

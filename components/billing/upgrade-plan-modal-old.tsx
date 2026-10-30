@@ -8,13 +8,13 @@ import { getStripe } from "@/ee/stripe/client";
 import { PLANS } from "@/ee/stripe/utils";
 import { CheckIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { useAnalytics } from "@/lib/analytics";
 import { usePlan } from "@/lib/swr/use-billing";
 import { capitalize, cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { DataroomTrialModal } from "../datarooms/dataroom-trial-modal";
 import X from "../shared/icons/x";
@@ -53,7 +53,7 @@ export function UpgradePlanModal({
         "Custom branding",
         "Folder organization",
         "Require email verification",
-        "Papermark branding removed",
+        "WhiteDog Share branding removed",
         "1-year analytics retention",
       ];
     }
@@ -285,15 +285,7 @@ export function UpgradePlanModal({
                   Looking for a trial?
                 </button>
               </DataroomTrialModal>
-            ) : (
-              <a
-                href="https://cal.com/marcseitz/papermark"
-                target="_blank"
-                className="underline-offset-4 transition-all hover:text-gray-800 hover:underline hover:dark:text-muted-foreground/80"
-              >
-                Looking for Papermark Enterprise?
-              </a>
-            )}
+            ) : null}
           </div>
         </div>
       </DialogContent>

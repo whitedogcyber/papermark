@@ -17,7 +17,7 @@ import { EMAIL_BRAND } from "@/components/emails/shared/brand";
 import { Footer } from "./shared/footer";
 
 const VerificationLinkEmail = ({
-  url = "https://www.papermark.com",
+  url = `${process.env.NEXT_PUBLIC_BASE_URL}`,
 }: {
   url: string;
 }) => {

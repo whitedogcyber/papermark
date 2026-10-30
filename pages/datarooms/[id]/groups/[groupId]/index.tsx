@@ -2,6 +2,9 @@ import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
+import { useDataroom } from "@/lib/swr/use-dataroom";
+import { useDataroomGroup } from "@/lib/swr/use-dataroom-groups";
+
 import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import DeleteGroup from "@/components/datarooms/groups/delete-group";
@@ -9,9 +12,6 @@ import { GroupHeader } from "@/components/datarooms/groups/group-header";
 import { GroupNavigation } from "@/components/datarooms/groups/group-navigation";
 import AppLayout from "@/components/layouts/app";
 import { Form } from "@/components/ui/form";
-
-import { useDataroom } from "@/lib/swr/use-dataroom";
-import { useDataroomGroup } from "@/lib/swr/use-dataroom-groups";
 
 export default function DataroomGroupPage() {
   const teamInfo = useTeam();
@@ -45,7 +45,7 @@ export default function DataroomGroupPage() {
           <div className="grid gap-6">
             <Form
               title="Group Name"
-              description="This is the name of your data room group on Papermark."
+              description="This is the name of your data room group on WhiteDog Share."
               inputAttrs={{
                 name: "name",
                 placeholder: "e.g. Management Team",

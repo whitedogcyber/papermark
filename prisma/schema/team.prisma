@@ -51,6 +51,7 @@ model Team {
 
   ignoredDomains  String[] // Domains that are ignored for the team
   globalBlockList String[] // Email and domains that are blocked for the team
+  sharePointSyncs SharePointSync[]
 }
 
 enum Role {

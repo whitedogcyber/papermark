@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import SlackIntegrationEmail from "@/components/emails/slack-integration";
@@ -7,6 +8,7 @@ import { CreateUserEmailProps } from "../types";
 export const sendSlackIntegrationEmail = async (
   params: CreateUserEmailProps,
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
 
   // Schedule the email to be sent 1 day from now (24 hours)
