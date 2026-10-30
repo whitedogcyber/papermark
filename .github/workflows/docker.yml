@@ -234,7 +234,7 @@ jobs:
           TRIGGER_API_URL: ${{ secrets.TRIGGER_API_URL }}
           ENV: ${{ github.ref_type == 'tag' && 'prod' || github.ref == 'refs/heads/main' && 'staging' }}
         run: |
-          npx trigger.dev@latest deploy --env ${ENV} --external-id ${{ github.sha }}
+          npx trigger.dev@4.7.4 deploy --env ${ENV} --external-id ${{ github.sha }}
 
   deploy:
     if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
