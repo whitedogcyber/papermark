@@ -10,15 +10,13 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import {
-  BRAND_LOGO_URL,
-  BRAND_NAME,
-  BRAND_PRIVACY_URL,
-  BRAND_TERMS_URL,
-} from "@/lib/branding";
+import { BRAND_LOGO_URL, BRAND_NAME } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 
-import { BrandSidePanel } from "@/components/auth/brand-panels";
+import {
+  BrandLegalNotice,
+  BrandSidePanel,
+} from "@/components/auth/brand-panels";
 import { LastUsed, useLastUsed } from "@/components/hooks/useLastUsed";
 import Google from "@/components/shared/icons/google";
 import LinkedIn from "@/components/shared/icons/linkedin";
@@ -211,28 +209,7 @@ export default function Login() {
               </Button>
             </div>
           </div>
-          {BRAND_TERMS_URL || BRAND_PRIVACY_URL ? (
-            <p className="mt-10 w-full max-w-md px-4 text-xs text-muted-foreground sm:px-12">
-              By clicking continue, you acknowledge that you have read and agree
-              to {BRAND_NAME}&apos;s{" "}
-              {BRAND_TERMS_URL ? (
-                <a href={BRAND_TERMS_URL} target="_blank" className="underline">
-                  Terms of Service
-                </a>
-              ) : null}
-              {BRAND_TERMS_URL && BRAND_PRIVACY_URL ? " and " : null}
-              {BRAND_PRIVACY_URL ? (
-                <a
-                  href={BRAND_PRIVACY_URL}
-                  target="_blank"
-                  className="underline"
-                >
-                  Privacy Policy
-                </a>
-              ) : null}
-              .
-            </p>
-          ) : null}
+          <BrandLegalNotice />
         </div>
       </div>
       <BrandSidePanel />

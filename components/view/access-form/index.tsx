@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Brand, CustomField, DataroomBrand } from "@prisma/client";
 import { ArrowUpRightIcon } from "lucide-react";
 
-import { BRAND_NAME, BRAND_PRIVACY_URL } from "@/lib/branding";
+import { BRAND_NAME } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 import { determineTextColor } from "@/lib/utils/determine-text-color";
 
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,7 @@ export default function AccessForm({
   logoOnAccessForm?: boolean;
   linkWelcomeMessage?: string | null;
 }) {
+  const { privacyUrl } = useRuntimeLinks();
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   useEffect(() => {
@@ -213,11 +215,11 @@ export default function AccessForm({
             This document is securely shared with you using{" "}
             <span className="font-medium">{BRAND_NAME}</span>.
           </p>
-          {BRAND_PRIVACY_URL ? (
+          {privacyUrl ? (
             <p className="text-center text-sm tracking-tight text-gray-500">
               See how we protect your data in our{" "}
               <a
-                href={BRAND_PRIVACY_URL}
+                href={privacyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-0.5 hover:text-gray-600"
