@@ -12,6 +12,7 @@ import { DataroomHeader } from "@/components/datarooms/dataroom-header";
 import { DataroomItemsList } from "@/components/datarooms/dataroom-items-list";
 import { DataroomNavigation } from "@/components/datarooms/dataroom-navigation";
 import { SidebarFolderTree } from "@/components/datarooms/folders";
+import { SharePointSyncButton } from "@/components/datarooms/sharepoint/sharepoint-sync-button";
 import { DataroomSortableList } from "@/components/datarooms/sortable/sortable-list";
 import { AddDocumentModal } from "@/components/documents/add-document-modal";
 import { LoadingDocuments } from "@/components/documents/loading-document";
@@ -56,6 +57,11 @@ export default function Documents() {
             <DownloadDataroomButton
               teamId={teamInfo?.currentTeam?.id!}
               dataroomId={dataroom?.id!}
+            />
+            <SharePointSyncButton
+              teamId={teamInfo?.currentTeam?.id}
+              dataroomId={dataroom?.id}
+              folderPath="/"
             />
           </div>
           <div className="flex items-center justify-end gap-x-2">

@@ -43,6 +43,7 @@ model Dataroom {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  sharePointSyncs SharePointSync[]
   @@index([teamId])
 }
 
@@ -89,6 +90,7 @@ model DataroomFolder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  sharePointSyncs SharePointSync[]
   @@unique([dataroomId, path])
   @@index([parentId])
   @@index([dataroomId, parentId, orderIndex])

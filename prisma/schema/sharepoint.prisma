@@ -1,0 +1,73 @@
+// SharePoint folder sync (WhiteDog fork).
+// A data room folder (or the data room root) mirrors one SharePoint folder.
+// SharePoint stays the source of truth; Papermark keeps its own copy so it can
+// convert pages, watermark and track views.
+
+model SharePointSync {
+  id     String @id @default(cuid())
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  dataroomId       String
+  dataroom         Dataroom        @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
+  // null = the data room root
+  dataroomFolderId String?
+  dataroomFolder   DataroomFolder? @relation(fields: [dataroomFolderId], references: [id], onDelete: Cascade)
+
+  siteId      String
+  siteName    String
+  siteUrl     String
+  driveId     String
+  driveName   String
+  rootItemId  String
+  rootPath    String // display only, e.g. "/Deals/Project X"
+
+  status       String    @default("pending") // pending | syncing | ok | error
+  lastError    String?
+  lastSyncedAt DateTime?
+  needsSync    Boolean   @default(true)
+  lockedUntil  DateTime?
+
+  createdById String?
+
+  items SharePointSyncItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+  @@index([dataroomId])
+  @@index([driveId])
+}
+
+model SharePointSyncItem {
+  id     String         @id @default(cuid())
+  syncId String
+  sync   SharePointSync @relation(fields: [syncId], references: [id], onDelete: Cascade)
+
+  driveItemId       String
+  parentDriveItemId String?
+  kind              String // file | folder
+  name              String
+  cTag              String? // changes when file content changes
+
+  // Papermark side. Plain ids: if someone deletes the Papermark object by hand
+  // the next sync notices and recreates it.
+  documentId         String?
+  dataroomDocumentId String?
+  dataroomFolderId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([syncId, driveItemId])
+}
+
+// One Graph change-notification subscription per SharePoint drive (library).
+model SharePointSubscription {
+  id             String   @id // Graph subscription id
+  driveId        String   @unique
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
