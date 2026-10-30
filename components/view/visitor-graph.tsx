@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { useState } from "react";
 
 import { BarChart } from "@tremor/react";
@@ -8,6 +6,8 @@ import { signIn } from "next-auth/react";
 
 import { useAnalytics } from "@/lib/analytics";
 import { STAGGER_CHILD_VARIANTS } from "@/lib/constants";
+
+import { BrandLegalNotice } from "@/components/auth/brand-panels";
 
 import { timeFormatter } from "../charts/utils";
 import { Button } from "../ui/button";
@@ -80,8 +80,7 @@ export default function ViewDurationSummary({
             Thanks for creating an account!
           </h1>
           <p className="max-w-lg text-balance text-white">
-            We sent you an email confirmation with a link to your Papermark
-            account.
+            We sent you an email confirmation with a link to your account.
           </p>
         </motion.div>
       </motion.div>
@@ -189,26 +188,7 @@ export default function ViewDurationSummary({
               Sign up with Email
             </Button>
           </form>
-          <p className="mt-4 w-full max-w-md px-4 text-xs text-muted-foreground sm:px-16">
-            By clicking continue, you acknowledge that you have read and agree
-            to Papermark&apos;s{" "}
-            <Link
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/terms`}
-              target="_blank"
-              className="underline hover:text-gray-900"
-            >
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/privacy`}
-              target="_blank"
-              className="underline hover:text-gray-900"
-            >
-              Privacy Policy
-            </Link>
-            .
-          </p>
+          <BrandLegalNotice className="mt-4 w-full max-w-md px-4 text-xs text-muted-foreground sm:px-16" />
         </motion.div>
       </motion.div>
     </motion.div>

@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 
+import { BRAND_HOST } from "@/lib/branding";
 import { errorhandler } from "@/lib/errorHandler";
 import { getFile } from "@/lib/files/get-file";
 import prisma from "@/lib/prisma";
@@ -75,8 +76,8 @@ export default async function handle(
 
       // Check if the content is a Papermark URL
       const isPapermarkUrl =
-        agreement.content.includes("papermark.com/view/") ||
-        agreement.content.includes("www.papermark.com/view/");
+        agreement.content.includes(`${BRAND_HOST}/view/`) ||
+        agreement.content.includes("papermark.com/view/");
 
       let fileContent: string;
       let filename: string;
@@ -86,7 +87,7 @@ export default async function handle(
         // Extract linkId from Papermark URL
         const urlParts = agreement.content.split("/view/");
         if (urlParts.length < 2) {
-          return res.status(400).json("Invalid Papermark URL format");
+          return res.status(400).json("Invalid WhiteDog Share URL format");
         }
 
         const linkId = urlParts[1].split(/[/?#]/)[0]; // Get linkId, remove any query params or fragments
@@ -122,7 +123,7 @@ export default async function handle(
         if (!link || !link.document) {
           return res
             .status(404)
-            .json("Document not found for the provided Papermark URL");
+            .json("Document not found for the provided WhiteDog Share URL");
         }
 
         // Use the primary version if available, otherwise use the document file

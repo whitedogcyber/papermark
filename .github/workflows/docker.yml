@@ -55,6 +55,10 @@ jobs:
           BRAND_URL: ${{ vars.BRAND_URL }}
           ENABLE_SLACK: ${{ vars.ENABLE_SLACK }}
           ENABLE_SHAREPOINT: ${{ vars.ENABLE_SHAREPOINT }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
+          TERMS_URL: ${{ vars.TERMS_URL }}
+          PRIVACY_URL: ${{ vars.PRIVACY_URL }}
+          HELP_URL: ${{ vars.HELP_URL }}
         run: |
           echo "image=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
@@ -69,7 +73,8 @@ jobs:
           {
             echo "build-args<<EOF"
             for name in BASE_URL BASE_HOST HANKO_TENANT_ID BRAND_NAME BRAND_TITLE \
-                        BRAND_DESCRIPTION BRAND_IMAGE_URL BRAND_URL ENABLE_SLACK ENABLE_SHAREPOINT; do
+                        BRAND_DESCRIPTION BRAND_IMAGE_URL BRAND_URL ENABLE_SLACK ENABLE_SHAREPOINT \
+                        SUPPORT_EMAIL TERMS_URL PRIVACY_URL HELP_URL; do
               if [ -n "${!name}" ]; then echo "${name}=${!name}"; fi
             done
             echo "EOF"

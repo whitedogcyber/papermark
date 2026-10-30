@@ -43,7 +43,7 @@ const DataroomTrialEnd = ({ name }: DataroomTrialEnd) => {
               {`Your ${EMAIL_BRAND} Data Room trial has expired.`}
               <br />
               <Link
-                href={`https://app.papermark.com/settings/billing`}
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/billing`}
                 className="underline"
               >
                 Upgrade now
@@ -70,7 +70,7 @@ const DataroomTrialEnd = ({ name }: DataroomTrialEnd) => {
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/billing`}
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/billing`}
                 style={{ padding: "12px 20px" }}
               >
                 Upgrade now

@@ -88,7 +88,6 @@ export default function DenyListSection({
           title="Block specified viewers"
           tooltipContent="Prevent certain users from accessing the content. Enter blocked emails or domains."
           enabled={enabled}
-          link="https://www.papermark.com/help/article/block-list"
           action={handleEnableDenyList}
           isAllowed={isAllowed}
           requiredPlan="business"
@@ -111,7 +110,7 @@ export default function DenyListSection({
               className="focus:ring-inset"
               rows={5}
               placeholder={`Enter blocked emails/domains, one per line, e.g.
-marc@papermark.com
+name@example.com
 @example.org`}
               value={denyListInput}
               onChange={handleDenyListChange}

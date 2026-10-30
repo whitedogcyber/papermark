@@ -65,11 +65,11 @@ const SlackIntegrationEmail = ({ name }: SlackIntegrationEmailProps) => {
               <Text className="text-xs">
                 © {new Date().getFullYear()}{" "}
                 <a
-                  href="https://www.papermark.com"
+                  href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                   className="text-gray-400 no-underline"
                   target="_blank"
                 >
-                  papermark.com
+                  {process.env.NEXT_PUBLIC_APP_BASE_HOST}
                 </a>
               </Text>
               <Text className="text-xs">

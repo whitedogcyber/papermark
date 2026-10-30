@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { BRAND_LOGO_DARK_URL, BRAND_NAME } from "@/lib/branding";
 import { determineTextColor } from "@/lib/utils/determine-text-color";
 
 import {
@@ -193,8 +194,8 @@ export default function Nav({
     })();
 
     toast.promise(downloadPromise, {
-      loading: hasWatermark 
-        ? "Preparing download with watermark..." 
+      loading: hasWatermark
+        ? "Preparing download with watermark..."
         : "Preparing download...",
       success: (message) => message,
       error: (err) => err.message || "Failed to download file",
@@ -248,13 +249,11 @@ export default function Nav({
                   // priority
                 />
               ) : (
-                <Link
-                  href={`https://www.papermark.com/home?utm_campaign=navbar&utm_medium=navbar&utm_source=papermark-${linkId}`}
-                  target="_blank"
-                  className="text-2xl font-bold tracking-tighter text-white"
-                >
-                  Papermark
-                </Link>
+                <img
+                  className="h-12 w-auto object-contain"
+                  src={BRAND_LOGO_DARK_URL}
+                  alt={BRAND_NAME}
+                />
               )}
             </div>
             {isDataroom ? (

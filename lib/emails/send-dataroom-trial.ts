@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import DataroomTrialWelcome from "@/components/emails/dataroom-trial-welcome";
@@ -9,6 +10,7 @@ export const sendDataroomTrialWelcome = async ({
   fullName: string;
   to: string;
 }) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   // Schedule the email to be sent 6 minutes from now
   const sixMinuteFromNow = new Date(Date.now() + 1000 * 60 * 6).toISOString();
 
@@ -18,7 +20,6 @@ export const sendDataroomTrialWelcome = async ({
   try {
     await sendEmail({
       to: to,
-      from: "Marc Seitz <marc@papermark.com>",
       subject: `For ${name}`,
       react: DataroomTrialWelcome({ name }),
       test: process.env.NODE_ENV === "development",

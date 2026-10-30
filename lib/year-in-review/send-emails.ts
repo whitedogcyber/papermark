@@ -1,12 +1,13 @@
 import { render } from "@react-email/components";
 import { nanoid } from "nanoid";
 
-import YearInReviewEmail from "@/components/emails/year-in-review-papermark";
-
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import prisma from "@/lib/prisma";
 import { resend } from "@/lib/resend";
 import { log } from "@/lib/utils";
 import { generateUnsubscribeUrl } from "@/lib/utils/unsubscribe";
+
+import YearInReviewEmail from "@/components/emails/year-in-review-papermark";
 
 const BATCH_SIZE = 100; // Maximum number of emails Resend supports in one batch
 const MAX_ATTEMPTS = 3;
@@ -52,6 +53,7 @@ function msToMinutes(ms: number): number {
 }
 
 export async function processEmailQueue() {
+  if (!MARKETING_EMAILS_ENABLED) return;
   // if (!resend) {
   //   console.log("❌ Resend client not initialized");
   //   return;

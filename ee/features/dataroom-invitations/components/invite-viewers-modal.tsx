@@ -368,7 +368,7 @@ export function InviteViewersModal({
                 </p>
                 <p>
                   <span className="font-medium text-foreground">From:</span>{" "}
-                  system@papermark.com
+                  noreply-share@whitedog.cloud
                 </p>
                 <p>
                   <span className="font-medium text-foreground">To:</span>{" "}
@@ -399,7 +399,7 @@ export function InviteViewersModal({
                   </span>{" "}
                   dataroom on{" "}
                   <span className="font-semibold text-foreground">
-                    Papermark
+                    WhiteDog Share
                   </span>
                   .
                   <br />
@@ -422,13 +422,13 @@ export function InviteViewersModal({
                   <br />
                   <span className="break-all text-foreground">
                     {selectedLink
-                      ? `https://papermark.io/view/${selectedLink.slug ?? selectedLink.id}`
-                      : "https://papermark.io/view/..."}
+                      ? `${process.env.NEXT_PUBLIC_MARKETING_URL}/view/${selectedLink.slug ?? selectedLink.id}`
+                      : `${process.env.NEXT_PUBLIC_MARKETING_URL}/view/...`}
                   </span>
                 </p>
                 <Separator className="my-2" />
                 <p className="text-xs">
-                  © {new Date().getFullYear()} Papermark, Inc. All rights
+                  © {new Date().getFullYear()} WhiteDog Cyber. All rights
                   reserved.
                 </p>
                 <p className="text-xs">

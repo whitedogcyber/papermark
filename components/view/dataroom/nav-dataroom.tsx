@@ -1,11 +1,10 @@
-import Link from "next/link";
-
 import React, { useEffect, useState } from "react";
 
 import { DataroomBrand } from "@prisma/client";
 import { BadgeInfoIcon, Download } from "lucide-react";
 import { toast } from "sonner";
 
+import { BRAND_LOGO_DARK_URL, BRAND_NAME } from "@/lib/branding";
 import { formatDate } from "@/lib/utils";
 
 import {
@@ -19,7 +18,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "../../ui/button";
 import { ConversationSidebar } from "../conversations/sidebar";
 
-const DEFAULT_BANNER_IMAGE = "/_static/papermark-banner.png";
+const DEFAULT_BANNER_IMAGE = "/_static/dataroom-banner.png";
 
 export default function DataroomNav({
   allowDownload,
@@ -140,13 +139,11 @@ export default function DataroomNav({
                   alt="Logo"
                 />
               ) : (
-                <Link
-                  href={`https://www.papermark.com/home?utm_campaign=navbar&utm_medium=navbar&utm_source=papermark-${linkId}`}
-                  target="_blank"
-                  className="text-2xl font-bold tracking-tighter text-white"
-                >
-                  Papermark
-                </Link>
+                <img
+                  className="h-12 w-auto object-contain"
+                  src={BRAND_LOGO_DARK_URL}
+                  alt={BRAND_NAME}
+                />
               )}
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import DataroomTrial24hReminderEmail from "@/components/emails/dataroom-trial-24h";
@@ -6,13 +7,13 @@ export const sendDataroomTrial24hReminderEmail = async (params: {
   email: string;
   name: string;
 }) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { email, name } = params;
 
   const emailTemplate = DataroomTrial24hReminderEmail({ name });
   try {
     await sendEmail({
       to: email,
-      from: "Marc Seitz <marc@papermark.com>",
       subject: "Your Data Room plan trial expires in 24 hours",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",

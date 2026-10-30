@@ -4,14 +4,14 @@ import { useTeam } from "@/context/team-context";
 import { CircleHelpIcon } from "lucide-react";
 import { mutate } from "swr";
 
+import { useDomains } from "@/lib/swr/use-domains";
+
 import { AddDomainModal } from "@/components/domains/add-domain-modal";
 import DomainCard from "@/components/domains/domain-card";
 import AppLayout from "@/components/layouts/app";
 import { SettingsHeader } from "@/components/settings/settings-header";
 import { Button } from "@/components/ui/button";
 import { BadgeTooltip } from "@/components/ui/tooltip";
-
-import { useDomains } from "@/lib/swr/use-domains";
 
 export default function Domains() {
   const { domains } = useDomains();
@@ -51,7 +51,6 @@ export default function Domains() {
                   content="How to connect a custom domain to your link?"
                   key="verified"
                   linkText="Click here"
-                  link="https://www.papermark.com/help/article/how-to-add-custom-domain-to-link"
                 >
                   <CircleHelpIcon className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground" />
                 </BadgeTooltip>

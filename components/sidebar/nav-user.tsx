@@ -15,6 +15,8 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
+import { BRAND_HELP_URL, BRAND_SUPPORT_EMAIL } from "@/lib/branding";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Command,
@@ -154,24 +156,27 @@ export function NavUser() {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSearchOpen(true);
-                    fetchArticles();
-                  }}
-                >
-                  <LifeBuoyIcon />
-                  Help Center
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    navigator.clipboard.writeText("support@papermark.com");
-                    toast.success("support@papermark.com copied to clipboard");
-                  }}
-                >
-                  <MailIcon />
-                  Contact Support
-                </DropdownMenuItem>
+                {BRAND_HELP_URL ? (
+                  <DropdownMenuItem
+                    onClick={() => window.open(BRAND_HELP_URL, "_blank")}
+                  >
+                    <LifeBuoyIcon />
+                    Help Center
+                  </DropdownMenuItem>
+                ) : null}
+                {BRAND_SUPPORT_EMAIL ? (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      navigator.clipboard.writeText(BRAND_SUPPORT_EMAIL);
+                      toast.success(
+                        `${BRAND_SUPPORT_EMAIL} copied to clipboard`,
+                      );
+                    }}
+                  >
+                    <MailIcon />
+                    Contact Support
+                  </DropdownMenuItem>
+                ) : null}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem

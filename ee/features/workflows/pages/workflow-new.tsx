@@ -1,14 +1,18 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
+
+import { useState } from "react";
+
 import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 import useSWR from "swr";
+
+import { BRAND_HOST } from "@/lib/branding";
 import { fetcher } from "@/lib/utils";
+
 import AppLayout from "@/components/layouts/app";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Domain {
   id: string;
@@ -133,10 +138,10 @@ export default function NewWorkflowPage() {
                 <Label htmlFor="domain">Domain</Label>
                 <Select value={domain} onValueChange={setDomain}>
                   <SelectTrigger id="domain">
-                    <SelectValue placeholder="papermark.com (default)" />
+                    <SelectValue placeholder={`${BRAND_HOST} (default)`} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="papermark.com">papermark.com</SelectItem>
+                    <SelectItem value="papermark.com">{BRAND_HOST}</SelectItem>
                     {domains?.map((d) => (
                       <SelectItem key={d.id} value={d.slug}>
                         {d.slug}
@@ -155,7 +160,9 @@ export default function NewWorkflowPage() {
                       value={slug}
                       onChange={(e) =>
                         setSlug(
-                          e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""),
+                          e.target.value
+                            .toLowerCase()
+                            .replace(/[^a-z0-9_-]/g, ""),
                         )
                       }
                       placeholder="dashboard"
@@ -172,7 +179,8 @@ export default function NewWorkflowPage() {
 
               {domain === "papermark.com" && (
                 <p className="text-xs text-muted-foreground">
-                  Entry URL will be generated automatically (e.g., papermark.com/view/clxxx...)
+                  Entry URL will be generated automatically (e.g., {BRAND_HOST}
+                  /view/clxxx...)
                 </p>
               )}
             </div>
@@ -196,4 +204,3 @@ export default function NewWorkflowPage() {
     </AppLayout>
   );
 }
-

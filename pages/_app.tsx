@@ -10,11 +10,11 @@ import { NuqsAdapter } from "nuqs/adapters/next/pages";
 
 import {
   BRAND_DESCRIPTION,
+  BRAND_HOST,
   BRAND_IMAGE_URL,
   BRAND_NAME,
   BRAND_TITLE,
   BRAND_URL,
-  IS_CUSTOM_BRAND,
 } from "@/lib/branding";
 import { EXCLUDED_PATHS } from "@/lib/constants";
 
@@ -60,12 +60,6 @@ export default function App({
           name="twitter:card"
           content={BRAND_IMAGE_URL ? "summary_large_image" : "summary"}
         />
-        {!IS_CUSTOM_BRAND ? (
-          <>
-            <meta name="twitter:site" content="@papermarkio" />
-            <meta name="twitter:creator" content="@papermarkio" />
-          </>
-        ) : null}
         <meta name="twitter:title" content={BRAND_NAME} key="tw-title" />
         <meta
           name="twitter:description"
@@ -76,12 +70,17 @@ export default function App({
           <meta name="twitter:image" content={BRAND_IMAGE_URL} key="tw-image" />
         ) : null}
         <link rel="icon" href="/favicon.ico" key="favicon" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon.png"
+          key="apple-icon"
+        />
       </Head>
       <SessionProvider session={session}>
         <PostHogCustomProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <PlausibleProvider
-              domain="papermark.io"
+              domain={BRAND_HOST}
               enabled={process.env.NEXT_PUBLIC_VERCEL_ENV === "production"}
             >
               <NuqsAdapter>

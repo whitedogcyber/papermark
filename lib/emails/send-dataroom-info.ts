@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import DataRoomsInformationEmail from "@/components/emails/data-rooms-information";
@@ -18,6 +19,7 @@ export const sendDataroomInfoEmail = async (
   params: CreateUserEmailProps,
   useCase: string,
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { email } = params.user;
 
   const emailTemplate = DataRoomsInformationEmail();
@@ -27,7 +29,6 @@ export const sendDataroomInfoEmail = async (
   try {
     await sendEmail({
       to: email as string,
-      from: "Marc Seitz <marc@papermark.com>",
       subject,
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",

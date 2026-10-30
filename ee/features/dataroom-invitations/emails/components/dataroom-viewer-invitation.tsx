@@ -18,7 +18,7 @@ import { Footer } from "../../../../../components/emails/shared/footer";
 export default function DataroomViewerInvitation({
   dataroomName = "Example Data Room",
   senderEmail = "sender@example.com",
-  url = "https://app.papermark.com/datarooms/123",
+  url = `${process.env.NEXT_PUBLIC_BASE_URL}/datarooms/123`,
   recipientEmail = "recipient@example.com",
   customMessage,
 }: {
@@ -31,12 +31,12 @@ export default function DataroomViewerInvitation({
   return (
     <Html>
       <Head />
-      <Preview>View dataroom on Papermark</Preview>
+      <Preview>View dataroom on WhiteDog Share</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-10 w-[465px] p-5">
             <Text className="mx-0 mb-8 mt-4 p-0 text-center text-2xl font-normal">
-              <span className="font-bold tracking-tighter">Papermark</span>
+              <span className="font-bold tracking-tighter">WhiteDog Share</span>
             </Text>
             <Text className="font-seminbold mx-0 mb-8 mt-4 p-0 text-center text-xl">
               {`View ${dataroomName}`}
@@ -45,7 +45,7 @@ export default function DataroomViewerInvitation({
             <Text className="text-sm leading-6 text-black">
               You have been invited to view the{" "}
               <span className="font-semibold">{dataroomName}</span> dataroom on{" "}
-              <span className="font-semibold">Papermark</span>.
+              <span className="font-semibold">WhiteDog Share</span>.
               <br />
               The invitation was sent by{" "}
               <span className="font-semibold">{senderEmail}</span>.
@@ -74,7 +74,7 @@ export default function DataroomViewerInvitation({
             <Hr />
             <Section className="mt-8 text-gray-400">
               <Text className="text-xs">
-                © {new Date().getFullYear()} Papermark, Inc. All rights
+                © {new Date().getFullYear()} WhiteDog Cyber. All rights
                 reserved.
               </Text>
               <Text className="text-xs">

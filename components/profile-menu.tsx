@@ -7,6 +7,7 @@ import { HelpCircle, LogOut, Search } from "lucide-react";
 import { FileText } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
+import { BRAND_HELP_URL, BRAND_SUPPORT_EMAIL } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 
 import ChevronUp from "@/components/shared/icons/chevron-up";
@@ -129,24 +130,27 @@ const ProfileMenu = ({ className, size }: ProfileMenuProps) => {
                   <DropdownMenuSeparator className="!my-2" />
                   <ModeToggle />
 
-                  <button
-                    onClick={() => {
-                      setSearchOpen(true);
-                      fetchArticles();
-                    }}
-                    className="flex w-full items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    Need help?
-                  </button>
+                  {BRAND_HELP_URL ? (
+                    <a
+                      href={BRAND_HELP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
+                    >
+                      <Search className="mr-2 h-4 w-4" />
+                      Need help?
+                    </a>
+                  ) : null}
 
-                  <a
-                    href="mailto:support@papermark.com"
-                    className="my-1 flex items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
-                  >
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    Contact us
-                  </a>
+                  {BRAND_SUPPORT_EMAIL ? (
+                    <a
+                      href={`mailto:${BRAND_SUPPORT_EMAIL}`}
+                      className="my-1 flex items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
+                    >
+                      <HelpCircle className="mr-2 h-4 w-4" />
+                      Contact us
+                    </a>
+                  ) : null}
 
                   <Link
                     onClick={() =>

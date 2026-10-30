@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import { EMAIL_BRAND } from "@/components/emails/shared/brand";
@@ -8,6 +9,7 @@ import { CreateUserEmailProps } from "../types";
 export const sendUpgradeOneMonthCheckinEmail = async (
   params: CreateUserEmailProps,
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
 
   // Get the first name from the full name
@@ -20,7 +22,6 @@ export const sendUpgradeOneMonthCheckinEmail = async (
     await sendEmail({
       to: email as string,
       subject: `Check-in from ${EMAIL_BRAND}`,
-      from: "Marc Seitz <marc@papermark.com>",
       react: emailTemplate,
       test: process.env.NODE_ENV === "development",
     });

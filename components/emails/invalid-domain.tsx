@@ -19,7 +19,7 @@ import { EMAIL_BRAND } from "@/components/emails/shared/brand";
 import { Footer } from "./shared/footer";
 
 export default function InvalidDomain({
-  domain = "papermark.com",
+  domain = "docs.example.com",
   invalidDays = 14,
 }: {
   domain: string;
@@ -53,7 +53,7 @@ export default function InvalidDomain({
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/domains`}
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/domains`}
                 style={{ padding: "12px 20px" }}
               >
                 Configure domain
@@ -62,7 +62,7 @@ export default function InvalidDomain({
             <Text className="text-sm leading-6 text-black">
               {`If you do not want to keep this domain on ${EMAIL_BRAND}, you can`}{" "}
               <Link
-                href={`https://app.papermark.com/settings/domains`}
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}/settings/domains`}
                 className="font-medium text-blue-600 no-underline"
               >
                 delete it

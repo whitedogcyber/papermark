@@ -3,33 +3,39 @@ import { Inter } from "next/font/google";
 
 import PlausibleProvider from "next-plausible";
 
+import {
+  BRAND_DESCRIPTION,
+  BRAND_HOST,
+  BRAND_IMAGE_URL,
+  BRAND_NAME,
+  BRAND_TITLE,
+} from "@/lib/branding";
+
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const data = {
-  description:
-    "Papermark is an open-source document sharing infrastructure. Free alternative to Docsend with custom domain. Manage secure document sharing with real-time analytics.",
-  title: "Papermark | The Open Source DocSend Alternative",
+  description: BRAND_DESCRIPTION,
+  title: BRAND_TITLE,
   url: "/",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.papermark.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
   title: data.title,
   description: data.description,
+  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Papermark",
-    images: [
-      {
-        url: "/_static/meta-image.png",
-        width: 800,
-        height: 600,
-      },
-    ],
+    siteName: BRAND_NAME,
+    images: BRAND_IMAGE_URL
+      ? [{ url: BRAND_IMAGE_URL, width: 1200, height: 630 }]
+      : [],
     locale: "en_US",
     type: "website",
   },
@@ -37,8 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: data.title,
     description: data.description,
-    creator: "@papermarkio",
-    images: ["/_static/meta-image.png"],
+    images: BRAND_IMAGE_URL ? [BRAND_IMAGE_URL] : [],
   },
 };
 
@@ -51,7 +56,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <PlausibleProvider
-          domain="papermark.io"
+          domain={BRAND_HOST}
           enabled={process.env.NEXT_PUBLIC_VERCEL_ENV === "production"}
         />
       </head>

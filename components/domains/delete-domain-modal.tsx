@@ -9,12 +9,13 @@ import {
 import { useTeam } from "@/context/team-context";
 import { toast } from "sonner";
 
+import { useAnalytics } from "@/lib/analytics";
+import { BRAND_HOST } from "@/lib/branding";
+
 import { Button } from "@/components/ui/button";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-
-import { useAnalytics } from "@/lib/analytics";
 
 function DeleteDomainModal({
   showDeleteDomainModal,
@@ -87,11 +88,11 @@ function DeleteDomainModal({
         <DialogTitle className="text-2xl">Delete Domain</DialogTitle>
         <DialogDescription>
           This will permanently delete your domain. Links using this domain will
-          be reset to <span className="font-medium">papermark.com</span> links.
+          be reset to <span className="font-medium">{BRAND_HOST}</span> links.
           This action cannot be undone.
           <div className="mt-3 text-sm font-medium text-foreground">
             {domain}{" "}
-            <span className="text-muted-foreground">→ papermark.com</span>
+            <span className="text-muted-foreground">→ {BRAND_HOST}</span>
           </div>
         </DialogDescription>
       </div>

@@ -1,3 +1,4 @@
+import { MARKETING_EMAILS_ENABLED } from "@/lib/emails/marketing";
 import { sendEmail } from "@/lib/resend";
 
 import HundredViewsCongratsEmail from "@/components/emails/hundred-views-congrats";
@@ -8,6 +9,7 @@ import { CreateUserEmailProps } from "../types";
 export const sendHundredViewsCongratsEmail = async (
   params: CreateUserEmailProps,
 ) => {
+  if (!MARKETING_EMAILS_ENABLED) return;
   const { name, email } = params.user;
   const emailTemplate = HundredViewsCongratsEmail({ name });
   try {

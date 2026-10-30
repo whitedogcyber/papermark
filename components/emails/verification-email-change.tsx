@@ -24,7 +24,7 @@ interface ConfirmEmailChangeProps {
 export function ConfirmEmailChange({
   email = "email@example.com",
   newEmail = "new@example.com",
-  confirmUrl = "https://www.papermark.com",
+  confirmUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`,
 }: ConfirmEmailChangeProps) {
   return (
     <Html>

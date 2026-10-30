@@ -48,7 +48,7 @@ export default async function handle(
             messages: [
               {
                 role: "user",
-                content: "Initializing chat with Papermark Assistant",
+                content: "Initializing chat with WhiteDog Share Assistant",
                 file_ids: [documentVersion?.fileId || ""],
                 metadata: { intitialMessage: true },
               },

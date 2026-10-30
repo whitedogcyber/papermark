@@ -15,6 +15,12 @@ import { ParsedUrlQuery } from "querystring";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
+import {
+  BRAND_DESCRIPTION,
+  BRAND_IMAGE_URL,
+  BRAND_TITLE,
+} from "@/lib/branding";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -391,9 +397,9 @@ export const convertThreadMessagesToMessages = (
 };
 
 export function constructMetadata({
-  title = "Papermark | The Open Source DocSend Alternative",
-  description = "Papermark is an open-source document sharing alternative to DocSend with built-in engagement analytics and 100% white-labeling.",
-  image = "https://www.papermark.com/_static/meta-image.png",
+  title = BRAND_TITLE,
+  description = BRAND_DESCRIPTION,
+  image = BRAND_IMAGE_URL,
   favicon = "/favicon.ico",
   noIndex = false,
 }: {
@@ -420,7 +426,6 @@ export function constructMetadata({
       title,
       description,
       images: [image],
-      creator: "@papermarkio",
     },
     favicon,
     ...(noIndex && {

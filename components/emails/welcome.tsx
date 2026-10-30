@@ -69,7 +69,7 @@ const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
                 If you have any questions or feedback just respond to this
                 email.{" "}
                 <Link
-                  href="https://cal.link/papermark"
+                  href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -83,14 +83,14 @@ const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
             <Footer />
             <Text className="flex gap-x-1 text-xs">
               <Link
-                href="https://www.papermark.com/customers"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                 target="_blank"
                 className="text-xs text-gray-400"
               >
                 Customer stories
               </Link>
               <Link
-                href="https://x.com/papermarkio"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                 target="_blank"
                 className="text-xs text-gray-400"
                 rel="noopener noreferrer"
@@ -98,7 +98,7 @@ const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
                 · X/Twitter
               </Link>
               <Link
-                href="https://www.linkedin.com/company/papermarkio"
+                href={`${process.env.NEXT_PUBLIC_BASE_URL}`}
                 target="_blank"
                 className="text-xs text-gray-400"
                 rel="noopener noreferrer"

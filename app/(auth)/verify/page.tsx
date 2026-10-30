@@ -3,31 +3,37 @@ import Link from "next/link";
 
 import NotFound from "@/pages/404";
 
+import { BRAND_LOGO_URL, BRAND_NAME } from "@/lib/branding";
 import { generateChecksum } from "@/lib/utils/generate-checksum";
 
-import { LogoCloud } from "@/components/shared/logo-cloud";
+import {
+  BrandLegalNotice,
+  BrandSidePanel,
+} from "@/components/auth/brand-panels";
 import { Button } from "@/components/ui/button";
 
 const data = {
-  description: "Verify login to Papermark",
-  title: "Verify | Papermark",
+  description: `Verify login to ${BRAND_NAME}`,
+  title: `Verify | ${BRAND_NAME}`,
   url: "/verify",
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.papermark.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
   title: data.title,
   description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,
     url: data.url,
-    siteName: "Papermark",
+    siteName: BRAND_NAME,
     images: [
       {
-        url: "/_static/meta-image.png",
-        width: 800,
-        height: 600,
+        url: "/_static/brand/og-image.png",
+        width: 1200,
+        height: 630,
       },
     ],
     locale: "en_US",
@@ -37,8 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: data.title,
     description: data.description,
-    creator: "@papermarkio",
-    images: ["/_static/meta-image.png"],
+    images: ["/_static/brand/og-image.png"],
   },
 };
 
@@ -80,9 +85,9 @@ export default function VerifyPage({
         <div className="z-10 mx-5 mt-[calc(1vh)] h-fit w-full max-w-md overflow-hidden rounded-lg sm:mx-0 sm:mt-[calc(2vh)] md:mt-[calc(3vh)]">
           <div className="items-left flex flex-col space-y-3 px-4 py-6 pt-8 sm:px-12">
             <img
-              src="/_static/papermark-logo.svg"
-              alt="Papermark Logo"
-              className="-mt-8 mb-36 h-7 w-auto self-start sm:mb-32 md:mb-48"
+              src={BRAND_LOGO_URL}
+              alt={`${BRAND_NAME} Logo`}
+              className="-mt-8 mb-36 h-14 w-auto self-start sm:mb-32 md:mb-48"
             />
             <Link href="/">
               <span className="text-balance text-3xl font-semibold text-gray-900">
@@ -102,78 +107,10 @@ export default function VerifyPage({
               </Link>
             </div>
           </div>
-          <p className="mt-10 w-full max-w-md px-4 text-xs text-muted-foreground sm:px-12">
-            By clicking continue, you acknowledge that you have read and agree
-            to Papermark&apos;s{" "}
-            <a
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/terms`}
-              target="_blank"
-              className="underline"
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              href={`${process.env.NEXT_PUBLIC_MARKETING_URL}/privacy`}
-              target="_blank"
-              className="underline"
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
+          <BrandLegalNotice />
         </div>
       </div>
-      <div className="relative hidden w-full justify-center overflow-hidden bg-black md:flex md:w-1/2 lg:w-1/2">
-        <div className="relative m-0 flex h-full min-h-[700px] w-full p-0">
-          <div
-            className="relative flex h-full w-full flex-col justify-between"
-            id="features"
-          >
-            {/* Testimonial top 2/3 */}
-            <div
-              className="flex w-full flex-col items-center justify-center"
-              style={{ height: "66.6666%" }}
-            >
-              {/* Image container */}
-              <div className="mb-4 h-64 w-80">
-                <img
-                  className="h-full w-full rounded-2xl object-cover shadow-2xl"
-                  src="/_static/testimonials/backtrace.jpeg"
-                  alt="Backtrace Capital"
-                />
-              </div>
-              {/* Text content */}
-              <div className="max-w-xl text-center">
-                <blockquote className="text-balance font-normal leading-8 text-white sm:text-xl sm:leading-9">
-                  <p>
-                    &quot;We raised our €30M Fund with Papermark Data Rooms.
-                    Love the customization, security and ease of use.&quot;
-                  </p>
-                </blockquote>
-                <figcaption className="mt-4">
-                  <div className="text-balance font-normal text-white">
-                    Michael Münnix
-                  </div>
-                  <div className="text-balance font-light text-gray-400">
-                    Partner, Backtrace Capital
-                  </div>
-                </figcaption>
-              </div>
-            </div>
-            {/* White block with logos bottom 1/3, full width/height */}
-            <div
-              className="absolute bottom-0 left-0 flex w-full flex-col items-center justify-center bg-white"
-              style={{ height: "33.3333%" }}
-            >
-              <div className="mb-4 max-w-xl text-balance text-center font-semibold text-gray-900">
-                Trusted by teams at
-              </div>
-              <LogoCloud />
-            </div>
-          </div>
-        </div>
-      </div>
+      <BrandSidePanel />
     </div>
   );
 }

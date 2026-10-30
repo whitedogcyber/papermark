@@ -7,14 +7,14 @@ import { type Message } from "ai/react";
 import { getServerSession } from "next-auth";
 import { usePlausible } from "next-plausible";
 
-import { Chat } from "@/components/chat/chat";
-import Sparkle from "@/components/shared/icons/sparkle";
-import { Button } from "@/components/ui/button";
-
 import { getFile } from "@/lib/files/get-file";
 import prisma from "@/lib/prisma";
 import { usePlan } from "@/lib/swr/use-billing";
 import { CustomUser } from "@/lib/types";
+
+import { Chat } from "@/components/chat/chat";
+import Sparkle from "@/components/shared/icons/sparkle";
+import { Button } from "@/components/ui/button";
 
 export const getServerSideProps = async (context: any) => {
   const { id } = context.params;
@@ -152,7 +152,7 @@ function Nav({ documentId }: { documentId: string }) {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center gap-x-2">
               <p className="text-2xl font-bold tracking-tighter text-white">
-                Papermark
+                WhiteDog Share
               </p>
               <Sparkle className="h-5 w-5 text-white" />
             </div>

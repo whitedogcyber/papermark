@@ -126,7 +126,7 @@ export default function Invoices() {
                       <TableCell>
                         <div className="flex flex-col">
                           <span className="font-medium">
-                            Papermark Subscription
+                            WhiteDog Share Subscription
                           </span>
                           {invoice.number && (
                             <span className="text-xs text-muted-foreground">

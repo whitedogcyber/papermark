@@ -3,12 +3,12 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
+import { validateEmail } from "@/lib/utils/validate-email";
+
 import { AccountHeader } from "@/components/account/account-header";
 import UploadAvatar from "@/components/account/upload-avatar";
 import AppLayout from "@/components/layouts/app";
 import { Form } from "@/components/ui/form";
-
-import { validateEmail } from "@/lib/utils/validate-email";
 
 const ProfilePage: NextPage = () => {
   const { data: session, update } = useSession();
@@ -20,7 +20,7 @@ const ProfilePage: NextPage = () => {
         <div className="space-y-6">
           <Form
             title="Your Name"
-            description="This will be your display name on Papermark."
+            description="This will be your display name on WhiteDog Share."
             inputAttrs={{
               name: "name",
               placeholder: "Dino Hems",
@@ -48,7 +48,7 @@ const ProfilePage: NextPage = () => {
           />
           <Form
             title="Your Email"
-            description="This will be the email you use to log in to Papermark and receive notification. A confirmation is required for changes."
+            description="This will be the email you use to log in to WhiteDog Share and receive notification. A confirmation is required for changes."
             inputAttrs={{
               name: "email",
               placeholder: "name@example.com",
@@ -81,7 +81,7 @@ const ProfilePage: NextPage = () => {
           />
           <UploadAvatar
             title="Your Avatar"
-            description="This is your avatar image on Papermark."
+            description="This is your avatar image on WhiteDog Share."
             helpText="Square image recommended. Accepted file types: .png, .jpg. Max file
           size: 2MB."
           />
