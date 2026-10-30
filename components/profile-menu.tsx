@@ -7,7 +7,7 @@ import { HelpCircle, LogOut, Search } from "lucide-react";
 import { FileText } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
-import { BRAND_HELP_URL, BRAND_SUPPORT_EMAIL } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 import { cn } from "@/lib/utils";
 
 import ChevronUp from "@/components/shared/icons/chevron-up";
@@ -48,6 +48,7 @@ interface Article {
 }
 
 const ProfileMenu = ({ className, size }: ProfileMenuProps) => {
+  const { helpUrl, supportEmail } = useRuntimeLinks();
   const { data: session, status } = useSession();
   const [searchOpen, setSearchOpen] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -130,9 +131,9 @@ const ProfileMenu = ({ className, size }: ProfileMenuProps) => {
                   <DropdownMenuSeparator className="!my-2" />
                   <ModeToggle />
 
-                  {BRAND_HELP_URL ? (
+                  {helpUrl ? (
                     <a
-                      href={BRAND_HELP_URL}
+                      href={helpUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex w-full items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
@@ -142,9 +143,9 @@ const ProfileMenu = ({ className, size }: ProfileMenuProps) => {
                     </a>
                   ) : null}
 
-                  {BRAND_SUPPORT_EMAIL ? (
+                  {supportEmail ? (
                     <a
-                      href={`mailto:${BRAND_SUPPORT_EMAIL}`}
+                      href={`mailto:${supportEmail}`}
                       className="my-1 flex items-center px-3 py-2 text-sm duration-200 hover:bg-gray-200 dark:hover:bg-muted"
                     >
                       <HelpCircle className="mr-2 h-4 w-4" />

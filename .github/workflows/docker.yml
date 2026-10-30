@@ -55,14 +55,10 @@ jobs:
           BRAND_URL: ${{ vars.BRAND_URL }}
           ENABLE_SLACK: ${{ vars.ENABLE_SLACK }}
           ENABLE_SHAREPOINT: ${{ vars.ENABLE_SHAREPOINT }}
-          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
-          TERMS_URL: ${{ vars.TERMS_URL }}
-          PRIVACY_URL: ${{ vars.PRIVACY_URL }}
-          HELP_URL: ${{ vars.HELP_URL }}
         run: |
           echo "image=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
-          for required in BASE_URL BASE_HOST HANKO_TENANT_ID; do
+          for required in HANKO_TENANT_ID; do
             if [ -z "${!required}" ]; then
               echo "::error::Repository variable $required is not set"
               exit 1
@@ -72,9 +68,8 @@ jobs:
           # Only pass variables that are set, so Dockerfile defaults still apply.
           {
             echo "build-args<<EOF"
-            for name in BASE_URL BASE_HOST HANKO_TENANT_ID BRAND_NAME BRAND_TITLE \
-                        BRAND_DESCRIPTION BRAND_IMAGE_URL BRAND_URL ENABLE_SLACK ENABLE_SHAREPOINT \
-                        SUPPORT_EMAIL TERMS_URL PRIVACY_URL HELP_URL; do
+            for name in HANKO_TENANT_ID BRAND_NAME BRAND_TITLE \
+                        BRAND_DESCRIPTION BRAND_IMAGE_URL BRAND_URL ENABLE_SLACK ENABLE_SHAREPOINT; do
               if [ -n "${!name}" ]; then echo "${name}=${!name}"; fi
             done
             echo "EOF"

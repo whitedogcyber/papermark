@@ -61,36 +61,31 @@ RUN node -e "const f='next.config.mjs';let s=require('fs').readFileSync(f,'utf8'
 # Build the application
 # Note: Some env vars need to be present at build time for Next.js
 # Set dummy values for build - real values come from environment at runtime
-ARG BASE_HOST="localhost"
-ARG BASE_URL="http://localhost:3000"
+# The app URL and host are NOT baked in. The build uses these placeholders and
+# docker-entrypoint.sh swaps them for the container's runtime values
+# (NEXT_PUBLIC_BASE_URL or NEXTAUTH_URL), so one image runs in every
+# environment. BASE_URL / BASE_HOST build args are ignored.
 ARG HANKO_TENANT_ID="dummy"
-ENV NEXT_PUBLIC_BASE_URL=$BASE_URL
-ENV NEXTAUTH_URL=$BASE_URL
-ENV NEXT_PUBLIC_APP_BASE_HOST=$BASE_HOST
-ENV NEXT_PUBLIC_WEBHOOK_BASE_HOST=$BASE_URL
-ENV NEXT_PUBLIC_MARKETING_URL=$BASE_URL
+ENV NEXT_PUBLIC_BASE_URL=https://wd-runtime-base-url.invalid
+ENV NEXTAUTH_URL=https://wd-runtime-base-url.invalid
+ENV NEXT_PUBLIC_APP_BASE_HOST=wd-runtime-base-host.invalid
+ENV NEXT_PUBLIC_WEBHOOK_BASE_HOST=https://wd-runtime-base-url.invalid
+ENV NEXT_PUBLIC_MARKETING_URL=https://wd-runtime-base-url.invalid
 ENV NEXT_PUBLIC_UPLOAD_TRANSPORT=s3
 # Public branding for page titles and link previews (compiled in at build).
-# Override with --build-arg. Empty values fall back to WhiteDog defaults;
-# empty SUPPORT_EMAIL / TERMS_URL / PRIVACY_URL / HELP_URL hide those links.
+# Override with --build-arg. Empty values fall back to WhiteDog defaults.
+# Support / help / terms / privacy links are runtime env (SUPPORT_EMAIL,
+# HELP_URL, TERMS_URL, PRIVACY_URL), not build args.
 ARG BRAND_NAME="WhiteDog Share"
 ARG BRAND_TITLE=""
 ARG BRAND_DESCRIPTION="Secure document sharing and data rooms by WhiteDog Cyber."
-ARG BRAND_IMAGE_URL="https://share.whitedog.cloud/_static/brand/og-image.png"
+ARG BRAND_IMAGE_URL="/_static/brand/og-image.png"
 ARG BRAND_URL=""
 ENV NEXT_PUBLIC_BRAND_NAME=$BRAND_NAME
 ENV NEXT_PUBLIC_BRAND_TITLE=$BRAND_TITLE
 ENV NEXT_PUBLIC_BRAND_DESCRIPTION=$BRAND_DESCRIPTION
 ENV NEXT_PUBLIC_BRAND_IMAGE_URL=$BRAND_IMAGE_URL
 ENV NEXT_PUBLIC_BRAND_URL=$BRAND_URL
-ARG SUPPORT_EMAIL=""
-ARG TERMS_URL=""
-ARG PRIVACY_URL=""
-ARG HELP_URL=""
-ENV NEXT_PUBLIC_BRAND_SUPPORT_EMAIL=$SUPPORT_EMAIL
-ENV NEXT_PUBLIC_BRAND_TERMS_URL=$TERMS_URL
-ENV NEXT_PUBLIC_BRAND_PRIVACY_URL=$PRIVACY_URL
-ENV NEXT_PUBLIC_BRAND_HELP_URL=$HELP_URL
 # Slack integration: off unless set to "true"
 ARG ENABLE_SLACK="false"
 ENV NEXT_PUBLIC_ENABLE_SLACK=$ENABLE_SLACK

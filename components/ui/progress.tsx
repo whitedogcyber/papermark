@@ -3,7 +3,7 @@ import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { HelpCircleIcon } from "lucide-react";
 
-import { BRAND_SUPPORT_EMAIL } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 import { cn } from "@/lib/utils";
 
 const Progress = React.forwardRef<
@@ -13,6 +13,7 @@ const Progress = React.forwardRef<
     error?: boolean;
   }
 >(({ className, value, text, error, ...props }, ref) => {
+  const { supportEmail } = useRuntimeLinks();
   const textColor = `linear-gradient(to right, 
   text-background ${value || 0}%, 
   text-foreground ${value || 0}%
@@ -48,8 +49,8 @@ const Progress = React.forwardRef<
         <div className="absolute inset-0 flex items-center justify-center py-2">
           <div className="absolute inset-0 flex items-center justify-center gap-x-2 overflow-hidden bg-destructive text-destructive-foreground">
             <span className="text-xs">{text}</span>
-            {BRAND_SUPPORT_EMAIL ? (
-              <a href={`mailto:${BRAND_SUPPORT_EMAIL}`} title="Contact Support">
+            {supportEmail ? (
+              <a href={`mailto:${supportEmail}`} title="Contact Support">
                 <HelpCircleIcon className="size-4" />
               </a>
             ) : null}

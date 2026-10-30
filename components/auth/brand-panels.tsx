@@ -1,10 +1,11 @@
+"use client";
+
 import {
   BRAND_DESCRIPTION,
   BRAND_LOGO_DARK_URL,
   BRAND_NAME,
-  BRAND_PRIVACY_URL,
-  BRAND_TERMS_URL,
 } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 
 /** Right-hand panel on sign-in, registration and verification pages. */
 export function BrandSidePanel() {
@@ -31,6 +32,8 @@ export function BrandSidePanel() {
 
 /** "By clicking continue..." line. Hidden when no terms or privacy URL is set. */
 export function BrandLegalNotice({ className }: { className?: string }) {
+  const { termsUrl: BRAND_TERMS_URL, privacyUrl: BRAND_PRIVACY_URL } =
+    useRuntimeLinks();
   if (!BRAND_TERMS_URL && !BRAND_PRIVACY_URL) return null;
   return (
     <p

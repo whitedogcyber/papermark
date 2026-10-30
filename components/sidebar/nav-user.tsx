@@ -15,7 +15,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-import { BRAND_HELP_URL, BRAND_SUPPORT_EMAIL } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -54,6 +54,7 @@ interface Article {
 }
 
 export function NavUser() {
+  const { helpUrl, supportEmail } = useRuntimeLinks();
   const { data: session, status } = useSession();
   const { isMobile } = useSidebar();
 
@@ -156,21 +157,19 @@ export function NavUser() {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {BRAND_HELP_URL ? (
+                {helpUrl ? (
                   <DropdownMenuItem
-                    onClick={() => window.open(BRAND_HELP_URL, "_blank")}
+                    onClick={() => window.open(helpUrl, "_blank")}
                   >
                     <LifeBuoyIcon />
                     Help Center
                   </DropdownMenuItem>
                 ) : null}
-                {BRAND_SUPPORT_EMAIL ? (
+                {supportEmail ? (
                   <DropdownMenuItem
                     onClick={() => {
-                      navigator.clipboard.writeText(BRAND_SUPPORT_EMAIL);
-                      toast.success(
-                        `${BRAND_SUPPORT_EMAIL} copied to clipboard`,
-                      );
+                      navigator.clipboard.writeText(supportEmail);
+                      toast.success(`${supportEmail} copied to clipboard`);
                     }}
                   >
                     <MailIcon />

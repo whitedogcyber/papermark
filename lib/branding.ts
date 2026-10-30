@@ -1,7 +1,10 @@
 /**
- * Public-facing branding: page titles, link previews, logos and links.
- * NEXT_PUBLIC_* values are compiled in at build time (see Dockerfile build
- * args). Defaults are WhiteDog Share.
+ * Public-facing branding: page titles, link previews and logos.
+ * Brand NEXT_PUBLIC_* values are compiled in at build time. The app URL and
+ * host are build placeholders swapped for the runtime values when the
+ * container starts (docker-entrypoint.sh), so one image serves every
+ * environment. Support, help, terms and privacy links are runtime settings:
+ * see lib/runtime-links.ts.
  */
 const env = (v: string | undefined) => v?.trim() || "";
 
@@ -44,16 +47,6 @@ export const BRAND_LOGO_URL =
 export const BRAND_LOGO_DARK_URL =
   env(process.env.NEXT_PUBLIC_BRAND_LOGO_DARK_URL) ||
   "/_static/brand/logo-white.svg";
-
-/** Terms / privacy / help links. Hidden when empty. */
-export const BRAND_TERMS_URL = env(process.env.NEXT_PUBLIC_BRAND_TERMS_URL);
-export const BRAND_PRIVACY_URL = env(process.env.NEXT_PUBLIC_BRAND_PRIVACY_URL);
-export const BRAND_HELP_URL = env(process.env.NEXT_PUBLIC_BRAND_HELP_URL);
-
-/** Support contact in menus and error screens. Hidden when empty. */
-export const BRAND_SUPPORT_EMAIL = env(
-  process.env.NEXT_PUBLIC_BRAND_SUPPORT_EMAIL,
-);
 
 export const BRAND_URL = env(process.env.NEXT_PUBLIC_BRAND_URL) || baseUrl;
 
