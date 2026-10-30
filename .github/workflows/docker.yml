@@ -212,17 +212,19 @@ jobs:
             --verify-tag
 
   deploy:
-    if: github.ref_type == 'tag'
     needs: [prepare, merge, release]
     runs-on: ubuntu-24.04
+    environment: ${{ github.ref_type == 'tag' && 'Prod' || github.ref == 'refs/heads/main' && 'Stage' || 'Dev' }}
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-2
       - name: Restart deployment via Lambda
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-2
           LAMBDA_URL: ${{ vars.RESTART_LAMBDA_URL }}
-          NAMESPACE: papermark
+          NAMESPACE: ${{ vars.K8S_NAMESPACE }}
           DEPLOYMENT: papermark
         run: |
           payload=$(jq -n --arg ns "$NAMESPACE" --arg d "$DEPLOYMENT" \
