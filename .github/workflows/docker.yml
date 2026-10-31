@@ -221,12 +221,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Docker Login
-        uses: docker/login-action@v4
+      # Trigger.dev deploy images go to ECR (see docs/trigger-ecr.md).
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
+      - name: Log in to ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: 🚀 Deploy Trigger.dev
         env:
