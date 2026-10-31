@@ -1,6 +1,6 @@
 import { JSXElementConstructor, ReactElement } from "react";
 
-import { getStorageConfig } from "@/ee/features/storage/config";
+import { getStorageConfig } from "@/whitedog/storage/config";
 import { SESv2, SendEmailCommandInput } from "@aws-sdk/client-sesv2";
 import { render, toPlainText } from "@react-email/render";
 

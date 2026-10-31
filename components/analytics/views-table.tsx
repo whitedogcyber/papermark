@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import {
   ColumnDef,
   SortingState,
@@ -32,12 +32,7 @@ import { toast } from "sonner";
 import useSWR from "swr";
 
 import { usePlan } from "@/lib/swr/use-billing";
-import {
-  cn,
-  durationFormat,
-  fetcher,
-  timeAgo,
-} from "@/lib/utils";
+import { cn, durationFormat, fetcher, timeAgo } from "@/lib/utils";
 import { downloadCSV } from "@/lib/utils/csv";
 
 import { Button } from "@/components/ui/button";

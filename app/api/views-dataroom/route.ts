@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { reportDeniedAccessAttempt } from "@/ee/features/access-notifications";
-import { getTeamStorageConfigById } from "@/ee/features/storage/config";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { reportDeniedAccessAttempt } from "@/whitedog/access-alerts";
+import { getTeamStorageConfigById } from "@/whitedog/storage/config";
 import { ItemType, LinkAudienceType } from "@prisma/client";
 import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth";

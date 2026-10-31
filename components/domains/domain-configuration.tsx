@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 
 import { InfoIcon } from "lucide-react";
 
-import { getSubdomain } from "@/lib/domains";
+import { getSubdomain } from "@/lib/domain-utils";
 import { DomainVerificationStatusProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,26 @@ export default function DomainConfiguration({
   const { domainJson, configJson } = response;
   const subdomain = getSubdomain(domainJson.name, domainJson.apexName);
   const [recordType, setRecordType] = useState(!!subdomain ? "CNAME" : "A");
+
+  if (configJson?.selfHosted) {
+    const target = configJson.recommendedCNAME?.[0]?.value ?? "";
+    return (
+      <div className="pt-5">
+        <DnsRecord
+          instructions={`Point <code>${domainJson?.name ?? ""}</code> at ${target} with this record on your DNS provider. For a root domain, use an ALIAS or ANAME record if your provider supports it.`}
+          records={[
+            {
+              type: "CNAME",
+              name: subdomain ?? "@",
+              value: target,
+              ttl: "3600",
+            },
+          ]}
+          warning="Your WhiteDog Share administrator must also add this domain to the CDN and its TLS certificate before links on it will load over HTTPS."
+        />
+      </div>
+    );
+  }
 
   if (status === "Conflicting DNS Records") {
     return (
@@ -67,14 +87,17 @@ export default function DomainConfiguration({
   if (status === "Unknown Error") {
     return (
       <div className="pt-5">
-        <p className="mb-5 text-sm">{response.domainJson.error.message}</p>
+        <p className="mb-5 text-sm">
+          {response.domainJson?.error?.message ??
+            "Could not check this domain."}
+        </p>
       </div>
     );
   }
 
   const txtVerification =
     status === "Pending Verification"
-      ? domainJson.verification.find((x: any) => x.type === "TXT")
+      ? domainJson?.verification?.find((x: any) => x.type === "TXT")
       : undefined;
 
   return (

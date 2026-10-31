@@ -1,9 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import getSubscriptionItem, {
-  SubscriptionDiscount,
-} from "@/ee/stripe/functions/get-subscription-item";
-import { isOldAccount } from "@/ee/stripe/utils";
 import { getServerSession } from "next-auth/next";
 
 import { errorhandler } from "@/lib/errorHandler";
@@ -25,7 +21,6 @@ export default async function handle(
 
     const { teamId } = req.query as { teamId: string };
     const userId = (session.user as CustomUser).id;
-    const withDiscount = req.query.withDiscount === "true";
 
     try {
       const team = await prisma.team.findUnique({
@@ -65,27 +60,6 @@ export default async function handle(
         subscriptionCycle = durationInDays > 31 ? "yearly" : "monthly";
       }
 
-      // Fetch discount information if team has an active subscription
-      let discount: SubscriptionDiscount | null = null;
-      if (
-        withDiscount &&
-        team?.subscriptionId &&
-        team.plan &&
-        team.plan !== "free" &&
-        team.pauseStartsAt === null
-      ) {
-        try {
-          const subscriptionData = await getSubscriptionItem(
-            team.subscriptionId,
-            isOldAccount(team.plan),
-          );
-          discount = subscriptionData.discount;
-        } catch (error) {
-          // If we can't fetch discount info, just log and continue without it
-          console.error("Failed to fetch discount information:", error);
-        }
-      }
-
       return res.status(200).json({
         plan: team.plan,
         startsAt: team.startsAt,
@@ -94,7 +68,7 @@ export default async function handle(
         subscriptionCycle,
         pauseStartsAt: team.pauseStartsAt,
         cancelledAt: team.cancelledAt,
-        discount,
+        discount: null,
       });
     } catch (error) {
       errorhandler(error, res);

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import { useDebounce } from "use-debounce";
 
-import { BRAND_HOST } from "@/lib/branding";
+import { BRAND_HOST, DEFAULT_VIEWER_BRAND } from "@/lib/branding";
 import { useBrand, useDataroomBrand } from "@/lib/swr/use-brand";
 import { useDataroom } from "@/lib/swr/use-dataroom";
 import { cn, convertDataUrlToFile, uploadImage } from "@/lib/utils";
@@ -41,8 +41,12 @@ export default function DataroomBrandPage() {
   });
   const { brand: globalBrand } = useBrand();
 
-  const [brandColor, setBrandColor] = useState<string>("#000000");
-  const [accentColor, setAccentColor] = useState<string>("#FFFFFF");
+  const [brandColor, setBrandColor] = useState<string>(
+    DEFAULT_VIEWER_BRAND.brandColor,
+  );
+  const [accentColor, setAccentColor] = useState<string>(
+    DEFAULT_VIEWER_BRAND.accentColor,
+  );
   const [logo, setLogo] = useState<string | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [originalBanner, setOriginalBanner] = useState<string | null>(null);
@@ -144,13 +148,20 @@ export default function DataroomBrandPage() {
     // Merge dataroom brand with global brand as fallback
     if (dataroomBrand || globalBrand) {
       setBrandColor(
-        dataroomBrand?.brandColor || globalBrand?.brandColor || "#000000",
+        dataroomBrand?.brandColor ||
+          globalBrand?.brandColor ||
+          DEFAULT_VIEWER_BRAND.brandColor,
       );
       setAccentColor(
-        dataroomBrand?.accentColor || globalBrand?.accentColor || "#FFFFFF",
+        dataroomBrand?.accentColor ||
+          globalBrand?.accentColor ||
+          DEFAULT_VIEWER_BRAND.accentColor,
       );
       setLogo(dataroomBrand?.logo || globalBrand?.logo || null);
-      const bannerValue = dataroomBrand?.banner || globalBrand?.banner || null;
+      const bannerValue =
+        dataroomBrand?.banner ||
+        globalBrand?.banner ||
+        DEFAULT_VIEWER_BRAND.banner;
       setBanner(bannerValue);
       setOriginalBanner(bannerValue);
       const message =
@@ -256,9 +267,10 @@ export default function DataroomBrandPage() {
     );
     if (res.ok) {
       setLogo(null);
-      setBanner(DEFAULT_BANNER_IMAGE);
-      setOriginalBanner(DEFAULT_BANNER_IMAGE);
-      setBrandColor("#000000");
+      setBanner(DEFAULT_VIEWER_BRAND.banner);
+      setOriginalBanner(DEFAULT_VIEWER_BRAND.banner);
+      setBrandColor(DEFAULT_VIEWER_BRAND.brandColor);
+      setAccentColor(DEFAULT_VIEWER_BRAND.accentColor);
       setIsLoading(false);
       toast.success("Branding reset successfully");
       router.reload();

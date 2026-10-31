@@ -4,6 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import slugify from "@sindresorhus/slugify";
 import { getServerSession } from "next-auth/next";
 
+import { rejectIfPending } from "@/lib/editions-server/guard";
 import prisma from "@/lib/prisma";
 import { CustomUser } from "@/lib/types";
 
@@ -119,6 +120,8 @@ export default async function handle(
       if (!teamAccess) {
         return res.status(401).end("Unauthorized");
       }
+
+      if (await rejectIfPending(teamId, res)) return;
 
       const parentFolder = await prisma.folder.findUnique({
         where: {

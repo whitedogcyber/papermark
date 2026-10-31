@@ -2,7 +2,7 @@ import {
   type StorageConfig,
   getStorageConfig,
   getTeamStorageConfigById,
-} from "@/ee/features/storage/config";
+} from "@/whitedog/storage/config";
 import { LambdaClient } from "@aws-sdk/client-lambda";
 import { S3Client } from "@aws-sdk/client-s3";
 

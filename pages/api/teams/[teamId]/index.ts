@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { cancelSubscription } from "@/ee/stripe";
-import { isOldAccount } from "@/ee/stripe/utils";
 import { DocumentStorageType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
@@ -10,7 +8,6 @@ import { errorhandler } from "@/lib/errorHandler";
 import { deleteFiles } from "@/lib/files/delete-team-files-server";
 import prisma from "@/lib/prisma";
 import { redis } from "@/lib/redis";
-
 import { CustomUser } from "@/lib/types";
 import { unsubscribe } from "@/lib/unsend";
 
@@ -215,18 +212,15 @@ export default async function handle(
       await Promise.all([
         // delete domains, if exists on team
         team.domains && domainPromises,
-        // delete subscription, if exists on team
-        team.stripeId &&
-        cancelSubscription(team.stripeId, isOldAccount(team.plan)),
         // delete user from contact book
         unsubscribe((session.user as CustomUser).email ?? ""),
         // delete user, if no other teams
         userTeams.length === 1 &&
-        prisma.user.delete({
-          where: {
-            id: (session.user as CustomUser).id,
-          },
-        }),
+          prisma.user.delete({
+            where: {
+              id: (session.user as CustomUser).id,
+            },
+          }),
         // delete team branding from redis
         redis.del(`brand:logo:${teamId}`),
 

@@ -1,2 +1,1 @@
-// Re-export from ee folder
-export { default } from "@/ee/features/templates/api/datarooms/generate";
+export { createFromTemplateHandler as default } from "@/whitedog/templates/api";

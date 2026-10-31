@@ -66,7 +66,7 @@ export default function DocumentUpload({
         const message = `File size too big for ${fileType} (max. ${fileSizeLimitMB} MB)`;
         if (isFree && !isTrial) {
           toast.error(message, {
-            description: "Upgrade to a paid plan to increase the limit",
+            description: "Request an upgrade to increase the limit",
             action: {
               label: "Upgrade",
               onClick: () => router.push("/settings/upgrade"),
@@ -109,7 +109,7 @@ export default function DocumentUpload({
         message = `File size too big (max. ${fileSizeLimitMB} MB)`;
         if (isFree && !isTrial) {
           toast.error(message, {
-            description: "Upgrade to a paid plan to increase the limit",
+            description: "Request an upgrade to increase the limit",
             action: {
               label: "Upgrade",
               onClick: () => router.push("/settings/upgrade"),
@@ -122,8 +122,8 @@ export default function DocumentUpload({
         const isSupported = SUPPORTED_DOCUMENT_MIME_TYPES.includes(file.type);
         message = "File type not supported";
         if (isFree && !isTrial && isSupported) {
-          toast.error(`${message} on free plan`, {
-            description: `Upgrade to a paid plan to upload ${file.type} files`,
+          toast.error(message, {
+            description: `Request an upgrade to upload ${file.type} files`,
             action: {
               label: "Upgrade",
               onClick: () => router.push("/settings/upgrade"),

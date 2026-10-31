@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import {
   Brain,
   BriefcaseIcon,
   BuildingIcon,
   FileTextIcon,
-  FolderKanbanIcon,
   FolderIcon,
+  FolderKanbanIcon,
   HomeIcon,
   LineChartIcon,
   RocketIcon,
@@ -35,6 +35,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -53,7 +54,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import { UpgradePlanModal } from "../billing/upgrade-plan-modal";
 
@@ -79,7 +79,9 @@ export function AddDataroomModal({
   const [selectedFolderPaths, setSelectedFolderPaths] = useState<Set<string>>(
     new Set(),
   );
-  const [editingFolderPath, setEditingFolderPath] = useState<string | null>(null);
+  const [editingFolderPath, setEditingFolderPath] = useState<string | null>(
+    null,
+  );
   const [editingFolderName, setEditingFolderName] = useState<string>("");
 
   const teamInfo = useTeam();
@@ -165,7 +167,9 @@ export function AddDataroomModal({
 
   const handleGenerateFolders = async () => {
     if (!aiDescription.trim()) {
-      return toast.error("Please describe what kind of dataroom you want to create.");
+      return toast.error(
+        "Please describe what kind of dataroom you want to create.",
+      );
     }
 
     setAiGenerating(true);
@@ -226,7 +230,7 @@ export function AddDataroomModal({
 
       // Filter folders based on selection
       const filteredFolders = filterSelectedFolders(generatedFolders);
-      
+
       if (filteredFolders.length === 0) {
         return toast.error("Please select at least one folder to include.");
       }
@@ -378,7 +382,9 @@ export function AddDataroomModal({
 
   // Generate a unique path for each folder
   const generateFolderPath = (folder: any, parentPath: string = ""): string => {
-    const currentPath = parentPath ? `${parentPath}/${folder.name}` : folder.name;
+    const currentPath = parentPath
+      ? `${parentPath}/${folder.name}`
+      : folder.name;
     return currentPath;
   };
 
@@ -391,12 +397,12 @@ export function AddDataroomModal({
   ): any[] => {
     return folders.map((folder) => {
       const folderPath = generateFolderPath(folder, currentPath);
-      
+
       if (folderPath === targetPath) {
         // Update this folder's name
         return { ...folder, name: newName };
       }
-      
+
       // Recursively update subfolders
       if (folder.subfolders && folder.subfolders.length > 0) {
         return {
@@ -409,7 +415,7 @@ export function AddDataroomModal({
           ),
         };
       }
-      
+
       return folder;
     });
   };
@@ -423,7 +429,7 @@ export function AddDataroomModal({
   // Save edited folder name
   const saveFolderName = () => {
     if (!editingFolderPath || !generatedFolders) return;
-    
+
     if (editingFolderName.trim()) {
       const updatedFolders = updateFolderName(
         generatedFolders,
@@ -431,11 +437,11 @@ export function AddDataroomModal({
         editingFolderName.trim(),
       );
       setGeneratedFolders(updatedFolders);
-      
+
       // Update selected paths if needed (recalculate paths)
       initializeFolderSelection(updatedFolders);
     }
-    
+
     setEditingFolderPath(null);
     setEditingFolderName("");
   };
@@ -449,7 +455,7 @@ export function AddDataroomModal({
   // Toggle folder selection
   const toggleFolderSelection = (path: string, folder: any) => {
     const newSelected = new Set(selectedFolderPaths);
-    
+
     if (newSelected.has(path)) {
       // If unchecking, remove this folder and all its subfolders
       newSelected.delete(path);
@@ -467,37 +473,44 @@ export function AddDataroomModal({
       // If checking, add this folder
       newSelected.add(path);
     }
-    
+
     setSelectedFolderPaths(newSelected);
   };
 
   // Filter folders based on selection
-  const filterSelectedFolders = (folders: any[], parentPath: string = ""): any[] => {
+  const filterSelectedFolders = (
+    folders: any[],
+    parentPath: string = "",
+  ): any[] => {
     return folders
       .map((folder) => {
         const currentPath = generateFolderPath(folder, parentPath);
         const isSelected = selectedFolderPaths.has(currentPath);
-        
+
         if (!isSelected) {
           return null;
         }
-        
+
         const filteredSubfolders = folder.subfolders
           ? filterSelectedFolders(folder.subfolders, currentPath)
           : undefined;
-        
+
         return {
           ...folder,
-          subfolders: filteredSubfolders && filteredSubfolders.length > 0 
-            ? filteredSubfolders 
-            : undefined,
+          subfolders:
+            filteredSubfolders && filteredSubfolders.length > 0
+              ? filteredSubfolders
+              : undefined,
         };
       })
       .filter((folder) => folder !== null);
   };
 
   // Initialize all folders as selected when preview is shown
-  const initializeFolderSelection = (folders: any[], parentPath: string = "") => {
+  const initializeFolderSelection = (
+    folders: any[],
+    parentPath: string = "",
+  ) => {
     const paths = new Set<string>();
     const collectPaths = (f: any[], currentPath: string = "") => {
       f.forEach((folder) => {
@@ -522,7 +535,7 @@ export function AddDataroomModal({
         {folders.map((folder, index) => {
           const currentPath = generateFolderPath(folder, parentPath);
           const isSelected = selectedFolderPaths.has(currentPath);
-          
+
           return (
             <div key={`${parentPath}-${index}`} className="pl-4">
               <div className="flex items-center gap-2 py-1">
@@ -532,12 +545,14 @@ export function AddDataroomModal({
                 />
                 <Checkbox
                   checked={isSelected}
-                  onCheckedChange={() => toggleFolderSelection(currentPath, folder)}
+                  onCheckedChange={() =>
+                    toggleFolderSelection(currentPath, folder)
+                  }
                   id={`folder-${currentPath}`}
                 />
                 <label
                   htmlFor={`folder-${currentPath}`}
-                  className="flex items-center gap-2 cursor-pointer flex-1"
+                  className="flex flex-1 cursor-pointer items-center gap-2"
                 >
                   <FolderIcon className="h-4 w-4 text-gray-500" />
                   {editingFolderPath === currentPath ? (
@@ -554,13 +569,13 @@ export function AddDataroomModal({
                           cancelFolderNameEdit();
                         }
                       }}
-                      className="h-6 text-sm px-2 py-1"
+                      className="h-6 px-2 py-1 text-sm"
                       autoFocus
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
-                      className="text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-1 py-0.5 rounded cursor-text"
+                      className="cursor-text rounded px-1 py-0.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFolderNameEdit(currentPath, folder.name);
@@ -574,7 +589,11 @@ export function AddDataroomModal({
               </div>
               {folder.subfolders && folder.subfolders.length > 0 && (
                 <div className="ml-4">
-                  {renderFolderPreview(folder.subfolders, indent + 1, currentPath)}
+                  {renderFolderPreview(
+                    folder.subfolders,
+                    indent + 1,
+                    currentPath,
+                  )}
                 </div>
               )}
             </div>
@@ -605,24 +624,9 @@ export function AddDataroomModal({
             }
           }}
         >
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="create">Create from scratch</TabsTrigger>
             <TabsTrigger value="generate">Create from template</TabsTrigger>
-            <TabsTrigger
-              value="ai"
-              className={`flex items-center gap-2 ${
-                activeTab === "ai"
-                  ? "text-orange-500 data-[state=active]:text-orange-500"
-                  : ""
-              }`}
-            >
-              <Sparkles
-                className={`h-4 w-4 ${
-                  activeTab === "ai" ? "text-orange-500" : "text-current"
-                }`}
-              />
-              Generate with AI
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="create">
@@ -690,7 +694,7 @@ export function AddDataroomModal({
                       Select Template{" "}
                       <span className="text-black dark:text-white">*</span>
                     </Label>
-                    <div className="grid grid-cols-3 divide-x divide-y divide-border overflow-hidden rounded-md border ">
+                    <div className="grid grid-cols-3 divide-x divide-y divide-border overflow-hidden rounded-md border">
                       {TEMPLATES.map((template) => {
                         const Icon = template.icon;
                         const isSelected = dataroomType === template.id;
@@ -722,133 +726,6 @@ export function AddDataroomModal({
                     Create new dataroom
                   </Button>
                 </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="ai">
-            <Card className="relative outline-none focus:outline-none">
-              <button
-                onClick={() => onOpenChange(false)}
-                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
-                <XIcon className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </button>
-              <CardHeader className="space-y-3">
-                <CardTitle>Generate dataroom with AI</CardTitle>
-                <CardDescription>
-                  AI will create a unique and proven data room structure for your use case.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {!showPreview ? (
-                  <>
-                    <div className="space-y-1">
-                      <Label htmlFor="ai-description">
-                        Describe your dataroom in details{" "}
-                        <span className="text-black dark:text-white">*</span>
-                      </Label>
-                      <Textarea
-                        id="ai-description"
-                        placeholder="A data room for a Series B fundraising round for a AI startup called 'Acme AI'. Create advanced data room with IP information and financials."
-                        value={aiDescription}
-                        onChange={(e) => setAiDescription(e.target.value)}
-                        rows={4}
-                        className="resize-none"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      className="w-full"
-                      loading={aiGenerating}
-                      onClick={handleGenerateFolders}
-                      disabled={!aiDescription.trim() || aiGenerating}
-                    >
-                      Generate data room structure
-                    </Button>
-                  </>
-                ) : (
-                  <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col space-y-4 outline-none"
-                  >
-                    <div className="space-y-1">
-                      <Label htmlFor="dataroom-name-ai">
-                        Dataroom Name{" "}
-                        <span className="text-black dark:text-white">*</span>
-                      </Label>
-                      <Input
-                        id="dataroom-name-ai"
-                        placeholder="AI Generated Data Room"
-                        value={dataroomName}
-                        onChange={(e) => setDataroomName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label>
-                          Generated Folder Structure{" "}
-                          <span className="text-xs text-muted-foreground font-normal">
-                            (Select folders to include)
-                          </span>
-                        </Label>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Checkbox
-                            checked={
-                              generatedFolders &&
-                              selectedFolderPaths.size > 0 &&
-                              generatedFolders.every((folder) => {
-                                const path = generateFolderPath(folder);
-                                return selectedFolderPaths.has(path);
-                              })
-                                ? true
-                                : false
-                            }
-                            onCheckedChange={(checked) => {
-                              if (checked && generatedFolders) {
-                                initializeFolderSelection(generatedFolders);
-                              } else {
-                                setSelectedFolderPaths(new Set());
-                              }
-                            }}
-                            id="select-all"
-                          />
-                          <label
-                            htmlFor="select-all"
-                            className="cursor-pointer"
-                          >
-                            Select/Deselect All
-                          </label>
-                        </div>
-                      </div>
-                      <div className="max-h-96 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-                        {generatedFolders && renderFolderPreview(generatedFolders)}
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => {
-                          setShowPreview(false);
-                          setGeneratedFolders(null);
-                        }}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        type="submit"
-                        className="flex-1"
-                        loading={loading}
-                      >
-                        Create Dataroom
-                      </Button>
-                    </div>
-                  </form>
-                )}
               </CardContent>
             </Card>
           </TabsContent>

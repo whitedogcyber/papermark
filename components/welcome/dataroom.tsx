@@ -52,12 +52,11 @@ export default function Dataroom() {
             })
           }
         >
-          Get a data room trial
+          Request data rooms
         </Button>
         <span className="text-xs text-muted-foreground">
-          Data rooms are available on our `Data Rooms` plans and on the
-          `Business` plan. <br />
-          You receive a 7-day trial.
+          Data rooms are included in the Essentials, Premium and Complete
+          editions.
         </span>
       </motion.div>
     </motion.div>

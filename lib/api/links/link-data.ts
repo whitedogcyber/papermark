@@ -4,6 +4,7 @@ import {
   ViewerGroupAccessControls,
 } from "@prisma/client";
 
+import { withBrandDefaults } from "@/lib/branding";
 import prisma from "@/lib/prisma";
 import { sortItemsByIndexAndName } from "@/lib/utils/sort-items-by-index-name";
 
@@ -222,13 +223,13 @@ export async function fetchDataroomLinkData({
     },
   });
 
-  const brand = {
+  const brand = withBrandDefaults({
     logo: dataroomBrand?.logo || teamBrand?.logo,
     banner: dataroomBrand?.banner || teamBrand?.banner || null,
     brandColor: dataroomBrand?.brandColor || teamBrand?.brandColor,
     accentColor: dataroomBrand?.accentColor || teamBrand?.accentColor,
     welcomeMessage: dataroomBrand?.welcomeMessage || teamBrand?.welcomeMessage,
-  };
+  });
 
   // Extract access controls from either ViewerGroup or PermissionGroup
   const accessControls =
@@ -339,7 +340,7 @@ export async function fetchDataroomDocumentLinkData({
     throw new Error("Dataroom not found");
   }
 
-  const brand = await prisma.dataroomBrand.findFirst({
+  const dataroomBrand = await prisma.dataroomBrand.findFirst({
     where: {
       dataroomId: linkData.dataroom.id,
     },
@@ -352,7 +353,26 @@ export async function fetchDataroomDocumentLinkData({
     },
   });
 
-  return { linkData, brand };
+  // Fall back to the team's brand, then the default.
+  const teamBrand = await prisma.brand.findFirst({
+    where: { teamId },
+    select: {
+      logo: true,
+      banner: true,
+      brandColor: true,
+      accentColor: true,
+      welcomeMessage: true,
+    },
+  });
+  const brand = {
+    logo: dataroomBrand?.logo || teamBrand?.logo,
+    banner: dataroomBrand?.banner || teamBrand?.banner || null,
+    brandColor: dataroomBrand?.brandColor || teamBrand?.brandColor,
+    accentColor: dataroomBrand?.accentColor || teamBrand?.accentColor,
+    welcomeMessage: dataroomBrand?.welcomeMessage || teamBrand?.welcomeMessage,
+  };
+
+  return { linkData, brand: withBrandDefaults(brand) };
 }
 
 export async function fetchDocumentLinkData({
@@ -410,5 +430,5 @@ export async function fetchDocumentLinkData({
     },
   });
 
-  return { linkData, brand };
+  return { linkData, brand: withBrandDefaults(brand) };
 }

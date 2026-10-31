@@ -90,7 +90,7 @@ export function SettingsHeader() {
             disabled: !features?.incomingWebhooks,
           },
           {
-            label: "Billing",
+            label: "Edition",
             href: `/settings/billing`,
             segment: "billing",
           },

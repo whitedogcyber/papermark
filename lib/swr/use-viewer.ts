@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 
+import { useMemo } from "react";
+
 import { useTeam } from "@/context/team-context";
 import useSWR from "swr";
-import { useMemo } from "react";
 
 import { fetcher } from "@/lib/utils";
 
@@ -41,7 +42,7 @@ export default function useViewer(
   page: number = 1,
   pageSize: number = 10,
   sortBy: string = "lastViewed",
-  sortOrder: string = "desc"
+  sortOrder: string = "desc",
 ) {
   const router = useRouter();
   const teamInfo = useTeam();
@@ -50,10 +51,10 @@ export default function useViewer(
   const { id } = router.query;
 
   const queryParams = new URLSearchParams();
-  queryParams.append('page', page.toString());
-  queryParams.append('pageSize', pageSize.toString());
-  queryParams.append('sortBy', sortBy);
-  queryParams.append('sortOrder', sortOrder);
+  queryParams.append("page", page.toString());
+  queryParams.append("pageSize", pageSize.toString());
+  queryParams.append("sortBy", sortBy);
+  queryParams.append("sortOrder", sortOrder);
   const queryString = queryParams.toString();
 
   const { data: viewer, error } = useSWR<ViewerWithViews>(
@@ -63,12 +64,16 @@ export default function useViewer(
       revalidateOnFocus: false,
       dedupingInterval: 30000,
       revalidateIfStale: false,
-    }
+    },
   );
 
   const shouldFetchDurations = (viewer?.views?.length ?? 0) > 0;
 
-  const { data: durationsResponse, isLoading: loadingDurations, error: durationsError } = useSWR<{ durations: Record<string, number> }>(
+  const {
+    data: durationsResponse,
+    isLoading: loadingDurations,
+    error: durationsError,
+  } = useSWR<{ durations: Record<string, number> }>(
     shouldFetchDurations
       ? `/api/teams/${teamId}/viewers/${id}?${queryString}&withDuration=true`
       : null,
@@ -79,7 +84,7 @@ export default function useViewer(
       errorRetryCount: 1,
       errorRetryInterval: 5000,
       revalidateIfStale: false,
-    }
+    },
   );
 
   const durations = useMemo(() => {
@@ -87,7 +92,8 @@ export default function useViewer(
   }, [durationsResponse]);
 
   const isMainLoading = !viewer && !error;
-  const isDurationsLoading = shouldFetchDurations && loadingDurations && !durationsError;
+  const isDurationsLoading =
+    shouldFetchDurations && loadingDurations && !durationsError;
 
   return {
     viewer, // Always use the main viewer data

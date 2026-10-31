@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import {
   FileJson,
   FileSlidersIcon,
@@ -60,7 +60,7 @@ export default function GenerateIndexDialog({
 
   const handleGenerateIndex = async () => {
     if (!hasDataroomsPlan) {
-      toast.error("Upgrade to a Data Rooms plan to generate index files.");
+      toast.error("Generating index files needs the Premium edition.");
       return;
     }
 
@@ -150,7 +150,7 @@ export default function GenerateIndexDialog({
           <DialogDescription>
             {hasDataroomsPlan
               ? "Select a link and format to generate the index file."
-              : "Upgrade to a Data Rooms plan to generate index files."}
+              : "Generating index files needs the Premium edition."}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

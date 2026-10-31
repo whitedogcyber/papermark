@@ -25,7 +25,7 @@ export default function useDocuments() {
   if (searchQuery) queryParts.push(`query=${searchQuery}`);
   if (sortQuery) queryParts.push(`sort=${sortQuery}`);
   if (paginationParams) queryParts.push(paginationParams.substring(1));
-  const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+  const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
 
   const { data, isValidating, error } = useSWR<{
     documents: DocumentWithLinksAndLinkCountAndViewCount[];
@@ -35,15 +35,11 @@ export default function useDocuments() {
       currentPage: number;
       pageSize: number;
     };
-  }>(
-    teamId && `/api/teams/${teamId}/documents${queryString}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 30000,
-      keepPreviousData: true,
-    },
-  );
+  }>(teamId && `/api/teams/${teamId}/documents${queryString}`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 30000,
+    keepPreviousData: true,
+  });
 
   return {
     documents: data?.documents || [],
@@ -62,7 +58,7 @@ export function useFolderDocuments({ name }: { name: string[] }) {
     DocumentWithLinksAndLinkCountAndViewCount[]
   >(
     teamInfo?.currentTeam?.id &&
-    name.length > 0 &&
+      name.length > 0 &&
       `/api/teams/${teamInfo?.currentTeam?.id}/folders/documents/${name.join("/")}`,
     fetcher,
     {
@@ -91,7 +87,7 @@ export function useFolder({ name }: { name: string[] }) {
 
   const { data: folders, error } = useSWR<FolderWithCount[]>(
     teamInfo?.currentTeam?.id &&
-    name.length > 0 &&
+      name.length > 0 &&
       `/api/teams/${teamInfo?.currentTeam?.id}/folders/${name.join("/")}`,
     fetcher,
     {

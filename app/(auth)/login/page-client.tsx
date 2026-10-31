@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { signInWithPasskey } from "@teamhanko/passkeys-next-auth-provider/client";
+import { KeyRoundIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/lib/branding";
+import { useRuntimeLinks } from "@/lib/runtime-links";
 import { cn } from "@/lib/utils";
 
 import {
@@ -18,8 +20,6 @@ import {
   BrandSidePanel,
 } from "@/components/auth/brand-panels";
 import { LastUsed, useLastUsed } from "@/components/hooks/useLastUsed";
-import Google from "@/components/shared/icons/google";
-import LinkedIn from "@/components/shared/icons/linkedin";
 import Passkey from "@/components/shared/icons/passkey";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,12 +29,26 @@ export default function Login() {
   const { next } = useParams as { next?: string };
 
   const [lastUsed, setLastUsed] = useLastUsed();
-  const authMethods = ["google", "email", "linkedin", "passkey"] as const;
+  const authMethods = ["email", "sso", "passkey"] as const;
   type AuthMethod = (typeof authMethods)[number];
   const [clickedMethod, setClickedMethod] = useState<AuthMethod | undefined>(
     undefined,
   );
   const [email, setEmail] = useState<string>("");
+  const { passkeyTenantId } = useRuntimeLinks();
+
+  // Which MiddleAuth provider (if any) the server has configured.
+  const [ssoProvider, setSsoProvider] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/auth/providers")
+      .then((r) => r.json())
+      .then((providers: Record<string, unknown>) => {
+        if (providers?.["middleauth"]) setSsoProvider("middleauth");
+        else if (providers?.["middleauth-saml"])
+          setSsoProvider("middleauth-saml");
+      })
+      .catch(() => {});
+  }, []);
   const [emailButtonText, setEmailButtonText] = useState<string>(
     "Continue with Email",
   );
@@ -141,74 +155,65 @@ export default function Login() {
               {lastUsed === "credentials" && <LastUsed />}
             </div>
           </form>
-          <p className="py-4 text-center">or</p>
-          <div className="flex flex-col space-y-2 px-4 sm:px-12">
-            <div className="relative">
-              <Button
-                onClick={() => {
-                  setClickedMethod("google");
-                  setLastUsed("google");
-                  signIn("google", {
-                    ...(next && next.length > 0 ? { callbackUrl: next } : {}),
-                  }).then((res) => {
-                    setClickedMethod(undefined);
-                  });
-                }}
-                loading={clickedMethod === "google"}
-                disabled={clickedMethod && clickedMethod !== "google"}
-                className="flex w-full items-center justify-center space-x-2 border border-gray-300 bg-gray-100 font-normal text-gray-900 hover:bg-gray-200"
-              >
-                <Google className="h-5 w-5" />
-                <span>Continue with Google</span>
-                {clickedMethod !== "google" && lastUsed === "google" && (
-                  <LastUsed />
-                )}
-              </Button>
-            </div>
-            <div className="relative">
-              <Button
-                onClick={() => {
-                  setClickedMethod("linkedin");
-                  setLastUsed("linkedin");
-                  signIn("linkedin", {
-                    ...(next && next.length > 0 ? { callbackUrl: next } : {}),
-                  }).then((res) => {
-                    setClickedMethod(undefined);
-                  });
-                }}
-                loading={clickedMethod === "linkedin"}
-                disabled={clickedMethod && clickedMethod !== "linkedin"}
-                className="flex w-full items-center justify-center space-x-2 border border-gray-300 bg-gray-100 font-normal text-gray-900 hover:bg-gray-200"
-              >
-                <LinkedIn />
-                <span>Continue with LinkedIn</span>
-                {clickedMethod !== "linkedin" && lastUsed === "linkedin" && (
-                  <LastUsed />
-                )}
-              </Button>
-            </div>
-            <div className="relative">
-              <Button
-                onClick={() => {
-                  setLastUsed("passkey");
-                  setClickedMethod("passkey");
-                  signInWithPasskey({
-                    tenantId: process.env.NEXT_PUBLIC_HANKO_TENANT_ID as string,
-                  }).then(() => {
-                    setClickedMethod(undefined);
-                  });
-                }}
-                variant="outline"
-                loading={clickedMethod === "passkey"}
-                disabled={clickedMethod && clickedMethod !== "passkey"}
-                className="flex w-full items-center justify-center space-x-2 border border-gray-300 bg-gray-100 font-normal text-gray-900 hover:bg-gray-200 hover:text-gray-900"
-              >
-                <Passkey className="h-4 w-4" />
-                <span>Continue with a passkey</span>
-                {lastUsed === "passkey" && <LastUsed />}
-              </Button>
-            </div>
-          </div>
+          {ssoProvider || passkeyTenantId ? (
+            <>
+              <p className="py-4 text-center">or</p>
+              <div className="flex flex-col space-y-2 px-4 sm:px-12">
+                {ssoProvider ? (
+                  <div className="relative">
+                    <Button
+                      onClick={() => {
+                        setClickedMethod("sso");
+                        setLastUsed("sso");
+                        const callbackUrl =
+                          next && next.length > 0 ? next : "/dashboard";
+                        if (ssoProvider === "middleauth-saml") {
+                          window.location.href = `/api/auth/saml/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+                        } else {
+                          signIn("middleauth", { callbackUrl });
+                        }
+                      }}
+                      loading={clickedMethod === "sso"}
+                      disabled={clickedMethod && clickedMethod !== "sso"}
+                      className="flex w-full items-center justify-center space-x-2 border border-gray-300 bg-gray-100 font-normal text-gray-900 hover:bg-gray-200"
+                    >
+                      <KeyRoundIcon className="h-4 w-4" />
+                      <span>Continue with MiddleAuth</span>
+                      {clickedMethod !== "sso" && lastUsed === "sso" && (
+                        <LastUsed />
+                      )}
+                    </Button>
+                  </div>
+                ) : null}
+                {passkeyTenantId ? (
+                  <div className="relative">
+                    <Button
+                      onClick={() => {
+                        setLastUsed("passkey");
+                        setClickedMethod("passkey");
+                        signInWithPasskey({
+                          tenantId: passkeyTenantId,
+                          ...(next && next.length > 0
+                            ? { callbackUrl: next }
+                            : {}),
+                        }).then(() => {
+                          setClickedMethod(undefined);
+                        });
+                      }}
+                      variant="outline"
+                      loading={clickedMethod === "passkey"}
+                      disabled={clickedMethod && clickedMethod !== "passkey"}
+                      className="flex w-full items-center justify-center space-x-2 border border-gray-300 bg-gray-100 font-normal text-gray-900 hover:bg-gray-200 hover:text-gray-900"
+                    >
+                      <Passkey className="h-4 w-4" />
+                      <span>Continue with a passkey</span>
+                      {lastUsed === "passkey" && <LastUsed />}
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+            </>
+          ) : null}
           <BrandLegalNotice />
         </div>
       </div>

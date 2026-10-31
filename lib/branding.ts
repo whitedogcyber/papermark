@@ -52,3 +52,41 @@ export const BRAND_URL = env(process.env.NEXT_PUBLIC_BRAND_URL) || baseUrl;
 
 /** Suffix for document / data room page titles: "Doc name | <suffix>". */
 export const BRAND_TITLE_SUFFIX = BRAND_NAME;
+
+/**
+ * Default look for document and data room viewers when a team or data room
+ * has not set its own branding: a transparent 1x1 logo, no banner and a
+ * light #FAFAFA nav and background. Saved branding always wins.
+ */
+export const DEFAULT_VIEWER_BRAND = {
+  logo: "/_static/brand/transparent-pixel.png",
+  banner: "no-banner",
+  brandColor: "#FAFAFA",
+  accentColor: "#FAFAFA",
+} as const;
+
+type BrandFields = {
+  logo?: string | null;
+  banner?: string | null;
+  brandColor?: string | null;
+  accentColor?: string | null;
+};
+
+/** Fill any empty brand field with the default. */
+export function withBrandDefaults<T extends BrandFields>(
+  brand: T | null | undefined,
+): T & {
+  logo: string;
+  banner: string;
+  brandColor: string;
+  accentColor: string;
+} {
+  const b = (brand ?? {}) as T;
+  return {
+    ...b,
+    logo: b.logo || DEFAULT_VIEWER_BRAND.logo,
+    banner: b.banner || DEFAULT_VIEWER_BRAND.banner,
+    brandColor: b.brandColor || DEFAULT_VIEWER_BRAND.brandColor,
+    accentColor: b.accentColor || DEFAULT_VIEWER_BRAND.accentColor,
+  };
+}

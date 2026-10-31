@@ -1,16 +1,27 @@
 import { tenant } from "@teamhanko/passkeys-next-auth-provider";
 
-if (!process.env.HANKO_API_KEY || !process.env.NEXT_PUBLIC_HANKO_TENANT_ID) {
-  // These need to be set in .env.local
-  // You get them from the Passkey API itself, e.g. when first setting up the server.
-  throw new Error(
-    "Please set HANKO_API_KEY and NEXT_PUBLIC_HANKO_TENANT_ID in your .env.local file.",
-  );
+/**
+ * Passkey (Hanko) settings, read at runtime so each environment can use its
+ * own tenant (passkeys are bound to the site's domain). HANKO_TENANT_ID is
+ * preferred; NEXT_PUBLIC_HANKO_TENANT_ID is still accepted. Keys are looked up
+ * dynamically so Next.js does not bake build-time values in.
+ * Returns null when passkeys are not configured; sign-in then hides them.
+ */
+export function hankoConfig(): { tenantId: string; apiKey: string } | null {
+  const env = process.env as Record<string, string | undefined>;
+  const read = (k: string) => (env[k] || "").trim();
+  const tenantId =
+    read("HANKO_TENANT_ID") || read("NEXT_PUBLIC_HANKO_TENANT_ID");
+  const apiKey = read("HANKO_API_KEY");
+  if (!tenantId || !apiKey || tenantId === "dummy") return null;
+  return { tenantId, apiKey };
 }
 
-const hanko = tenant({
-  apiKey: process.env.HANKO_API_KEY!,
-  tenantId: process.env.NEXT_PUBLIC_HANKO_TENANT_ID!,
-});
+let client: ReturnType<typeof tenant> | null = null;
 
-export default hanko;
+export function getHanko() {
+  const config = hankoConfig();
+  if (!config) throw new Error("Passkeys are not configured");
+  client ??= tenant(config);
+  return client;
+}

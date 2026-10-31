@@ -65,7 +65,6 @@ RUN node -e "const f='next.config.mjs';let s=require('fs').readFileSync(f,'utf8'
 # docker-entrypoint.sh swaps them for the container's runtime values
 # (NEXT_PUBLIC_BASE_URL or NEXTAUTH_URL), so one image runs in every
 # environment. BASE_URL / BASE_HOST build args are ignored.
-ARG HANKO_TENANT_ID="dummy"
 ENV NEXT_PUBLIC_BASE_URL=https://wd-runtime-base-url.invalid
 ENV NEXTAUTH_URL=https://wd-runtime-base-url.invalid
 ENV NEXT_PUBLIC_APP_BASE_HOST=wd-runtime-base-host.invalid
@@ -93,8 +92,6 @@ ARG ENABLE_SHAREPOINT="false"
 ENV NEXT_PUBLIC_ENABLE_SHAREPOINT=$ENABLE_SHAREPOINT
 ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 ENV OPENAI_API_KEY=sk-test12345
-ENV HANKO_API_KEY=123dummy
-ENV NEXT_PUBLIC_HANKO_TENANT_ID=$HANKO_TENANT_ID
 ENV SLACK_CLIENT_ID=dummy
 ENV SLACK_CLIENT_SECRET=dummy
 

@@ -1,5 +1,12 @@
+import { useRouter } from "next/router";
+
+import { useTeam } from "@/context/team-context";
 import Cookies from "js-cookie";
 
+import { usePlan } from "@/lib/swr/use-billing";
+import { usePlatformAdmin } from "@/lib/swr/use-platform-admin";
+
+import { PendingApproval } from "@/components/editions/pending-approval";
 import { AppBreadcrumb } from "@/components/layouts/breadcrumb";
 import TrialBanner from "@/components/layouts/trial-banner";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
@@ -13,7 +20,25 @@ import {
 
 import { BlockingModal } from "./blocking-modal";
 
+// Pages a team without an edition can still open.
+const PENDING_ALLOWED = [
+  "/settings/billing",
+  "/settings/general",
+  "/account",
+  "/admin",
+];
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { isPending, loading } = usePlan();
+  const { isAdmin } = usePlatformAdmin();
+  const teamId = useTeam()?.currentTeam?.id;
+  const blocked =
+    !!teamId &&
+    !loading &&
+    isPending &&
+    !isAdmin &&
+    !PENDING_ALLOWED.some((p) => router.pathname.startsWith(p));
   // Default to open (true) if no cookie exists, otherwise use the stored preference
   const cookieValue = Cookies.get(SIDEBAR_COOKIE_NAME);
   const isSidebarOpen =
@@ -33,7 +58,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </header>
           <TrialBanner />
           <BlockingModal />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            {loading ? null : blocked ? <PendingApproval /> : children}
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>

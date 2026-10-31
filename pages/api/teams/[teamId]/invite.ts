@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/ee/limits/server";
+import { getLimits } from "@/whitedog/limits/server";
 import { getServerSession } from "next-auth";
 
 import { hashToken } from "@/lib/api/auth/token";
+import { rejectIfPending } from "@/lib/editions-server/guard";
 import { sendTeammateInviteEmail } from "@/lib/emails/send-teammate-invite";
 import { errorhandler } from "@/lib/errorHandler";
 import { newId } from "@/lib/id-helper";
@@ -57,6 +58,8 @@ export default async function handle(
         res.status(404).json("Team not found");
         return;
       }
+
+      if (await rejectIfPending(teamId, res, team.plan)) return;
 
       // check that the user is admin of the team, otherwise return 403
       const teamUsers = team.users;

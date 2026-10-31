@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { Document, DocumentVersion } from "@prisma/client";
 import {
   ArrowRightIcon,
@@ -889,16 +889,16 @@ export default function DocumentHeader({
           title="In-document links detected"
           description={
             <>
-              External in-document links are not available on the free plan.{" "}
+              External in-document links are not available on your edition.{" "}
               <span
                 className="cursor-pointer underline underline-offset-4 hover:text-destructive/80"
                 onClick={() =>
                   handleUpgradeClick(PlanEnum.Pro, "in-document-links")
                 }
               >
-                Upgrade
+                Request an upgrade
               </span>{" "}
-              to a higher plan to use this feature.
+              to use this feature.
             </>
           }
           onClose={() => handleCloseAlert("in-document-links-alert")}
@@ -922,9 +922,9 @@ export default function DocumentHeader({
                     handleUpgradeClick(PlanEnum.Pro, "advanced-excel-mode")
                   }
                 >
-                  upgrading
+                  requesting the Starter edition
                 </span>{" "}
-                to Pro plan to preserve the file formatting. This uses the
+                or higher to preserve the file formatting. This uses the
                 Microsoft Office viewer.
               </>
             }

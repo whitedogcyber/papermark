@@ -4,6 +4,7 @@ import { LinkAudienceType, Tag } from "@prisma/client";
 import { waitUntil } from "@vercel/functions";
 import { getServerSession } from "next-auth/next";
 
+import { rejectIfPending } from "@/lib/editions-server/guard";
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
 import { CustomUser, WatermarkConfigSchema } from "@/lib/types";
@@ -64,6 +65,8 @@ export default async function handler(
       if (!team) {
         return res.status(400).json({ error: "Team not found." });
       }
+
+      if (await rejectIfPending(team.id, res, team.plan)) return;
 
       const hashedPassword =
         password && password.length > 0

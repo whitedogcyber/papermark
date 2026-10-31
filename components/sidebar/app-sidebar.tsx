@@ -7,7 +7,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { TeamContextType, initialState, useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import Cookies from "js-cookie";
 import {
   BrushIcon,
@@ -17,7 +17,7 @@ import {
   HouseIcon,
   Loader,
   ServerIcon,
-  WorkflowIcon,
+  ShieldCheckIcon,
 } from "lucide-react";
 
 import { BRAND_NAME } from "@/lib/branding";
@@ -26,8 +26,9 @@ import { SLACK_ENABLED } from "@/lib/integrations/slack/enabled";
 import { usePlan } from "@/lib/swr/use-billing";
 import useDatarooms from "@/lib/swr/use-datarooms";
 import useLimits from "@/lib/swr/use-limits";
+import { usePlatformAdmin } from "@/lib/swr/use-platform-admin";
 import { useSlackIntegration } from "@/lib/swr/use-slack-integration";
-import { nFormatter } from "@/lib/utils";
+import { cn, nFormatter } from "@/lib/utils";
 
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
@@ -41,22 +42,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import ProAnnualBanner from "../billing/pro-annual-banner";
-import ProBanner from "../billing/pro-banner";
 import { Progress } from "../ui/progress";
 import SlackBanner from "./banners/slack-banner";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
-  const [showProBanner, setShowProBanner] = useState<boolean | null>(null);
-  const [showProAnnualBanner, setShowProAnnualBanner] = useState<
-    boolean | null
-  >(null);
   const [showSlackBanner, setShowSlackBanner] = useState<boolean | null>(null);
   const { currentTeam, teams, setCurrentTeam, isLoading }: TeamContextType =
     useTeam() || initialState;
   const {
     plan: userPlan,
+    planName,
     isAnnualPlan,
     isPro,
     isBusiness,
@@ -68,6 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   } = usePlan();
 
   const { limits } = useLimits();
+  const { isAdmin } = usePlatformAdmin();
   const linksLimit = limits?.links;
   const documentsLimit = limits?.documents;
 
@@ -83,16 +80,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { datarooms } = useDatarooms();
 
   useEffect(() => {
-    if (Cookies.get("hideProBanner") !== "pro-banner") {
-      setShowProBanner(true);
-    } else {
-      setShowProBanner(false);
-    }
-    if (Cookies.get("hideProAnnualBanner") !== "pro-annual-banner") {
-      setShowProAnnualBanner(true);
-    } else {
-      setShowProAnnualBanner(false);
-    }
     if (Cookies.get("hideSlackBanner") !== "slack-banner") {
       setShowSlackBanner(true);
     } else {
@@ -156,16 +143,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         highlightItem: ["visitors"],
       },
       {
-        title: "Workflows",
-        url: "/workflows",
-        icon: WorkflowIcon,
-        current: router.pathname.includes("/workflows"),
-        disabled: !features?.workflows,
-        trigger: "sidebar_workflows",
-        plan: PlanEnum.DataRoomsPlus,
-        highlightItem: ["workflows"],
-      },
-      {
         title: "Branding",
         url: "/branding",
         icon: BrushIcon,
@@ -213,7 +190,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               ]
             : []),
           {
-            title: "Billing",
+            title: "Edition",
             url: "/settings/billing",
             current: router.pathname.includes("settings/billing"),
           },
@@ -221,6 +198,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
   };
+
+  if (isAdmin) {
+    data.navMain.push({
+      title: "Admin",
+      url: "/admin",
+      icon: ShieldCheckIcon,
+      current: router.pathname.startsWith("/admin"),
+    } as (typeof data.navMain)[number]);
+  }
 
   // Filter out items that should be hidden based on feature flags
   const filteredNavMain = data.navMain.filter((item) => {
@@ -252,33 +238,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           >
             {BRAND_NAME}
           </Link>
-          {(userPlan && !isFree) || isTrial ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {userPlan &&
-              !isFree &&
-              !isDataroomsPlus &&
-              !isDataroomsPremium ? (
-                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-                  {userPlan.charAt(0).toUpperCase() + userPlan.slice(1)}
-                </span>
-              ) : null}
-              {isDataroomsPlus ? (
-                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-                  Datarooms+
-                </span>
-              ) : null}
-              {isDataroomsPremium ? (
-                <span className="rounded-full bg-background px-2.5 py-1 text-xs tracking-normal text-foreground ring-1 ring-gray-800">
-                  Premium
-                </span>
-              ) : null}
-              {isTrial ? (
-                <span className="rounded-sm bg-foreground px-2 py-0.5 text-xs tracking-normal text-background ring-1 ring-gray-800">
-                  Trial
-                </span>
-              ) : null}
-            </div>
-          ) : null}
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-1 text-xs tracking-normal ring-1",
+              isFree
+                ? "bg-amber-50 text-amber-800 ring-amber-300 dark:bg-amber-950 dark:text-amber-200"
+                : "bg-background text-foreground ring-gray-800",
+            )}
+          >
+            {planName}
+          </span>
         </div>
         {isLoading ? (
           <div className="flex items-center gap-2 text-sm">
@@ -304,20 +273,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                */}
               {SLACK_ENABLED && !slackIntegration && showSlackBanner ? (
                 <SlackBanner setShowSlackBanner={setShowSlackBanner} />
-              ) : null}
-              {/*
-               * if user is free and showProBanner is true show pro banner
-               */}
-              {isFree && showProBanner ? (
-                <ProBanner setShowProBanner={setShowProBanner} />
-              ) : null}
-              {/*
-               * if user is pro and showProAnnualBanner is true show pro annual banner
-               */}
-              {isPro && !isAnnualPlan && showProAnnualBanner ? (
-                <ProAnnualBanner
-                  setShowProAnnualBanner={setShowProAnnualBanner}
-                />
               ) : null}
 
               <div className="mb-2">

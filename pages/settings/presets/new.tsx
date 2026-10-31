@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
 
-
-
 import { FormEvent, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { LinkType } from "@prisma/client";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -58,13 +56,8 @@ export default function NewPreset() {
     name: "",
   });
 
-  const {
-    isPro,
-    isBusiness,
-    isDatarooms,
-    isDataroomsPlus,
-    isTrial,
-  } = usePlan();
+  const { isPro, isBusiness, isDatarooms, isDataroomsPlus, isTrial } =
+    usePlan();
   const { limits } = useLimits();
   const allowAdvancedLinkControls = limits
     ? limits?.advancedLinkControlsOnPro
