@@ -218,7 +218,7 @@ const SettingsBreadcrumb = () => {
       case "/settings/presets":
         return "Presets";
       case "/settings/billing":
-        return "Billing";
+        return "Edition";
       case "/settings/billing/invoices":
         return "Invoices";
       case "/settings/tokens":
@@ -251,7 +251,7 @@ const SettingsBreadcrumb = () => {
           <>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/settings/billing">Billing</Link>
+                <Link href="/settings/billing">Edition</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

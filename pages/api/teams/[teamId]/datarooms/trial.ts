@@ -26,6 +26,12 @@ export default async function handle(
 ) {
   if (req.method === "POST") {
     // POST /api/teams/:teamId/datarooms/trial
+    // WhiteDog: no self-service trials. Editions are assigned by an admin.
+    if (process.env.ENABLE_TRIALS !== "true") {
+      return res.status(403).json({
+        error: "Trials are not available. Request an edition upgrade instead.",
+      });
+    }
     const session = await getServerSession(req, res, authOptions);
     if (!session) {
       res.status(401).end("Unauthorized");

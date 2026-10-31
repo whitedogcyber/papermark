@@ -1,9 +1,10 @@
-import { useTeam } from "@/context/team-context";
-import { PLAN_NAME_MAP } from "@/ee/stripe/constants";
-import { SubscriptionDiscount } from "@/ee/stripe/functions/get-subscription-item";
-import useSWR from "swr";
 import { useMemo } from "react";
 
+import { useTeam } from "@/context/team-context";
+import { SubscriptionDiscount } from "@/ee/stripe/functions/get-subscription-item";
+import useSWR from "swr";
+
+import { editionForPlan, isPendingPlan, planDisplayName } from "@/lib/editions";
 import { fetcher } from "@/lib/utils";
 
 interface BillingProps {
@@ -66,7 +67,7 @@ interface PlanDetails {
 }
 
 function parsePlan(plan: BasePlan | PlanWithTrial | PlanWithOld): PlanDetails {
-  if (!plan || typeof plan !== 'string') {
+  if (!plan || typeof plan !== "string") {
     return { plan: null, trial: null, old: false };
   }
 
@@ -95,7 +96,9 @@ export function usePlan({
     error,
     mutate,
   } = useSWR<PlanResponse>(
-    teamId ? `/api/teams/${teamId}/billing/plan${withDiscount ? "?withDiscount=true" : ""}` : null,
+    teamId
+      ? `/api/teams/${teamId}/billing/plan${withDiscount ? "?withDiscount=true" : ""}`
+      : null,
     fetcher,
   );
 
@@ -109,7 +112,9 @@ export function usePlan({
 
   return {
     plan: parsedPlan.plan ?? "free",
-    planName: PLAN_NAME_MAP[parsedPlan.plan ?? "free"],
+    planName: planDisplayName(parsedPlan.plan ?? "free"),
+    edition: editionForPlan(parsedPlan.plan ?? "free"),
+    isPending: isPendingPlan(parsedPlan.plan ?? "free"),
     originalPlan: parsedPlan.plan + (parsedPlan.old ? "+old" : ""),
     trial: parsedPlan.trial,
     isTrial: !!parsedPlan.trial,
@@ -128,7 +133,9 @@ export function usePlan({
     isPro: parsedPlan.plan === "pro",
     isBusiness: parsedPlan.plan === "business",
     isDatarooms:
-      parsedPlan.plan === "datarooms" || parsedPlan.plan === "datarooms-plus" || parsedPlan.plan === "datarooms-premium",
+      parsedPlan.plan === "datarooms" ||
+      parsedPlan.plan === "datarooms-plus" ||
+      parsedPlan.plan === "datarooms-premium",
     isDataroomsPlus: parsedPlan.plan === "datarooms-plus",
     isDataroomsPremium: parsedPlan.plan === "datarooms-premium",
     loading: !plan && !error && !!teamId, // Only show loading if we have a teamId but no data

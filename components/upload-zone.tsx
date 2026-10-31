@@ -226,7 +226,7 @@ export default function UploadZone({
         let message = "";
         if (errors.find(({ code }) => code === "file-too-large")) {
           const fileSizeLimitMB = getFileSizeLimit(file.type, fileSizeLimits);
-          message = `File size too big (max. ${fileSizeLimitMB} MB). Upgrade to a paid plan to increase the limit.`;
+          message = `File size too big (max. ${fileSizeLimitMB} MB). Request an upgrade to increase the limit.`;
         } else if (errors.find(({ code }) => code === "file-invalid-type")) {
           const isSupported = SUPPORTED_DOCUMENT_MIME_TYPES.includes(file.type);
           message = `File type not supported ${
@@ -261,7 +261,7 @@ export default function UploadZone({
               fileName: file.name,
               message: `File size too big (max. ${fileSizeLimitMB} MB)${
                 isFree && !isTrial
-                  ? ". Upgrade to a paid plan to increase the limit"
+                  ? ". Request an upgrade to increase the limit"
                   : ""
               }`,
             });

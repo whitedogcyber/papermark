@@ -1,5 +1,6 @@
 import { CrownIcon } from "lucide-react";
 
+import { editionForRequirement } from "@/lib/editions";
 import { cn } from "@/lib/utils";
 
 export default function PlanBadge({
@@ -16,7 +17,7 @@ export default function PlanBadge({
         className,
       )}
     >
-      <CrownIcon className="h-3 w-3" /> {plan}
+      <CrownIcon className="h-3 w-3" /> {editionForRequirement(plan).name}
     </span>
   );
 }

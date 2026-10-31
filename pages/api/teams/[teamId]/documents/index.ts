@@ -4,6 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
+import { rejectIfPending } from "@/lib/editions-server/guard";
 import { hashToken } from "@/lib/api/auth/token";
 import { processDocument } from "@/lib/api/documents/process-document";
 import { errorhandler } from "@/lib/errorHandler";
@@ -336,6 +337,8 @@ export default async function handle(
       if (!team) {
         return res.status(404).end("Team not found");
       }
+
+      if (await rejectIfPending(teamId, res, team.plan)) return;
 
       const document = await processDocument({
         documentData: {

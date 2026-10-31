@@ -62,7 +62,7 @@ export function Chat({
       }
       if (userId && plan !== "pro") {
         content =
-          "You have reached your request limit for the day. Upgrade to a paid account to continue using WhiteDog Share Assistant.";
+          "You have reached your request limit for the day. Request an upgrade to continue using WhiteDog Share Assistant.";
       }
 
       const message: Message = {

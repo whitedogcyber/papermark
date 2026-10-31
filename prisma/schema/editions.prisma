@@ -1,0 +1,47 @@
+// WhiteDog editions: upgrade requests and plan change history.
+
+model UpgradeRequest {
+  id     String @id @default(cuid())
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  kind             String  @default("edition") // edition | seats | access
+  requestedEdition String? // starter | essentials | premium | complete
+  requestedSeats   Int?
+  currentPlan      String
+  message          String?
+  trigger          String? // UI location that opened the request
+
+  requestedById    String?
+  requestedByEmail String?
+
+  status        String    @default("open") // open | approved | declined
+  resolvedById  String?
+  resolvedAt    DateTime?
+  resolutionNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+  @@index([status])
+}
+
+model PlanChange {
+  id     String @id @default(cuid())
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  fromPlan    String
+  toPlan      String
+  fromLimits  Json?
+  toLimits    Json?
+  changedById String?
+  changedByEmail String?
+  reason      String?
+  requestId   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([teamId])
+}

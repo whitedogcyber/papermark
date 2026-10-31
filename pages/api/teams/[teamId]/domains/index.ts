@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { getServerSession } from "next-auth/next";
 
+import { rejectIfPending } from "@/lib/editions-server/guard";
 import { addDomainToVercel, validDomainRegex } from "@/lib/domains";
 import { errorhandler } from "@/lib/errorHandler";
 import prisma from "@/lib/prisma";
@@ -67,6 +68,8 @@ export default async function handle(
         teamId,
         userId,
       });
+
+      if (await rejectIfPending(teamId, res)) return;
 
       // Assuming data is an object with `domain` properties
       const { domain } = req.body;

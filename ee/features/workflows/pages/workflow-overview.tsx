@@ -73,7 +73,7 @@ export default function WorkflowsPage() {
           {requiresUpgrade ? (
             <WorkflowEmptyState
               title="Workflows require an upgrade"
-              description="Upgrade to Business or Data Rooms plan to create routing workflows. Click the button below to upgrade your plan."
+              description="Routing workflows need a higher edition. Use the button below to request an upgrade."
             />
           ) : isLoading ? (
             <div className="flex items-center justify-center py-12">

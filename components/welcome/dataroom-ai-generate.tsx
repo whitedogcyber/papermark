@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
@@ -20,7 +21,7 @@ export default function DataroomAIGenerate() {
   const router = useRouter();
   const teamInfo = useTeam();
   const analytics = useAnalytics();
-  
+
   const [aiDescription, setAiDescription] = useState<string>("");
   const [aiGenerating, setAiGenerating] = useState<boolean>(false);
   const [generatedFolders, setGeneratedFolders] = useState<any[] | null>(null);
@@ -30,17 +31,24 @@ export default function DataroomAIGenerate() {
   const [selectedFolderPaths, setSelectedFolderPaths] = useState<Set<string>>(
     new Set(),
   );
-  const [editingFolderPath, setEditingFolderPath] = useState<string | null>(null);
+  const [editingFolderPath, setEditingFolderPath] = useState<string | null>(
+    null,
+  );
   const [editingFolderName, setEditingFolderName] = useState<string>("");
 
   // Generate a unique path for each folder
   const generateFolderPath = (folder: any, parentPath: string = ""): string => {
-    const currentPath = parentPath ? `${parentPath}/${folder.name}` : folder.name;
+    const currentPath = parentPath
+      ? `${parentPath}/${folder.name}`
+      : folder.name;
     return currentPath;
   };
 
   // Initialize all folders as selected when preview is shown
-  const initializeFolderSelection = (folders: any[], parentPath: string = "") => {
+  const initializeFolderSelection = (
+    folders: any[],
+    parentPath: string = "",
+  ) => {
     const paths = new Set<string>();
     const collectPaths = (f: any[], currentPath: string = "") => {
       f.forEach((folder) => {
@@ -58,7 +66,7 @@ export default function DataroomAIGenerate() {
   // Toggle folder selection
   const toggleFolderSelection = (path: string, folder: any) => {
     const newSelected = new Set(selectedFolderPaths);
-    
+
     if (newSelected.has(path)) {
       newSelected.delete(path);
       const removeSubfolders = (f: any, currentPath: string) => {
@@ -74,30 +82,34 @@ export default function DataroomAIGenerate() {
     } else {
       newSelected.add(path);
     }
-    
+
     setSelectedFolderPaths(newSelected);
   };
 
   // Filter folders based on selection
-  const filterSelectedFolders = (folders: any[], parentPath: string = ""): any[] => {
+  const filterSelectedFolders = (
+    folders: any[],
+    parentPath: string = "",
+  ): any[] => {
     return folders
       .map((folder) => {
         const currentPath = generateFolderPath(folder, parentPath);
         const isSelected = selectedFolderPaths.has(currentPath);
-        
+
         if (!isSelected) {
           return null;
         }
-        
+
         const filteredSubfolders = folder.subfolders
           ? filterSelectedFolders(folder.subfolders, currentPath)
           : undefined;
-        
+
         return {
           ...folder,
-          subfolders: filteredSubfolders && filteredSubfolders.length > 0 
-            ? filteredSubfolders 
-            : undefined,
+          subfolders:
+            filteredSubfolders && filteredSubfolders.length > 0
+              ? filteredSubfolders
+              : undefined,
         };
       })
       .filter((folder) => folder !== null);
@@ -112,11 +124,11 @@ export default function DataroomAIGenerate() {
   ): any[] => {
     return folders.map((folder) => {
       const folderPath = generateFolderPath(folder, currentPath);
-      
+
       if (folderPath === targetPath) {
         return { ...folder, name: newName };
       }
-      
+
       if (folder.subfolders && folder.subfolders.length > 0) {
         return {
           ...folder,
@@ -128,7 +140,7 @@ export default function DataroomAIGenerate() {
           ),
         };
       }
-      
+
       return folder;
     });
   };
@@ -142,7 +154,7 @@ export default function DataroomAIGenerate() {
   // Save edited folder name
   const saveFolderName = () => {
     if (!editingFolderPath || !generatedFolders) return;
-    
+
     if (editingFolderName.trim()) {
       const updatedFolders = updateFolderName(
         generatedFolders,
@@ -152,7 +164,7 @@ export default function DataroomAIGenerate() {
       setGeneratedFolders(updatedFolders);
       initializeFolderSelection(updatedFolders);
     }
-    
+
     setEditingFolderPath(null);
     setEditingFolderName("");
   };
@@ -165,7 +177,9 @@ export default function DataroomAIGenerate() {
 
   const handleGenerateFolders = async () => {
     if (!aiDescription.trim()) {
-      return toast.error("Please describe what kind of dataroom you want to create.");
+      return toast.error(
+        "Please describe what kind of dataroom you want to create.",
+      );
     }
 
     setAiGenerating(true);
@@ -219,11 +233,13 @@ export default function DataroomAIGenerate() {
     if (!generatedFolders) return;
 
     if (!teamInfo?.currentTeam?.id) {
-      return toast.error("Team not found. Please refresh the page and try again.");
+      return toast.error(
+        "Team not found. Please refresh the page and try again.",
+      );
     }
 
     const filteredFolders = filterSelectedFolders(generatedFolders);
-    
+
     if (filteredFolders.length === 0) {
       return toast.error("Please select at least one folder to include.");
     }
@@ -246,7 +262,10 @@ export default function DataroomAIGenerate() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || "Error creating dataroom. Please try again.";
+        const errorMessage =
+          errorData.message ||
+          errorData.error ||
+          "Error creating dataroom. Please try again.";
         setLoading(false);
         toast.error(errorMessage);
         return;
@@ -277,7 +296,7 @@ export default function DataroomAIGenerate() {
         {folders.map((folder, index) => {
           const currentPath = generateFolderPath(folder, parentPath);
           const isSelected = selectedFolderPaths.has(currentPath);
-          
+
           return (
             <div key={`${parentPath}-${index}`} className="pl-4">
               <div className="flex items-center gap-2 py-1">
@@ -287,12 +306,14 @@ export default function DataroomAIGenerate() {
                 />
                 <Checkbox
                   checked={isSelected}
-                  onCheckedChange={() => toggleFolderSelection(currentPath, folder)}
+                  onCheckedChange={() =>
+                    toggleFolderSelection(currentPath, folder)
+                  }
                   id={`folder-${currentPath}`}
                 />
                 <label
                   htmlFor={`folder-${currentPath}`}
-                  className="flex items-center gap-2 cursor-pointer flex-1"
+                  className="flex flex-1 cursor-pointer items-center gap-2"
                 >
                   <FolderIcon className="h-4 w-4 text-gray-500" />
                   {editingFolderPath === currentPath ? (
@@ -309,13 +330,13 @@ export default function DataroomAIGenerate() {
                           cancelFolderNameEdit();
                         }
                       }}
-                      className="h-6 text-sm px-2 py-1"
+                      className="h-6 px-2 py-1 text-sm"
                       autoFocus
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
-                      className="text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-1 py-0.5 rounded cursor-text"
+                      className="cursor-text rounded px-1 py-0.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFolderNameEdit(currentPath, folder.name);
@@ -329,7 +350,11 @@ export default function DataroomAIGenerate() {
               </div>
               {folder.subfolders && folder.subfolders.length > 0 && (
                 <div className="ml-4">
-                  {renderFolderPreview(folder.subfolders, indent + 1, currentPath)}
+                  {renderFolderPreview(
+                    folder.subfolders,
+                    indent + 1,
+                    currentPath,
+                  )}
                 </div>
               )}
             </div>
@@ -364,107 +389,102 @@ export default function DataroomAIGenerate() {
         <h1 className="font-display text-balance text-3xl font-semibold text-foreground transition-colors sm:text-4xl">
           Generate dataroom with AI
         </h1>
-      
       </motion.div>
 
       <motion.div variants={STAGGER_CHILD_VARIANTS}>
-        <main className="mx-auto mt-8 max-w-md w-full px-4 sm:px-0">
+        <main className="mx-auto mt-8 w-full max-w-md px-4 sm:px-0">
           <div className="space-y-6">
-        {!showPreview ? (
-          <>
-            <div className="space-y-2 text-left">
-              <Label htmlFor="ai-description" className="text-base">
-                Describe your dataroom in details{" "}
-                <span className="text-black dark:text-white">*</span>
-              </Label>
-              <Textarea
-                id="ai-description"
-                placeholder="A data room for a Series B fundraising round for a AI startup called 'Acme AI'. Create advanced data room with IP information and financials."
-                value={aiDescription}
-                onChange={(e) => setAiDescription(e.target.value)}
-                rows={4}
-                className="resize-none"
-              />
-            </div>
-            <Button
-              onClick={handleGenerateFolders}
-              loading={aiGenerating}
-              disabled={!aiDescription.trim() || aiGenerating}
-              className="w-full"
-              size="lg"
-            >
-              Generate data room structure
-            </Button>
-          </>
-        ) : (
-          <>
-            <div className="space-y-2 text-left">
-              <Label htmlFor="dataroom-name-ai" className="text-base">
-                Dataroom Name{" "}
-                <span className="text-black dark:text-white">*</span>
-              </Label>
-              <Input
-                id="dataroom-name-ai"
-                placeholder="AI Generated Data Room"
-                value={dataroomName}
-                onChange={(e) => setDataroomName(e.target.value)}
-                required
-                className="text-base"
-              />
-            </div>
-            <div className="space-y-2 text-left">
-              <Label className="text-base">
-                Generated Folder Structure{" "}
-                <span className="text-xs text-muted-foreground font-normal">
-                  (Select folders to include)
-                </span>
-              </Label>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Checkbox
-                  checked={
-                    generatedFolders &&
-                    selectedFolderPaths.size > 0 &&
-                    generatedFolders.every((folder) => {
-                      const path = generateFolderPath(folder);
-                      return selectedFolderPaths.has(path);
-                    })
-                      ? true
-                      : false
-                  }
-                  onCheckedChange={(checked) => {
-                    if (checked && generatedFolders) {
-                      initializeFolderSelection(generatedFolders);
-                    } else {
-                      setSelectedFolderPaths(new Set());
-                    }
-                  }}
-                  id="select-all"
-                />
-                <label
-                  htmlFor="select-all"
-                  className="cursor-pointer"
+            {!showPreview ? (
+              <>
+                <div className="space-y-2 text-left">
+                  <Label htmlFor="ai-description" className="text-base">
+                    Describe your dataroom in details{" "}
+                    <span className="text-black dark:text-white">*</span>
+                  </Label>
+                  <Textarea
+                    id="ai-description"
+                    placeholder="A data room for a Series B fundraising round for a AI startup called 'Acme AI'. Create advanced data room with IP information and financials."
+                    value={aiDescription}
+                    onChange={(e) => setAiDescription(e.target.value)}
+                    rows={4}
+                    className="resize-none"
+                  />
+                </div>
+                <Button
+                  onClick={handleGenerateFolders}
+                  loading={aiGenerating}
+                  disabled={!aiDescription.trim() || aiGenerating}
+                  className="w-full"
+                  size="lg"
                 >
-                  Select/Deselect All
-                </label>
-              </div>
-              <div className="max-h-96 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-                {generatedFolders && renderFolderPreview(generatedFolders)}
-              </div>
-            </div>
-            <Button
-              onClick={handleCreateDataroom}
-              loading={loading}
-              className="w-full"
-              size="lg"
-            >
-              Create Dataroom
-            </Button>
-          </>
-        )}
+                  Generate data room structure
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2 text-left">
+                  <Label htmlFor="dataroom-name-ai" className="text-base">
+                    Dataroom Name{" "}
+                    <span className="text-black dark:text-white">*</span>
+                  </Label>
+                  <Input
+                    id="dataroom-name-ai"
+                    placeholder="AI Generated Data Room"
+                    value={dataroomName}
+                    onChange={(e) => setDataroomName(e.target.value)}
+                    required
+                    className="text-base"
+                  />
+                </div>
+                <div className="space-y-2 text-left">
+                  <Label className="text-base">
+                    Generated Folder Structure{" "}
+                    <span className="text-xs font-normal text-muted-foreground">
+                      (Select folders to include)
+                    </span>
+                  </Label>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Checkbox
+                      checked={
+                        generatedFolders &&
+                        selectedFolderPaths.size > 0 &&
+                        generatedFolders.every((folder) => {
+                          const path = generateFolderPath(folder);
+                          return selectedFolderPaths.has(path);
+                        })
+                          ? true
+                          : false
+                      }
+                      onCheckedChange={(checked) => {
+                        if (checked && generatedFolders) {
+                          initializeFolderSelection(generatedFolders);
+                        } else {
+                          setSelectedFolderPaths(new Set());
+                        }
+                      }}
+                      id="select-all"
+                    />
+                    <label htmlFor="select-all" className="cursor-pointer">
+                      Select/Deselect All
+                    </label>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+                    {generatedFolders && renderFolderPreview(generatedFolders)}
+                  </div>
+                </div>
+                <Button
+                  onClick={handleCreateDataroom}
+                  loading={loading}
+                  className="w-full"
+                  size="lg"
+                >
+                  Create Dataroom
+                </Button>
+              </>
+            )}
           </div>
         </main>
       </motion.div>
     </motion.div>
   );
 }
-

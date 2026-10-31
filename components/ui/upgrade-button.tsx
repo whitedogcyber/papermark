@@ -3,6 +3,7 @@ import React, { ButtonHTMLAttributes, useState } from "react";
 import { PlanEnum } from "@/ee/stripe/constants";
 import { CrownIcon } from "lucide-react";
 
+import { editionForRequirement } from "@/lib/editions";
 import { cn } from "@/lib/utils";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
@@ -55,7 +56,7 @@ export function UpgradeButton({
       ) : (
         <>
           <CrownIcon className="h-4 w-4" />
-          Upgrade to {text}
+          Request {editionForRequirement(text || clickedPlan).name}
         </>
       )}
     </Button>

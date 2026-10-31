@@ -53,7 +53,7 @@ export default function RebuildIndexButton({
 
   const handleRebuildIndex = async () => {
     if (!canUseFeature) {
-      toast.error("Upgrade to Data Rooms Plus plan to use this feature.");
+      toast.error("This feature needs the Premium edition.");
       return;
     }
 

@@ -35,7 +35,7 @@ export default function useViewers(
   page: number = 1,
   pageSize: number = 10,
   sortBy: string = "lastViewed",
-  sortOrder: string = "desc"
+  sortOrder: string = "desc",
 ) {
   const router = useRouter();
   const teamInfo = useTeam();
@@ -45,13 +45,13 @@ export default function useViewers(
   const searchQuery = routerQuery["search"];
 
   const queryParams = new URLSearchParams();
-  queryParams.append('page', page.toString());
-  queryParams.append('pageSize', pageSize.toString());
-  queryParams.append('sortBy', sortBy);
-  queryParams.append('sortOrder', sortOrder);
+  queryParams.append("page", page.toString());
+  queryParams.append("pageSize", pageSize.toString());
+  queryParams.append("sortBy", sortBy);
+  queryParams.append("sortOrder", sortOrder);
 
-  if (searchQuery && typeof searchQuery === 'string') {
-    queryParams.append('query', searchQuery);
+  if (searchQuery && typeof searchQuery === "string") {
+    queryParams.append("query", searchQuery);
   }
 
   const queryString = queryParams.toString();
@@ -62,9 +62,7 @@ export default function useViewers(
     error,
     mutate,
   } = useSWR<ViewersResponse>(
-    teamId
-      ? `/api/teams/${teamId}/viewers?${queryString}`
-      : null,
+    teamId ? `/api/teams/${teamId}/viewers?${queryString}` : null,
     fetcher,
     {
       revalidateOnFocus: false,

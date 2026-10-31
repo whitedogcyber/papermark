@@ -168,9 +168,9 @@ export default function DataroomsPage() {
               <DataroomTrialModal>
                 <Button
                   className="group flex flex-1 items-center justify-start gap-x-3 px-3 text-left"
-                  title="Start Data Room Trial"
+                  title="Request data rooms"
                 >
-                  <span>Start Data Room Trial</span>
+                  <span>Request data rooms</span>
                 </Button>
               </DataroomTrialModal>
             )}

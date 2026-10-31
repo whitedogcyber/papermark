@@ -1,10 +1,74 @@
+import { promises as dns } from "node:dns";
+
 import {
   DomainConfigResponse,
   DomainResponse,
   DomainVerificationResponse,
 } from "@/lib/types";
 
+/**
+ * Self-hosted mode (no PROJECT_ID_VERCEL): custom domains are not managed
+ * through Vercel. A domain is valid when it points at this app with a CNAME
+ * (or resolves to the same addresses as the app host). TLS for the domain is
+ * set up outside the app, e.g. as an alternate domain on CloudFront with an
+ * ACM certificate.
+ */
+export const isSelfHostedDomains = () => !process.env.PROJECT_ID_VERCEL;
+
+export const customDomainTarget = () =>
+  (
+    process.env.CUSTOM_DOMAIN_TARGET ||
+    process.env.NEXT_PUBLIC_APP_BASE_HOST ||
+    ""
+  )
+    .toLowerCase()
+    .replace(/\.$/, "");
+
+const apexOf = (domain: string) => domain.split(".").slice(-2).join(".");
+
+async function pointsAtApp(domain: string): Promise<boolean> {
+  const target = customDomainTarget();
+  if (!target) return false;
+  try {
+    const cnames = await dns.resolveCname(domain);
+    if (cnames.some((c) => c.toLowerCase().replace(/\.$/, "") === target)) {
+      return true;
+    }
+  } catch {}
+  try {
+    const [mine, theirs] = await Promise.all([
+      dns.resolve4(target),
+      dns.resolve4(domain),
+    ]);
+    return theirs.length > 0 && theirs.every((ip) => mine.includes(ip));
+  } catch {
+    return false;
+  }
+}
+
+async function selfHostedConfig(domain: string) {
+  const ok = await pointsAtApp(domain);
+  return {
+    selfHosted: true,
+    configuredBy: "CNAME",
+    misconfigured: !ok,
+    conflicts: [],
+    acceptedChallenges: [],
+    recommendedCNAME: [{ rank: 1, value: customDomainTarget() }],
+    recommendedIPv4: [],
+  } as unknown as DomainConfigResponse;
+}
+
+const safeJson = (res: Response) =>
+  res.json().catch(() => ({
+    error: {
+      code: "bad_response",
+      message: `Domain service returned ${res.status}`,
+    },
+  }));
+
 export const addDomainToVercel = async (domain: string) => {
+  if (isSelfHostedDomains()) return {};
   return await fetch(
     `https://api.vercel.com/v10/projects/${process.env.PROJECT_ID_VERCEL}/domains?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -17,10 +81,11 @@ export const addDomainToVercel = async (domain: string) => {
         name: domain.toLowerCase(),
       }),
     },
-  ).then((res) => res.json());
+  ).then(safeJson);
 };
 
 export const removeDomainFromVercelProject = async (domain: string) => {
+  if (isSelfHostedDomains()) return {};
   return await fetch(
     `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL}/domains/${domain}?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -29,10 +94,11 @@ export const removeDomainFromVercelProject = async (domain: string) => {
       },
       method: "DELETE",
     },
-  ).then((res) => res.json());
+  ).then(safeJson);
 };
 
 export const removeDomainFromVercelTeam = async (domain: string) => {
+  if (isSelfHostedDomains()) return {};
   return await fetch(
     `https://api.vercel.com/v6/domains/${domain}?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -41,7 +107,7 @@ export const removeDomainFromVercelTeam = async (domain: string) => {
       },
       method: "DELETE",
     },
-  ).then((res) => res.json());
+  ).then(safeJson);
 };
 
 export const removeDomainFromVercel = async (
@@ -63,6 +129,17 @@ export const removeDomainFromVercel = async (
 export const getDomainResponse = async (
   domain: string,
 ): Promise<DomainResponse & { error: { code: string; message: string } }> => {
+  if (isSelfHostedDomains()) {
+    const name = domain.toLowerCase();
+    return {
+      name,
+      apexName: apexOf(name),
+      verified: true,
+      verification: [],
+    } as unknown as DomainResponse & {
+      error: { code: string; message: string };
+    };
+  }
   return await fetch(
     `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL}/domains/${domain.toLowerCase()}?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -72,14 +149,13 @@ export const getDomainResponse = async (
         "Content-Type": "application/json",
       },
     },
-  ).then((res) => {
-    return res.json();
-  });
+  ).then(safeJson);
 };
 
 export const getConfigResponse = async (
   domain: string,
 ): Promise<DomainConfigResponse> => {
+  if (isSelfHostedDomains()) return selfHostedConfig(domain.toLowerCase());
   return await fetch(
     `https://api.vercel.com/v6/domains/${domain.toLowerCase()}/config?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -89,12 +165,15 @@ export const getConfigResponse = async (
         "Content-Type": "application/json",
       },
     },
-  ).then((res) => res.json());
+  ).then(safeJson);
 };
 
 export const verifyDomain = async (
   domain: string,
 ): Promise<DomainVerificationResponse> => {
+  if (isSelfHostedDomains()) {
+    return { verified: true } as unknown as DomainVerificationResponse;
+  }
   return await fetch(
     `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL}/domains/${domain.toLowerCase()}/verify?teamId=${process.env.TEAM_ID_VERCEL}`,
     {
@@ -104,13 +183,10 @@ export const verifyDomain = async (
         "Content-Type": "application/json",
       },
     },
-  ).then((res) => res.json());
+  ).then(safeJson);
 };
 
-export const getSubdomain = (name: string, apexName: string) => {
-  if (name === apexName) return null;
-  return name.slice(0, name.length - apexName.length - 1);
-};
+export { getSubdomain } from "./domain-utils";
 
 export const getApexDomain = (url: string) => {
   let domain;

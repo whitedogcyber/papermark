@@ -33,9 +33,9 @@ export default function useDataroomPermissionGroups() {
     mutate,
   } = useSWR<PermissionGroupWithCount[]>(
     teamInfo?.currentTeam?.id &&
-    id &&
-    isDataroom &&
-    `/api/teams/${teamInfo?.currentTeam?.id}/datarooms/${id}/permission-groups`,
+      id &&
+      isDataroom &&
+      `/api/teams/${teamInfo?.currentTeam?.id}/datarooms/${id}/permission-groups`,
     fetcher,
     { dedupingInterval: 30000 },
   );
@@ -46,4 +46,4 @@ export default function useDataroomPermissionGroups() {
     error,
     mutate,
   };
-} 
+}

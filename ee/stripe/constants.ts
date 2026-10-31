@@ -7,13 +7,13 @@ export enum PlanEnum {
 }
 
 export const PLAN_NAME_MAP: Record<string, string> = {
-  free: "Free",
-  starter: "Starter",
-  pro: "Pro",
-  business: "Business",
-  datarooms: "Data Rooms",
-  "datarooms-plus": "Data Rooms Plus",
-  "datarooms-premium": "Data Rooms Premium",
+  free: "Pending approval",
+  starter: "Starter (legacy plan)",
+  pro: "Starter",
+  business: "Essentials",
+  datarooms: "Data Rooms (legacy)",
+  "datarooms-plus": "Premium",
+  "datarooms-premium": "Complete",
 };
 
 export type PeriodType = "monthly" | "yearly";
