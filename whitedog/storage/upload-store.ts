@@ -17,12 +17,13 @@ export function createUploadStore(): S3Store {
       secretAccessKey: "",
     } as ReturnType<typeof getStorageConfig>;
   }
+  // Same client settings upstream used for tus: no custom endpoint, so the
+  // SDK uses the bucket's regional AWS endpoint.
   return new S3Store({
     partSize: 8 * 1024 * 1024,
     s3ClientConfig: {
       bucket: config.bucket,
       region: config.region,
-      endpoint: config.endpoint,
       credentials: {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,
