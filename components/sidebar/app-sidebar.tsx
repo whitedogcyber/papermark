@@ -7,7 +7,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { TeamContextType, initialState, useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import Cookies from "js-cookie";
 import {
   BrushIcon,
@@ -18,7 +18,6 @@ import {
   Loader,
   ServerIcon,
   ShieldCheckIcon,
-  WorkflowIcon,
 } from "lucide-react";
 
 import { BRAND_NAME } from "@/lib/branding";
@@ -142,16 +141,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         trigger: "sidebar_visitors",
         plan: PlanEnum.Pro,
         highlightItem: ["visitors"],
-      },
-      {
-        title: "Workflows",
-        url: "/workflows",
-        icon: WorkflowIcon,
-        current: router.pathname.includes("/workflows"),
-        disabled: !features?.workflows,
-        trigger: "sidebar_workflows",
-        plan: PlanEnum.DataRoomsPlus,
-        highlightItem: ["workflows"],
       },
       {
         title: "Branding",

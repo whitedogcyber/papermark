@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, useState } from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { CrownIcon } from "lucide-react";
 
 import { editionForRequirement } from "@/lib/editions";

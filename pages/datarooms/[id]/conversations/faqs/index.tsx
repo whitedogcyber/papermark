@@ -1,1 +1,3 @@
-export { default } from "@/ee/features/conversations/pages/faq-overview";
+import { FaqOverview } from "@/whitedog/qa/team-pages";
+
+export default FaqOverview;

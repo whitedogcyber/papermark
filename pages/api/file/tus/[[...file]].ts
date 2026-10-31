@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { MultiRegionS3Store } from "@/ee/features/storage/s3-store";
+import { createUploadStore } from "@/whitedog/storage/upload-store";
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
 import slugify from "@sindresorhus/slugify";
 import { Server } from "@tus/server";
@@ -32,7 +32,7 @@ const tusServer = new Server({
   maxSize: 1024 * 1024 * 1024 * 2, // 2 GiB
   respectForwardedHeaders: true,
   locker,
-  datastore: new MultiRegionS3Store(),
+  datastore: createUploadStore(),
   namingFunction(req, metadata) {
     const { teamId, fileName } = metadata as {
       teamId: string;

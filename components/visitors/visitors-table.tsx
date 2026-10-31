@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { DocumentVersion } from "@prisma/client";
 import {
   AlertTriangleIcon,
@@ -164,38 +164,36 @@ export default function VisitorsTable({
                       key={view.id}
                       className="group/row opacity-50 grayscale"
                     >
-                          {/* Name */}
-                          <TableCell>
-                            <div className="flex items-center overflow-visible sm:space-x-3">
-                              <VisitorAvatar
-                                viewerEmail={view.viewerEmail}
-                                isArchived
-                              />
-                              <div className="min-w-0 flex-1">
-                                <div className="focus:outline-none">
-                                  <p className="flex items-center gap-x-2 overflow-visible text-sm font-medium text-gray-800 dark:text-gray-200">
-                                    {view.viewerEmail ? (
-                                      <>
-                                        {view.viewerName || view.viewerEmail}
-                                      </>
-                                    ) : (
-                                      "Anonymous"
-                                    )}
-                                  </p>
-                                  {view.viewerName && view.viewerEmail && (
-                                    <p className="text-xs text-muted-foreground/60">
-                                      {view.viewerEmail}
-                                    </p>
-                                  )}
-                                  <p className="text-xs text-muted-foreground/60 sm:text-sm">
-                                    {view.link && view.link.name
-                                      ? view.link.name
-                                      : view.linkId}
-                                  </p>
-                                </div>
-                              </div>
+                      {/* Name */}
+                      <TableCell>
+                        <div className="flex items-center overflow-visible sm:space-x-3">
+                          <VisitorAvatar
+                            viewerEmail={view.viewerEmail}
+                            isArchived
+                          />
+                          <div className="min-w-0 flex-1">
+                            <div className="focus:outline-none">
+                              <p className="flex items-center gap-x-2 overflow-visible text-sm font-medium text-gray-800 dark:text-gray-200">
+                                {view.viewerEmail ? (
+                                  <>{view.viewerName || view.viewerEmail}</>
+                                ) : (
+                                  "Anonymous"
+                                )}
+                              </p>
+                              {view.viewerName && view.viewerEmail && (
+                                <p className="text-xs text-muted-foreground/60">
+                                  {view.viewerEmail}
+                                </p>
+                              )}
+                              <p className="text-xs text-muted-foreground/60 sm:text-sm">
+                                {view.link && view.link.name
+                                  ? view.link.name
+                                  : view.linkId}
+                              </p>
                             </div>
-                          </TableCell>
+                          </div>
+                        </div>
+                      </TableCell>
                       {/* Duration */}
                       <TableCell className="">
                         <div className="text-sm text-muted-foreground">
@@ -468,7 +466,9 @@ export default function VisitorsTable({
                                   totalPages={view.versionNumPages}
                                   versionNumber={view.versionNumber}
                                   downloadType={view.downloadType}
-                                  downloadMetadata={view.downloadMetadata as any}
+                                  downloadMetadata={
+                                    view.downloadMetadata as any
+                                  }
                                 />
                               )}
                               {!isFreePlan && primaryVersion.type === "pdf" ? (

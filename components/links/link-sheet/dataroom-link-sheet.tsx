@@ -1,12 +1,15 @@
 "use client";
 
-import {
-  DataroomLinkSheet as DataroomLinkSheetEE,
-  type ItemPermission as ItemPermissionEE,
-} from "@/ee/features/permissions/components/dataroom-link-sheet";
+import LinkSheet from "./index";
 
-export type ItemPermission = ItemPermissionEE;
+export type { ItemPermission } from "@/whitedog/permissions/permissions-sheet";
 
-export function DataroomLinkSheet(props: any) {
-  return <DataroomLinkSheetEE {...props} />;
+/**
+ * Data room links use the standard link sheet. File-level access is set
+ * afterwards with "File permissions" in the links table.
+ */
+export function DataroomLinkSheet(
+  props: React.ComponentProps<typeof LinkSheet>,
+) {
+  return <LinkSheet {...props} />;
 }

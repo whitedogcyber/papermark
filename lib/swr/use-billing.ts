@@ -1,11 +1,20 @@
 import { useMemo } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { SubscriptionDiscount } from "@/ee/stripe/functions/get-subscription-item";
 import useSWR from "swr";
 
 import { editionForPlan, isPendingPlan, planDisplayName } from "@/lib/editions";
 import { fetcher } from "@/lib/utils";
+
+/** Kept for type compatibility; WhiteDog has no paid subscriptions. */
+export type SubscriptionDiscount = {
+  couponId: string;
+  percentOff: number | null;
+  amountOff: number | null;
+  duration: string;
+  durationInMonths: number | null;
+  validUntil: Date | null;
+};
 
 interface BillingProps {
   id: string;
@@ -136,7 +145,10 @@ export function usePlan({
       parsedPlan.plan === "datarooms" ||
       parsedPlan.plan === "datarooms-plus" ||
       parsedPlan.plan === "datarooms-premium",
-    isDataroomsPlus: parsedPlan.plan === "datarooms-plus",
+    // Premium and above (Complete includes everything in Premium)
+    isDataroomsPlus:
+      parsedPlan.plan === "datarooms-plus" ||
+      parsedPlan.plan === "datarooms-premium",
     isDataroomsPremium: parsedPlan.plan === "datarooms-premium",
     loading: !plan && !error && !!teamId, // Only show loading if we have a teamId but no data
     error,

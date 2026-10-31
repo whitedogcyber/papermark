@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 

@@ -1,5 +1,3 @@
-import ConversationDetail from "@/ee/features/conversations/pages/conversation-detail";
+import { ConversationDetail } from "@/whitedog/qa/team-pages";
 
-export default function ConversationDetailPage() {
-  return <ConversationDetail />;
-}
+export default ConversationDetail;

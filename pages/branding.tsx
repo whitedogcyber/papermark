@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { Check, CircleHelpIcon, UploadIcon } from "lucide-react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import sanitizeHtml from "sanitize-html";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import { useDebounce } from "use-debounce";
 
-import { BRAND_HOST } from "@/lib/branding";
+import { BRAND_HOST, DEFAULT_VIEWER_BRAND } from "@/lib/branding";
 import { usePlan } from "@/lib/swr/use-billing";
 import { useBrand } from "@/lib/swr/use-brand";
 import { cn, convertDataUrlToFile, uploadImage } from "@/lib/utils";
@@ -39,8 +39,12 @@ export default function Branding() {
   const { brand } = useBrand();
   const { plan, isTrial, isBusiness, isDatarooms, isDataroomsPlus } = usePlan();
 
-  const [brandColor, setBrandColor] = useState<string>("#000000");
-  const [accentColor, setAccentColor] = useState<string>("#030712");
+  const [brandColor, setBrandColor] = useState<string>(
+    DEFAULT_VIEWER_BRAND.brandColor,
+  );
+  const [accentColor, setAccentColor] = useState<string>(
+    DEFAULT_VIEWER_BRAND.accentColor,
+  );
   const [logo, setLogo] = useState<string | null>(null);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
@@ -144,8 +148,8 @@ export default function Branding() {
 
   useEffect(() => {
     if (brand) {
-      setBrandColor(brand.brandColor || "#000000");
-      setAccentColor(brand.accentColor || "#FFFFFF");
+      setBrandColor(brand.brandColor || DEFAULT_VIEWER_BRAND.brandColor);
+      setAccentColor(brand.accentColor || DEFAULT_VIEWER_BRAND.accentColor);
       setLogo(brand.logo || null);
       setBanner(brand.banner || null);
       const message =
@@ -240,8 +244,8 @@ export default function Branding() {
     if (res.ok) {
       setLogo(null);
       setBanner(null);
-      setBrandColor("#000000");
-      setAccentColor("#030712");
+      setBrandColor(DEFAULT_VIEWER_BRAND.brandColor);
+      setAccentColor(DEFAULT_VIEWER_BRAND.accentColor);
       setWelcomeMessage("Your action is requested to continue");
       setWelcomeMessageError(null);
       setIsLoading(false);

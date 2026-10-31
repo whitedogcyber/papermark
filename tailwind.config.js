@@ -9,7 +9,7 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}", // TREMOR
-    "./ee/**/*.{ts,tsx}",
+    "./whitedog/**/*.{ts,tsx}",
   ],
   theme: {
     container: {

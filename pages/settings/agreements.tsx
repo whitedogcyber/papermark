@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { CircleHelpIcon, FileTextIcon, PlusIcon } from "lucide-react";
 import { mutate } from "swr";
 

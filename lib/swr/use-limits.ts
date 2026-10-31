@@ -1,3 +1,3 @@
-import { useLimits } from "@/ee/limits/swr-handler";
+import { useLimits } from "@/whitedog/limits/use-limits";
 
 export default useLimits;

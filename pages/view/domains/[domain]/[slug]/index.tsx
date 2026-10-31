@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
 
-import WorkflowAccessView from "@/ee/features/workflows/components/workflow-access-view";
 import NotFound from "@/pages/404";
 import { Brand, DataroomBrand } from "@prisma/client";
 import Cookies from "js-cookie";
@@ -80,38 +79,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       };
     }
 
-    // Handle workflow links - minimal props needed
+    // Workflow links are not supported in WhiteDog Share
     if (linkType === "WORKFLOW_LINK") {
-      return {
-        props: {
-          linkData: {
-            linkType: "WORKFLOW_LINK",
-            entryLinkId: linkId || "",
-            domain,
-            slug,
-            brand: brand || null,
-          },
-          notionData: {
-            rootNotionPageId: null,
-            recordMap: null,
-            theme: null,
-          },
-          meta: {
-            enableCustomMetatag: false,
-            metaTitle: null,
-            metaDescription: null,
-            metaImage: null,
-            metaUrl: `https://${domain}/${slug}`,
-            metaFavicon: "/favicon.ico",
-          },
-          showPoweredByBanner: false,
-          showAccountCreationSlide: false,
-          useAdvancedExcelViewer: false,
-          useCustomAccessForm: false,
-          logoOnAccessForm: false,
-        },
-        revalidate: 60,
-      };
+      return { notFound: true };
     }
 
     if (!link) {
@@ -361,28 +331,8 @@ export default function ViewPage({
   };
   const { linkType } = linkData;
 
-  // Render workflow access view for WORKFLOW_LINK
   if (linkType === "WORKFLOW_LINK") {
-    const { entryLinkId, domain, slug, brand } = linkData as WorkflowLinkData;
-
-    return (
-      <>
-        <CustomMetaTag
-          favicon={meta.metaFavicon}
-          enableBranding={false}
-          title={`Access Workflow | ${BRAND_TITLE_SUFFIX}`}
-          description={null}
-          imageUrl={null}
-          url={meta.metaUrl ?? ""}
-        />
-        <WorkflowAccessView
-          entryLinkId={entryLinkId}
-          domain={domain}
-          slug={slug}
-          brand={brand}
-        />
-      </>
-    );
+    return null;
   }
 
   // Render the document view for DOCUMENT_LINK

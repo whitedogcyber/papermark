@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/ee/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getLimits } from "@/whitedog/limits/server";
 import { DataroomFolder, Document, Folder } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
@@ -173,7 +173,10 @@ export default async function handle(
           .json({ message: "Trial data room already exists" });
       }
 
-      if (["free", "pro"].includes(team.plan) && !team.plan.includes("drtrial")) {
+      if (
+        ["free", "pro"].includes(team.plan) &&
+        !team.plan.includes("drtrial")
+      ) {
         return res
           .status(400)
           .json({ message: "You need a Business plan to create a data room" });

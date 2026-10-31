@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { initialState } from "@/context/team-context";
 import { useTeam } from "@/context/team-context";
 import { TeamContextType } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import { InfoIcon, ShieldAlertIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 

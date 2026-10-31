@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getLimits } from "@/ee/limits/server";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getLimits } from "@/whitedog/limits/server";
 import slugify from "@sindresorhus/slugify";
 import { getServerSession } from "next-auth/next";
 

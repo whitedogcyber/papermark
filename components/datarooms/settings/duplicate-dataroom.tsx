@@ -2,10 +2,13 @@ import { useRouter } from "next/router";
 
 import { useState } from "react";
 
-import { useLimits } from "@/ee/limits/swr-handler";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { useLimits } from "@/whitedog/limits/use-limits";
+import { PlanEnum } from "@/whitedog/plans";
 import { toast } from "sonner";
 import { mutate } from "swr";
+
+import { usePlan } from "@/lib/swr/use-billing";
+import useDatarooms from "@/lib/swr/use-datarooms";
 
 import { UpgradePlanModal } from "@/components/billing/upgrade-plan-modal";
 import { Button } from "@/components/ui/button";
@@ -17,9 +20,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { usePlan } from "@/lib/swr/use-billing";
-import useDatarooms from "@/lib/swr/use-datarooms";
 
 export default function DuplicateDataroom({
   dataroomId,

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { PlanEnum } from "@/whitedog/plans";
 import {
   ColumnDef,
   SortingState,
@@ -25,6 +25,10 @@ import {
 import { toast } from "sonner";
 import useSWR from "swr";
 
+import { usePlan } from "@/lib/swr/use-billing";
+import { durationFormat, fetcher, timeAgo } from "@/lib/utils";
+import { downloadCSV } from "@/lib/utils/csv";
+
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -38,9 +42,6 @@ import { BadgeTooltip } from "@/components/ui/tooltip";
 import { DataTablePagination } from "@/components/visitors/data-table-pagination";
 import { VisitorAvatar } from "@/components/visitors/visitor-avatar";
 
-import { usePlan } from "@/lib/swr/use-billing";
-import { durationFormat, fetcher, timeAgo } from "@/lib/utils";
-import { downloadCSV } from "@/lib/utils/csv";
 import { UpgradeButton } from "../ui/upgrade-button";
 
 interface Visitor {

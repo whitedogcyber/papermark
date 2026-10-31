@@ -1,2 +1,1 @@
-// Re-export from ee folder
-export { default } from "@/ee/features/templates/api/datarooms/apply-template";
+export { applyTemplateHandler as default } from "@/whitedog/templates/api";

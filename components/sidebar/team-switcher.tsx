@@ -2,9 +2,10 @@
 
 import * as React from "react";
 
-import { useLimits } from "@/ee/limits/swr-handler";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { useLimits } from "@/whitedog/limits/use-limits";
+import { PlanEnum } from "@/whitedog/plans";
 import { ChevronsUpDown, UserRoundPlusIcon } from "lucide-react";
+
 import { usePlan } from "@/lib/swr/use-billing";
 import { Team } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -109,13 +110,15 @@ export function TeamSwitcher({
             {isDataroomsPremium ? (
               <AddTeamModal setCurrentTeam={setCurrentTeam}>
                 <DropdownMenuItem
-                  className="gap-2 p-2 cursor-pointer"
+                  className="cursor-pointer gap-2 p-2"
                   onSelect={(e) => e.preventDefault()}
                 >
                   <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                     <UserRoundPlusIcon className="size-4" />
                   </div>
-                  <div className="font-medium text-muted-foreground">Add new team</div>
+                  <div className="font-medium text-muted-foreground">
+                    Add new team
+                  </div>
                 </DropdownMenuItem>
               </AddTeamModal>
             ) : (
@@ -125,13 +128,15 @@ export function TeamSwitcher({
                 highlightItem={["teams"]}
               >
                 <DropdownMenuItem
-                  className="gap-2 p-2 cursor-pointer"
+                  className="cursor-pointer gap-2 p-2"
                   onSelect={(e) => e.preventDefault()}
                 >
                   <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                     <UserRoundPlusIcon className="size-4" />
                   </div>
-                  <div className="font-medium text-muted-foreground">Add new team</div>
+                  <div className="font-medium text-muted-foreground">
+                    Add new team
+                  </div>
                 </DropdownMenuItem>
               </UpgradePlanModal>
             )}

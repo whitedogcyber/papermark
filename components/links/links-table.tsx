@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import { useMemo, useRef, useState } from "react";
 
 import { useTeam } from "@/context/team-context";
-import { InviteViewersModal } from "@/ee/features/dataroom-invitations/components/invite-viewers-modal";
-import { invitationEmailSchema } from "@/ee/features/dataroom-invitations/lib/schema/dataroom-invitations";
-import { PlanEnum } from "@/ee/stripe/constants";
+import { InviteViewersModal } from "@/whitedog/invitations/invite-viewers-modal";
+import { invitationEmailSchema } from "@/whitedog/invitations/schema";
+import { PlanEnum } from "@/whitedog/plans";
 import { DocumentVersion, LinkAudienceType } from "@prisma/client";
 import { isWithinInterval, subMinutes } from "date-fns";
 import {

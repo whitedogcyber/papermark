@@ -18,8 +18,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "../../ui/button";
 import { ConversationSidebar } from "../conversations/sidebar";
 
-const DEFAULT_BANNER_IMAGE = "/_static/dataroom-banner.png";
-
 export default function DataroomNav({
   allowDownload,
   allowBulkDownload,
@@ -190,11 +188,11 @@ export default function DataroomNav({
       </div>
 
       {/* Banner section */}
-      {brand?.banner !== "no-banner" && (
+      {brand?.banner && brand.banner !== "no-banner" && (
         <div className="relative h-[20vh] sm:h-auto sm:max-h-80">
           <img
             className="h-full w-full object-cover sm:max-h-80 sm:object-contain xl:object-cover"
-            src={brand?.banner || DEFAULT_BANNER_IMAGE}
+            src={brand.banner}
             alt="Banner"
             width={1920}
             height={320}
