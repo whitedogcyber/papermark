@@ -221,9 +221,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Setup .env
-        run: echo ${{ secrets.TRIGGER_ENV }} > .env
-
       # Trigger.dev deploy images go to ECR (see docs/trigger-ecr.md).
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
