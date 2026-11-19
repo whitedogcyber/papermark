@@ -98,6 +98,8 @@ async function copyToStorage({
       Key: key,
       Body: Readable.fromWeb(res.body as any),
       ContentType: contentType,
+      // Gotenberg's downloadFrom takes the file name from this header
+      ContentDisposition: `attachment; filename="${slugify(name) || "file"}${ext.toLowerCase()}"`,
     },
   });
   await upload.done();
